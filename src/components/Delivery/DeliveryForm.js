@@ -120,11 +120,17 @@ const DeliveryForm = () => {
   const handleCODPayment = async (orderData) => {
     try {
       // Process the order without payment
-      console.log("Prrepaid",orderData)
+      setIsLoading(true);
+      console.log("COD",orderData)
       console.log("COD selected, order will be processed without payment.");
-      saveOrder(orderData);
+      const {data} = await axios.post("/api/payment/cod-order" ,orderData);
+      console.log(data);
+      setIsLoading(false);
+      dispatch(clearCart());
+      navigate.push("/myorders")
     } catch (error) {
       console.error("COD payment processing failed:", error);
+      setIsLoading(false);
     }
   };
 
@@ -472,14 +478,24 @@ const DeliveryForm = () => {
         </div>
 
 
-      <button
+      {
+       paymentMethod === "COD"? <button
+        type="submit"
+        className={`bg-[#BC264B] hover:bg-pink-700 text-white font-semibold py-3 px-6 rounded-lg w-full ${isLoading ? "opacity-50" : ""}`}
+        disabled={isLoading}
+        onClick={handleSubmit(handleCODPayment)}
+      >
+        {isLoading ? "Processing..." : "Place Order"}
+      </button>:
+        <button
         type="submit"
         className={`bg-[#BC264B] hover:bg-pink-700 text-white font-semibold py-3 px-6 rounded-lg w-full ${isLoading ? "opacity-50" : ""}`}
         disabled={isLoading}
         onClick={handleSubmit(onSubmitPrepaid)}
       >
         {isLoading ? "Processing..." : "Proceed to Payment"}
-      </button> 
+      </button>
+       }
     </form>
     </>
   );

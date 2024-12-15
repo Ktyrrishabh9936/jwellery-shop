@@ -10,10 +10,12 @@ import Link from 'next/link';
 import { ShoppingBagIcon } from "@heroicons/react/24/solid";
 import { useDispatch, useSelector } from "react-redux";
 import { removefromCart } from '@/lib/reducers/cartReducer'
+import { AddwishList } from "@/lib/reducers/productbyIdReducer";
 export default function ShoppingCart() {
   const {loading,Items,loadingRemoveProduct,discounte, totalDiscountedPrice, totalItem,totalPrice} = useSelector((state)=>state.cart);
   const dispatch = useDispatch();
   const navigate = useRouter();
+  const {wishListByID,loadWishlist}= useSelector((state)=>state.wishlist);
   
   const formatPrice = (price) => {
     return price ? `${parseFloat(price).toFixed(2)}` : "N/A";
@@ -70,9 +72,14 @@ export default function ShoppingCart() {
                       </p>
 
                       <div className="mt-4 md:mt-0 flex space-x-4 w-full">
-                        <Button className="mt-4 bg-[#F8C0BF] hover:bg-[#fe6161] hover:text-black transition-colors duration-300 py-2 px-4 rounded-md w-full capitalize text-sm">
+                   {  loadWishlist === item.productId  ?  <Button className="mt-4 bg-[#F8C0BF] hover:bg-[#fe6161] hover:text-black transition-colors duration-300 py-2 px-4 rounded-md w-full capitalize text-sm">
+                          Adding...
+                        </Button>:
+                        wishListByID.some((wid)=>wid===item.productId) ?<Button className="mt-4 bg-[#F8C0BF] hover:bg-[#fe6161] hover:text-black transition-colors duration-300 py-2 px-4 rounded-md w-full capitalize text-sm" >
+                       Already In Wishlist
+                      </Button>:<Button className="mt-4 bg-[#F8C0BF] hover:bg-[#fe6161] hover:text-black transition-colors duration-300 py-2 px-4 rounded-md w-full capitalize text-sm" onClick={()=>dispatch(AddwishList(item.productId))}>
                           Add to Wishlist
-                        </Button>
+                        </Button>}
                        {loadingRemoveProduct === item.productId ? <button
                           className="mt-4 border-2  bg-gray-500 text-[#F8C0BF] duration-300 py-2 px-4 rounded-md w-full capitalize text-sm"
                         >

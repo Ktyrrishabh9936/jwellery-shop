@@ -9,60 +9,34 @@ import { Button } from "@/MaterialTailwindNext";
 import Image from "next/image";
 import { getServerCookie } from "@/utils/serverCookie";
 import axios from "axios";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart } from "@/lib/reducers/cartReducer";
 
 export default function SearchPage() {
     const [products, setProducts] = useState([]);
-  const [loadingProductId, setLoadingProductId] = useState(null);
-
+  const {loadingProductId} = useSelector((state)=>state.cart)
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const searchParams = useSearchParams();
     const query = searchParams.get("q");
+    const {user} = useSelector((store)=>store.user);
+  const dispatch = useDispatch();
     const formatPrice = (price) => {
         return price ? `Rs.${parseFloat(price).toFixed(2)}` : "N/A";
       };
       const handleAddToCart = async (product) => {
-        const token = await getServerCookie('token');
-    
+
         // Check if the user is logged in
-        if (!token) {
-          toast.info("Please log in to add products to your cart!");
+        if (!user) {
+          toast.error("Please log in to add products to your cart!");
           return;
         }
     
-        setLoadingProductId(product._id); // Use product.id here, not product._id
-    
-        // Clean the price values before sending to the server
-        const cleanPrice = parseFloat(product.discountPrice);
-        const productData = {
-          productId: product._id,
-          img_src: product.images[0],
-          name: product.name,
-          price: cleanPrice, 
-          quantity: 1,
-        };
-        console.log(productData)
-    
-        try {
-          console.log(token);
-          const response = await axios.post("/api/cart/add", productData, {
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json',
-            },
-            withCredentials: true,
-          });
-    
-          console.log("Product added to cart:", response.data);
-          toast.success("Product added to cart!");
-        } catch (err) {
-          console.error("Error adding to cart:", err.response ? err.response.data : err.message);
-          toast.error("Failed to add product to cart!");
-        } finally {
-          setLoadingProductId(null);
-        }
+        dispatch(addToCart({productId:product._id,quantity:1}))
       };
+
+    
     useEffect(() => {
         if (query) {
             const fetchProducts = async () => {

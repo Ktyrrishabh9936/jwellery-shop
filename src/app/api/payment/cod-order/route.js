@@ -72,7 +72,7 @@ export async function POST(req) {
                 message: " Address Not Found"
             }, { status: 404 });
         }
-      
+      }
 
     let order = await Order.findOne({ userId });
     if (!order) {
@@ -98,7 +98,7 @@ export async function POST(req) {
         address:`${address.landmark} ${address.street} ${address.city} ${address.state}`
       },
       orderStatus: "CONFIRMED",
-      amount,
+      amount:total,
       orderID:generateOrderId()
     });
     await order.save();
@@ -106,8 +106,7 @@ export async function POST(req) {
      user.cart = null;
      await user.save();
     return NextResponse.json(order, { status: 201 });
-    
-  }
+
 } catch (error) {
     console.error('Error verifying payment:', error);
     return NextResponse.json({ message: 'Error verifying payment' }, { status: 500 });

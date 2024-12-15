@@ -39,6 +39,8 @@ const buildSearchPipeline = (searchTerm, page = 1, pageSize = 10) => {
                 images: 1, // Adjust fields as needed
                 averageRating:1,
                 collection:1,
+                category:1,
+                price:1,
                 slug:1,
               },
             },

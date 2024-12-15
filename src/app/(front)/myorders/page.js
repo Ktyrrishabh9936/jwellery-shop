@@ -119,8 +119,8 @@ const MyOrders = () => {
         </div> */}
       </div>
 
-      <div className="mt-6 flow-root sm:mt-8">
-        <div className="divide-y divide-gray-200 dark:divide-gray-700">
+      <div className="mt-6 flow-root sm:mt-8 ">
+        <div className="divide-y divide-gray-200 dark:divide-gray-700  flex flex-col-reverse">
          { orders.map((order, index) =><div className="flex flex-wrap items-center gap-y-4 py-6">
             <dl className="w-1/2 sm:w-1/4 lg:w-auto lg:flex-1">
               <dt className="text-base font-medium text-gray-500 dark:text-gray-400">Order ID:</dt>
