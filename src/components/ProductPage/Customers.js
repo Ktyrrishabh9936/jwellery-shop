@@ -135,16 +135,16 @@ function ReviewItem({ review }) {
     return (
         <blockquote className="flex h-full flex-col justify-between bg-gray-50 p-6 shadow-md rounded-lg">
             <div className="flex gap-0.5 text-red-500">
-                {Array.from({ length: review.rating }).map((_, i) => (
+                {Array.from({ length: review?.rating }).map((_, i) => (
                     <span key={i} className="w-6"><Star /></span>
                 ))}
             </div>
             <div className="mt-4">
-                <p className="text-xl font-bold text-gray-800">{review.user.name || 'Anonymous'}</p>
-                <p className="mt-4 leading-relaxed text-gray-700">{review.comment}</p>
+                <p className="text-xl font-bold text-gray-800">{review?.user ? review?.user?.name: 'Anonymous'}</p>
+                <p className="mt-4 leading-relaxed text-gray-700">{review?.comment}</p>
             </div>
             <footer className="mt-4 text-sm font-medium text-gray-500">
-                &mdash; {review.user.name || 'Anonymous'}
+                &mdash; {review?.user ? review?.user?.name: 'Anonymous'}
             </footer>
         </blockquote>
     );

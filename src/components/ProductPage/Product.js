@@ -58,13 +58,13 @@ export default function Product({ id }) {
         <div className="flex flex-col lg:flex-row gap-2 ">
            <div className="w-full md:w-[90%] lg:w-[40%] mx-auto">
             <div className="p-3 bg-[#F3F3F3] rounded-md md:mx-9  sticky top-24  ">
-            <div className="flex flex-col item-center justify-center rounded-md p-2 ">
+            <div className="flex flex-col item-center justify-center rounded-md p-2">
 
             <Carousel
-            className="rounded-xl w-[500px]  md:w-full  max-w-[500px] lg:max-w-none pb-16 "
+            className="rounded-xl w-full  max-w-[500px] lg:max-w-none pb-16 mx-auto object-cover"
 
             navigation={({ setActiveIndex, activeIndex }) => (
-                <div className="max-h-[80vh]">
+                <div  className="absolute bottom-0 left-2/4 z-50 flex -translate-x-2/4 gap-2">
                 {product?.images?.map((img, i) => (
                     <Image
                     width={1000}
@@ -87,20 +87,20 @@ export default function Product({ id }) {
                     src={img}
                     alt={`Product${ind}`}
                     key={`Product${ind}`}
-                    className="object-contain w-full h-auto hidden md:block "
+                    className="object-contain w-full h-auto  "
                 />)}
                 </Carousel>
     
+            </div>
                 <Button
             size="sm"
             variant="outlined"
             color="blue-gray"
-            className="mr-5 flex items-center text-center"
+            className="mr-5 flex items-center text-center hidden md:block"
             onClick={handleOpen}
           >
            Full View
           </Button>
-            </div>
             <>
      
      
@@ -150,9 +150,8 @@ export default function Product({ id }) {
         <DialogBody>
         <Carousel
             className="h-[70vh] rounded-xl w-[500px]  md:w-full  max-w-[500px] md:max-w-none pb-16"
-            onTouchEnd={(e)=>e.changedTouches.identifiedTouch}
             navigation={({ setActiveIndex, activeIndex }) => (
-                <div className="absolute bottom-0 left-2/4 z-50 flex -translate-x-2/4 gap-2 ">
+                <div className="">
                 {product?.images?.map((img, i) => (
                     <Image
                     width={1000}
