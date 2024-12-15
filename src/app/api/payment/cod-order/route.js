@@ -5,7 +5,7 @@ import Address from '@/models/addressModel';
 import Cart from '@/models/cartModel';
 import User from '@/models/userModel';
 import { UserAuth } from '@/utils/userAuth';
-import { NextResponse } from 'next/server';
+
 
 export const generateOrderId = (prefix = "ID", length = 10) => {
   const timestamp = Date.now().toString(); // Current timestamp
