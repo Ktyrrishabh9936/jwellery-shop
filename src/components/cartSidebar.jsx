@@ -9,6 +9,7 @@ import Link from 'next/link'
 import { FiShoppingCart } from 'react-icons/fi';
 import Arrow from '@/assets/Arrow.svg'
 import { useRouter } from 'next/navigation'
+import { formatPrice } from '@/utils/productDiscount'
 const products = [
   {
     id: 1,
@@ -124,7 +125,7 @@ export default function CartSidebar() {
                                   <h3>
                                     <Link href="/">{item.name}</Link>
                                   </h3>
-                                  <p className="ml-4">{item.discountedPrice*item.quantity}</p>
+                                  <p className="ml-4">{formatPrice(item.discountedPrice*item.quantity)}</p>
                                 </div>
                                 <p className="mt-1 text-sm text-gray-500">{item.category}</p>
                               </div>
@@ -153,13 +154,13 @@ export default function CartSidebar() {
                 {totalItem  &&<div className="border-t border-gray-200 px-4 py-6 sm:px-6">
                   <div className="flex justify-between text-base font-medium text-gray-900">
                     <p>Subtotal</p>
-                    <p>{totalDiscountedPrice}</p>
+                    <p>{formatPrice(totalDiscountedPrice)}</p>
                   </div>
                   <p className="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
                   <div className="mt-6">
                     <button
                       onClick={()=>{dispatch(setsidebarCart(false));navigate.push("/checkout")}}
-                      className=" cursor-pointer flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
+                      className=" cursor-pointer flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700 w-full"
                     >
                       Checkout
                     </button>

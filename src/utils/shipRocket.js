@@ -26,7 +26,7 @@ export const getShiprocketToken = async () => {
 // utils/shiprocket.js
 export const createShiprocketOrder = async (orderData) => {
         const token = await getShiprocketToken();
-      
+      console.log(token)
         try {
           const response = await axios.post(
             `${SHIPROCKET_BASE_URL}/orders/create/adhoc`,
@@ -37,10 +37,30 @@ export const createShiprocketOrder = async (orderData) => {
               },
             } 
           );
-          return response.data;
+          console.log(response.data)
+          return {order_id: response.data.order_id,shipment_id: response.data.shipment_id};
         } catch (error) {
           console.error("Create Order Error:", error.response?.data);
           throw new Error("Failed to create order in Shiprocket");
+        }
+      };
+export const checkServisability = async (data) => {
+        const token = await getShiprocketToken();
+      
+        try {
+          const response = await axios.get(
+            `https://apiv2.shiprocket.in/v1/external/courier/serviceability`,
+            {
+              params: data,
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          return response.data;
+        } catch (error) {
+          console.error("Create Order Error:", error.response?.data);
+          throw new Error("Failed to check order servisability in Shiprocket");
         }
       };
       

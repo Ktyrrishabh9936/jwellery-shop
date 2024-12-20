@@ -26,7 +26,18 @@ import {
   Card,
 } from "@/MaterialTailwindNext";
 import { addToCart } from "@/lib/reducers/cartReducer";
+import { useForm } from "react-hook-form";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+
+const schema = yup.object().shape({
+  pincode: yup
+    .string()
+    .matches(/^\d{6}$/, "Pincode must be exactly 6 digits with no spaces")
+    ,
+});
 export default function Product({ id }) {
+ 
     const [product, setProduct] = useState(null);
     const [relatedProducts, setRelatedProducts] = useState([]);
     const [error, setError] = useState(null);
@@ -251,9 +262,53 @@ function ProductInfo({info,productId}) {
     const dispatch = useDispatch();
     const {wishListByID,loadWishlist}= useSelector((state)=>state.wishlist);
     const {loadingProductId} = useSelector((state)=>state.cart)
+    const [deliveryPincode, setDeliveryPincode] = useState("");
+    const [serviceable, setServiceable] = useState(null);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const {
+      register,
+      handleSubmit,
+      formState: { errors },reset
+    } = useForm({
+      resolver: yupResolver(schema),
+    });
     const currentUrl = typeof window !== 'undefined' 
     ? `${window.location.origin}${pathname}` 
     : '';
+
+
+    const onSubmit  = async (data) => {
+      const code = data.pincode;
+      try {
+      setLoading(true)
+      setError(null);
+      const response = await fetch(
+        `/api/products/${productId}/check-pincode?pickup_pincode=390020&delivery_pincode=${code}`
+      );
+      const data = await response.json();
+      console.log(data)
+      if (response.ok) {
+        setServiceable(data.companyLength);
+        setError(null);
+      } else {
+        setError(data.message);
+        setServiceable(null);
+      }
+      setLoading(false)
+
+    } catch (err) {
+      setError("An error occurred while checking serviceability.");
+      setServiceable(null);
+      setLoading(false)
+    }
+    finally{
+      setTimeout(()=>{
+        setError(null);
+        setServiceable(null);
+      },5000)
+    }
+  };
 
     return (
         <div className="py-4 pr-4 max-w-[800px]">
@@ -300,38 +355,51 @@ function ProductInfo({info,productId}) {
             </div>
         </div>
             <ProductFeatures />
-            <div className="mt-6">
-            <p className="mb-2 mt-2462 text-xl font-semibold">Check our Pincode</p>
-            <input
-                type="text"
-                placeholder="Enter 6 Digit Pincode"
-                className="border text-black bg-[#EAEAEA] p-2 rounded w-1/2"
-            />
-            <div className="">
-                <button className="text-[#BC264B] text-sm mt-2 mb-3 underline">Check</button>
-            </div>
+            <form onSubmit={handleSubmit(onSubmit)} className="mt-6">
+      <p className="mb-2 text-xl font-semibold">Check our Pincode</p>
+      <input
+        type="text"
+        maxLength={6}
+        {...register("pincode")}
+        placeholder="Enter 6 Digit Pincode"
+        className={`border text-black bg-[#EAEAEA] p-2 rounded w-1/2 ${
+          errors.pincode ? "border-red-500" : "border-gray-300"
+        }`}
+      />
+      <div className="mt-3">
+        {loading ? (
+          <div className="h-5 w-5  border-t-transparent border-solid animate-spin rounded-full border-red-500 border-4 mx-3"></div>
+        ) : (
+          <button
+            className="text-[#BC264B] text-sm underline"
+            type="submit"
+          >
+            Check
+          </button>
+        )}
+      </div>
 
-            <div className="mt-2 mb-4 ">
-                {/* <input
-                    type="checkbox"
-                    id="gift"
-                    className="rounded-none"
-                /> */}
-                {/* <label htmlFor="gift" className="font-semibold text-sm mx-2">Add gift wrap to your order (Rs.50)</label> */}
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {/* <button className="bg-[#F8C0BF] text-black font-semibold  p-2 rounded w-full m-2">
-                    Buy Now
-                </button> */}
-               {loadingProductId === productId ?<button className=" border-[1px] border-[#f76664] hover:bg-[#f76664] text-black font-semibold p-2 rounded w-full m-2" disabled>
+      {/* Error Message */}
+      {errors.pincode ? (
+        <p className="text-red-500 text-sm mt-1">{errors.pincode.message}</p>
+      ):error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+
+      {/* Display API response or errors */}
+      {serviceable !== null && (
+        <p className={`text-sm mt-2 ${serviceable ? "text-green-600" : "text-red-600"}`}>
+          {serviceable
+            ? "Serviceable for the given pincode."
+            : "Not serviceable for the given pincode."}
+        </p>
+      )}
+
+{loadingProductId === productId ?<button className=" border-[1px] border-[#f76664] hover:bg-[#f76664] text-black font-semibold p-2 rounded w-full m-2" disabled>
                     Adding...
                 </button>:
                 <button className=" border-[1px] bg-[#F8C0BF] hover:bg-[#f76664] text-black font-semibold p-2 rounded w-full m-2" onClick={()=>dispatch(addToCart({productId:productId,quantity:1}))}>
                     Add to Cart
                 </button>}
-            </div>
-            <Accordion/>
-        </div>
+    </form>
         </div>
     );
 }
@@ -451,5 +519,3 @@ function ProductFeatures() {
 function FeatureItem({ label }) {
     return <div className="font-semibold">{label}</div>;
 }
-
-7

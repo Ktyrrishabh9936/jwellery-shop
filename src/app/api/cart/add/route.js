@@ -32,7 +32,7 @@ export async function POST(request) {
       cart.items[itemIndex].quantity += quantity;
       isExist = true;
     } else {
-      const len = cart.items.push({ productId,name:product.name, quantity,img_src:product.images[0],price:product.price,discountedPrice:product.discountPrice,category:product.category.name});
+      const len = cart.items.push({ productId,name:product.name, quantity,img_src:product.images[0],price:product.price,discountedPrice:product.discountPrice,category:product.category.name,SKU:product.sku});
       idx = len-1;
     }
     await cart.save();

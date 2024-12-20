@@ -97,9 +97,9 @@ function NavListMenu() {
           >
             <RocketLaunchIcon strokeWidth={1} className="h-28 w-28" />
           </Card>
-          <ul className="col-span-4 flex w-full flex-col gap-1">
+          {/* <ul className="col-span-4 flex w-full flex-col gap-1">
             {renderItems}
-          </ul>
+          </ul> */}
         </MenuList>
       </Menu>
       <MenuItem className="flex items-center gap-2 font-medium text-blue-gray-900 lg:hidden">

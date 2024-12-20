@@ -62,7 +62,19 @@ const orderSchema = new mongoose.Schema({
           type:String,
           required:true,
         },
-        shipmentID:String,
+      },
+      shipping:{
+        shipmentID:{
+          type:String,
+          required:true,
+        },
+        shippingOrderId:{
+          type:String,
+          required:true,
+        },
+        awb:{
+          type:String,
+        },
       },
       createdAt: {
         type: Date,

@@ -5,14 +5,16 @@ import Address from '@/models/addressModel';
 import Cart from '@/models/cartModel';
 import User from '@/models/userModel';
 import { UserAuth } from '@/utils/userAuth';
+import { createShiprocketOrder } from '@/utils/shipRocket';
+import moment from 'moment';
 
 
-export const generateOrderId = (prefix = "ID", length = 10) => {
+export const generateOrderId = (length = 10) => {
   const timestamp = Date.now().toString(); // Current timestamp
   const randomDigits = Math.floor(Math.random() * Math.pow(10, length - timestamp.length))
     .toString()
     .padStart(length - timestamp.length, "0"); // Generate random digits to fill length
-  return `${prefix}${timestamp}${randomDigits}`.slice(0, length + prefix.length);
+  return `${timestamp}${randomDigits}`.slice(0, length );
 };
 export async function POST(req) {
   await connect();
@@ -27,12 +29,16 @@ export async function POST(req) {
     if (!cart) {
       return NextResponse.json({ message: 'Cart not found' }, { status: 404 });
     }
+    let order_items = [];
     const total = cart.items.reduce((acc, item) => {
         const price = item.discountedPrice; // Optional chaining
         const quantity = item.quantity || 1; // Default to 1 if quantity is not defined
-  
-        // Log for debugging
-        console.log(`Item ID: ${item._id}, Price: ${price}, Quantity: ${quantity}`);
+        order_items.push(  {
+          name: item.name,
+          sku:  item.SKU,
+          units: item.quantity || 1,
+          selling_price: item.discountedPrice,
+        })
   
         if (typeof price !== 'number' || isNaN(price)) {
           return NextResponse.json({ message: 'Price is not a valid type' }, { status: 403 });
@@ -40,7 +46,7 @@ export async function POST(req) {
   
         return acc + price * quantity; // Calculate total
       }, 0);
-      console.log(total)
+      console.log(order_items,total)
       // Set up Razorpay order details
       let address;
       if(!selectedDetails){
@@ -73,6 +79,35 @@ export async function POST(req) {
             }, { status: 404 });
         }
       }
+      const JENII_ORDERID = generateOrderId()
+      const shiprocket = await createShiprocketOrder({
+        order_id: JENII_ORDERID,
+        order_date: moment().format("YYYY-MM-DD HH:mm"),
+        pickup_location: "Primary",
+        billing_address: `${address.landmark} , ${address.street}`,
+        billing_pincode: address.postalCode,
+        billing_city: address.city,
+        billing_state: address.state,
+        billing_country: "India",
+        billing_email: user.email,
+        billing_phone: `91${address.contact}`,
+        billing_customer_name: address.firstName,
+        billing_last_name: address.lastName,
+        shipping_is_billing: true,
+        order_items,
+        payment_method: "COD",
+        sub_total: total,
+        length: 10,
+        breadth: 10,
+        height: 10,
+        weight: 0.5,
+      });
+
+      if(!shiprocket.shipment_id || !shiprocket.order_id){
+        return NextResponse.json({
+          message: "Something went wrong with shiprocket "
+      }, { status: 403 });
+      }
 
     let order = await Order.findOne({ userId });
     if (!order) {
@@ -81,7 +116,6 @@ export async function POST(req) {
     order.orders.push({
       items: cart.items.map((item) => 
       {
-        console.log(item)
         return {
         productId: item.productId,
         quantity: item.quantity,
@@ -99,13 +133,17 @@ export async function POST(req) {
       },
       orderStatus: "CONFIRMED",
       amount:total,
-      orderID:generateOrderId()
+      orderID:JENII_ORDERID,
+      shipping:{
+        shipmentID:shiprocket.shipment_id,
+        shippingOrderId:shiprocket.order_id,
+      }
     });
     await order.save();
     await Cart.findOneAndDelete({ userId }); // Clear the cart after placing the order
      user.cart = null;
      await user.save();
-    return NextResponse.json(order, { status: 201 });
+    return NextResponse.json({order,shiprocket}, { status: 201 });
 
 } catch (error) {
     console.error('Error verifying payment:', error);

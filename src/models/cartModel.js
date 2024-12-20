@@ -41,6 +41,10 @@ const cartSchema = new mongoose.Schema({
         required: true,
         type:String,
       },
+      SKU:{
+        type:String,
+        required:true,
+      },
       name:{
         type:String,
         required: true,

@@ -26,6 +26,9 @@ import { FaHeart } from 'react-icons/fa';
 import { FaCartShopping, FaRegHeart } from 'react-icons/fa6';
 import { ShoppingCartIcon } from '@heroicons/react/24/outline';
 import { FiShoppingCart } from 'react-icons/fi';
+import MobMenu from "../navcomponents/MobMenu";
+import { Menus } from '@/utils/NavData';
+
 
 export default function Header() {
   const [isNavOpen, setIsNavOpen] = useState(false);
@@ -52,15 +55,19 @@ export default function Header() {
 
   return (
    
-    <Navbar className="mx-auto p-2 lg:pl-6 shadow-none sticky top-0 z-50">
+    <Navbar className="mx-auto p-2 lg:pl-6 shadow-none sticky top-0 z-20">
       <div className="relative mx-auto flex items-center justify-between text-blue-gray-900">
+      <div className="lg:hidden">
+              <MobMenu Menus={Menus} />
+            </div>
+
         <Typography as="a" href="#" className="mr-4 ml-2 cursor-pointer py-1.5 font-medium">
          <Link href="/"> <Image width={80} height={80} src="/Jenii-Logo.svg" alt="Jenii" /></Link>
         </Typography>
         {/*  */}
         <Search/>
         {/*  */}
-        <IconButton
+        {/* <IconButton
           size="sm"
           color="blue-gray"
           variant="text"
@@ -68,7 +75,8 @@ export default function Header() {
           className="ml-auto mr-2 lg:hidden"
         >
           <Bars2Icon className="h-6 w-6" />
-        </IconButton>
+        </IconButton> */}
+
         <div className="flex justify-center items-center  gap-2 ">
         <button onClick={()=>navigate.push('/mywishlist')} className=' shadow-none cursor-pointer relative py-2 px-1.5 h-max inline-flex items-center  text-sm font-medium text-center bg-transparent text-black rounded-full    dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800   hover:text-red-400' >
                 <FaRegHeart fontSize={22} />
