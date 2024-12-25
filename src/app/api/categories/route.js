@@ -7,7 +7,7 @@ import Category from '@/models/category';
 export async function GET() {
   await connect();
   try {
-    const products = await Category.find({},{name:1,image:1,_id:0});
+    const products = await Category.find();
     return NextResponse.json(products, { status: 200 });
   } catch (error)
    {

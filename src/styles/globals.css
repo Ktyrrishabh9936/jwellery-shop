@@ -41,6 +41,77 @@ body {
     @apply flex items-center justify-between;
   }
 }
+input[type="checkbox"].star {
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: #fff;
+  margin: 0;
+  font: inherit;
+  color: currentColor;
+  width: 1.15em;
+  height: 1.15em;
+  border: none;
+  display: grid;
+  place-content: center;
+  position: relative;
+}
+
+input[type="checkbox"].star::before {
+  content: "";
+  position: relative;
+  z-index: 1;
+  width: 1.15em;
+  height: 1.15em;
+  transition: 120ms background-color ease-in-out;
+  -moz-transition: 120ms background-color ease-in-out;
+  -webkit-transition: 120ms background-color ease-in-out;
+  box-shadow: inset 1.15em 1.15em white;
+  background-color: white;
+  clip-path: polygon(
+    50% 0%,
+    61% 35%,
+    98% 35%,
+    68% 57%,
+    79% 91%,
+    50% 70%,
+    21% 91%,
+    32% 57%,
+    2% 35%,
+    39% 35%
+  );
+}
+
+input[type="checkbox"].star::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  margin: -1px;
+  width: 1.25em;
+  height: 1.25em;
+  clip-path: polygon(
+    50% 0%,
+    61% 35%,
+    98% 35%,
+    68% 57%,
+    79% 91%,
+    50% 70%,
+    21% 91%,
+    32% 57%,
+    2% 35%,
+    39% 35%
+  );
+  box-shadow: inset 1.15em 1.15em rgb(8, 8, 8),
+    inset -1.15em -1.15em rgb(8, 8, 8);
+}
+
+input[type="checkbox"].star:checked::before {
+  box-shadow: inset 1em 1em #df027c;
+  background-color: #df027c;
+}
 .shimmer {
   position: relative;
   overflow: hidden;
@@ -78,5 +149,67 @@ body {
   100% {
     left: 100%;
   }
+}
+.slider {
+  height: 10px;
+  width: 100%;
+  background-color: #ddd;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+
+/* Styles for the slider thumb */
+.slider .thumb {
+  position: relative;
+top:-4px;
+  height: 17px;
+  width: 17px;
+  border-radius: 50%;
+  background-color: pink;
+  cursor: grab;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Styles for the slider active state */
+.slider .thumb.active {
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+.horizontal-slider {
+  width: 100%;
+  max-width: 500px;
+  height: 50px;
+  margin: 100px;
+}
+
+.horizontal-slider .example-track {
+  top: 20px;
+  height: 10px;
+}
+
+.example-track.example-track-0 {
+  background: green;
+}
+
+.example-track.example-track-1 {
+  background: red;
+}
+
+.example-track.example-track-2 {
+  background: grey;
+}
+
+.horizontal-slider .example-thumb {
+  top: 1px;
+  width: 50px;
+  height: 48px;
+  line-height: 38px;
+  border-radius: 50%;
+  font-size: 0.9em;
+  text-align: center;
+  background-color: black;
+  color: white;
+  cursor: pointer;
+  border: 5px solid gray;
+  box-sizing: border-box;
 }
 

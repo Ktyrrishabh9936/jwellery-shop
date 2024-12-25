@@ -37,12 +37,13 @@ const schema = yup.object().shape({
     ,
 });
 export default function Product({ id }) {
- 
     const [product, setProduct] = useState(null);
     const [relatedProducts, setRelatedProducts] = useState([]);
     const [error, setError] = useState(null);
     const [open, setOpen] =useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [loading, setloading] = useState(false);
+
  
   const handleOpen = () => setOpen((cur) => !cur);
   const handleIsFavorite = () => setIsFavorite((cur) => !cur);
@@ -51,12 +52,15 @@ export default function Product({ id }) {
         if (id) {
             const fetchProduct = async () => {
                 try {
+                  setloading(true)
                     const response = await axios.get(`/api/products/${id}`);
                     setProduct(response.data.product);
                     setRelatedProducts(response.data.relatedProducts);
+                    setloading(false)
                 } catch (error) {
-                    setError("Error fetching product or related products");
-                    console.error(error);
+                  setError("Error fetching product or related products");
+                  console.error(error);
+                  setloading(false)
                 }
             };
 

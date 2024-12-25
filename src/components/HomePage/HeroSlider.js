@@ -22,7 +22,7 @@ import { IconButton } from "@material-tailwind/react";
 import { NavArrowRight, NavArrowLeft } from "iconoir-react";
 
 import { Swiper, SwiperSlide, useSwiper } from "swiper/react";
-function CustomNavigation() {
+ export function CustomNavigation() {
   const swiper = useSwiper();
 
   return (

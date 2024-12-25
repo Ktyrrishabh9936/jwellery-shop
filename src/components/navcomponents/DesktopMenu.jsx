@@ -48,7 +48,7 @@ export default function DesktopMenu({ menu }) {
       </span>
       {hasSubMenu && (
         <motion.div
-          className="sub-menu bg-red-50"
+          className="sub-menu bg-white"
           initial="exit"
           animate={isHover ? "enter" : "exit"}
           variants={subMenuAnimate}
@@ -64,13 +64,13 @@ export default function DesktopMenu({ menu }) {
           >
             {hasSubMenu &&
               menu.subMenu.map((submenu, i) => (
-                <div className="relative cursor-pointer" key={i}>
+                <div className="relative cursor-pointer " key={i}>
                   {menu.gridCols > 1 && menu?.subMenuHeading?.[i] && (
                     <p className="text-sm mb-4 text-gray-500">
                       {menu?.subMenuHeading?.[i]}
                     </p>
                   )}
-                  <div className="flex-center gap-x-4 group/menubox">
+                  <div className="flex-center gap-x-4 p-2 rounded-lg group/menubox hover:bg-pink-500 hover:text-white">
                     <div className="bg-white/5 w-fit p-2 rounded-md group-hover/menubox:bg-white group-hover/menubox:text-gray-900 duration-300">
                       {submenu.icon && <submenu.icon />}
                     </div>

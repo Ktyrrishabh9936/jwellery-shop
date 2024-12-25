@@ -53,7 +53,7 @@ export default function NavBar() {
   const [imagesInd, setImagesInd] = useState(0);
         return (
           <>
-             <header className="h-16 text-[15px]  relative inset-0 z-[15] flex-center text-[#18181A]  dark:bg:[#18181A] ">
+             <header className="h-16 text-[15px]  relative inset-0 z-[15] flex-center bg-white text-[#18181A]  dark:bg:[#18181A] ">
         <nav className=" px-3.5 flex-center-between w-full max-w-7xl mx-auto">
         <Menu allowHover open={isMenuOpen} handler={setIsMenuOpen}>
         <MenuHandler>

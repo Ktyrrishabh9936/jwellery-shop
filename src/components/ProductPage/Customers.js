@@ -1,8 +1,9 @@
 "use client";
 import { useState, useEffect } from 'react';
-import { toast } from 'react-toastify';
+import { toast } from 'react-hot-toast';
 import Star from '@/assets/Star.svg';
 import { getServerCookie } from "@/utils/serverCookie";
+import { useSelector } from 'react-redux';
 
 export default function Customers({ productId }) {
     const [reviews, setReviews] = useState([]);
@@ -21,13 +22,13 @@ export default function Customers({ productId }) {
     const fetchReviews = async (page) => {
         setIsLoading(true);
         try {
-          const response = await fetch(`/api/products/${productId}/reviews?page=${page}&limit=3`);
+          const response = await fetch(`/api/products/${productId}/reviews`);
           const data = await response.json();
           
           if (response.ok) {
             console.log(data)
             setReviews((prev) => [...prev, ...data?.reviews]);
-            setTotalPages(data.totalPages);
+            // setTotalPages(data.totalPages);
           } else {
             console.error(data.message);
           }
@@ -37,6 +38,7 @@ export default function Customers({ productId }) {
           setIsLoading(false);
         }
       };
+      const {user} = useSelector((store)=>store.user);
     useEffect(() => {
         fetchReviews(page);
     }, [productId,page]);
@@ -44,12 +46,11 @@ export default function Customers({ productId }) {
     // Submit a new review
     const submitReview = async (e) => {
         e.preventDefault();
-        const token = await getServerCookie('token');
-
-        if (!token) {
+        if (!user) {
             toast.error("Please log in to add review");
             return;
-        }
+          }
+  
 
         if (rating < 1 || rating > 5 || !comment.trim()) {
             toast.error('Please provide a valid rating and comment.');
@@ -57,11 +58,9 @@ export default function Customers({ productId }) {
         }
 
         try {
-            console.log(token)
             const res = await fetch(`/api/products/${productId}/reviews`, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ rating, comment })
@@ -69,7 +68,8 @@ export default function Customers({ productId }) {
             const data = await res.json();
 
             if (res.ok) {
-                setReviews((prev) => [...prev, data.product.reviews[data.product.reviews.length - 1]]);
+                setReviews((prev) => [...prev,{...data?.review,user:{name:user.name}} ]);
+                console.log(data)
                 setRating(0);
                 setComment('');
                 toast.success('Review submitted successfully!');

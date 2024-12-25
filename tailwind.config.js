@@ -12,6 +12,10 @@ module.exports = withMT({
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      backgroundImage: {
+        'mask': "url('/mask.png')",
+        'spark': "url('/spark.png')",
+      }
     },
   },
   plugins: [],

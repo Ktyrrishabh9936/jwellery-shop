@@ -3,6 +3,7 @@ import Product from '@/models/productModel';
 import { connect } from '@/dbConfig/dbConfig';
 
 
+
 // Get all products
 export async function GET() {
   await connect();
