@@ -79,10 +79,7 @@ const products = [
   },
 ];
 
-const categories = [
-  { id: 1, name: "Women", imageUrl: "/images/women-category.png" },
-  { id: 2, name: "Men", imageUrl: "/images/men-category.png" },
-];
+
 
 export default function ProductsCard() {
   const [getProducts,setProducts] = useState(null)
@@ -105,50 +102,10 @@ export default function ProductsCard() {
     }
 
   };
- 
   useEffect(()=>{
-    handleGetProducts();
+    // handleGetProducts();
   },[])
 
-  // const handleAddToCart = async (product) => {
-
-  //   const token = await getServerCookie('token');
-
-  //   // Check if the user is logged in
-  //   if (!token) {
-  //     toast.info("Please log in to add products to your cart!"); 
-  //     return;
-  //   }
-
-  //   setLoadingProductId(product.id);
-
-  //   const productData = {
-  //     productId: product.id,
-  //     img_src: product.imageUrl,
-  //     name: product.name,
-  //     price: product.price,
-  //     quantity: 1,
-  //   };
-
-  //   try {
-  //     console.log(token);
-  //     const response = await axios.post("/api/cart/add", productData, {
-  //       headers: {
-  //         'Authorization': `Bearer ${token}`,
-  //         'Content-Type': 'application/json',
-  //       },
-  //       withCredentials: true,
-  //     });
-      
-  //     console.log("Product added to cart:", response.data);
-  //     toast.success("Product added to cart!");
-  //   } catch (err) {
-  //     console.error("Error adding to cart:", err.response ? err.response.data : err.message);
-  //     toast.error("Failed to add product to cart!");
-  //   } finally {
-  //     setLoadingProductId(null);
-  //   }
-  // };
   const formatPrice = (price) => {
     return price ? `Rs.${parseFloat(price).toFixed(2)}` : "N/A";
   };
@@ -168,11 +125,11 @@ export default function ProductsCard() {
   return (
     <div className="max-w-7xl mx-auto p-2 sm:p-4">
       {/* Top Products Section */}
-      <section className="mb-12">
+      {/* <section className="mb-12">
       {getProducts ? <><h2 className="text-2xl font-bold mt-6">Top Products</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-y-2 md:gap-y-4">
-          { getProducts?.map((product) => (
-            <div
+         { getProducts?.map((product) => (
+            <div 
               key={product._id}
               className="bg-white rounded-lg p-2 md:p-4 shadow-none md:hover:shadow-xl transition-[--tw-shadow] "
             >
@@ -227,10 +184,10 @@ export default function ProductsCard() {
           ))}
         </div>
       </div>}
-      </section>
+      </section> */}
 
       {/* Shop by Category Section */}
-      <section className="mb-12">
+      {/* <section className="mb-12">
         <h2 className="text-2xl font-bold mb-6 text-center">Shop by Category</h2>
         <div className="flex justify-center gap-4 max-w-5xl mx-auto">
           {categories.map((category) => (
@@ -245,13 +202,11 @@ export default function ProductsCard() {
                 alt={category.name}
                 className="object-cover w-full h-full"
               />
-              {/* <div className="absolute bottom-0 w-full text-center bg-black bg-opacity-50 p-2 text-white">
-                {category.name}
-              </div> */}
+              
             </div>
           ))}
         </div>
-      </section>
+      </section> */}
 
       {/* Hot Picks Section */}
       <section className="mb-12">

@@ -8,6 +8,10 @@ images: {
   remotePatterns: [
     {
       protocol: "https",
+      hostname: "jenii.s3.eu-north-1.amazonaws.com",
+    },
+    {
+      protocol: "https",
       hostname: "res.cloudinary.com",
     },
   ],

@@ -3,8 +3,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import axios from "axios";
 import { Button } from "@/MaterialTailwindNext";
-import { toast } from "react-toastify";
-import { getServerCookie } from "@/utils/serverCookie";
+import { toast } from "react-hot-toast";
 import Image from "next/image";
 
 const RelatedProducts = ({ relatedProducts }) => {
@@ -14,9 +13,6 @@ const RelatedProducts = ({ relatedProducts }) => {
       };
     
       const handleAddToCart = async (product) => {
-        const token = await getServerCookie('token');
-    
-        // Check if the user is logged in
         if (!token) {
           toast.info("Please log in to add products to your cart!");
           return;

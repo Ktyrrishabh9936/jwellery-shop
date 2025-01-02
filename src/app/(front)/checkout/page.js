@@ -54,7 +54,7 @@ export default function ShoppingCart() {
                       height={96}
                       width={96}
                       src={item.img_src }
-                      alt={item.name }
+                      alt={item.name}
                       className="w-24 h-24 object-cover mr-4"
                     />
                     <div className="flex-grow">

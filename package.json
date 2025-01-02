@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "start:prod": "next start -p 80",
+    "export": "next build && next export"
   },
   "dependencies": {
     "@h1dd3nsn1p3r/pdf-invoice": "^1.0.8",
@@ -42,6 +44,7 @@
     "react-hot-toast": "^2.4.1",
     "react-icons": "^5.3.0",
     "react-infinite-scroll-component": "^6.1.0",
+    "react-intersection-observer": "^9.14.0",
     "react-multi-carousel": "^2.8.5",
     "react-redux": "^9.1.2",
     "react-toastify": "^10.0.6",

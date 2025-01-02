@@ -7,6 +7,7 @@ import productReducer from "./productReducer"
 import wishListReducer from "./wishlistReducer"
 import cartReducer from "./cartReducer"
 import addressReducer from "./addressReducer"
+import collectionReducer from "./collectionReducer"
 
 const rootReducer = combineReducers({
         categories:categoryReducer,
@@ -15,6 +16,7 @@ const rootReducer = combineReducers({
         wishlist:wishListReducer,
         product:productbyIdReducer,
         filteredProducts:productReducer,
+        collection:collectionReducer,
         cart:cartReducer,
         address:addressReducer,
   })

@@ -369,10 +369,12 @@ const {loadingProductId} = useSelector((state)=>state.cart)
                 </MenuItems>
               </Menu>
 
-              <button type="button" className="-m-2 ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7">
-                <span className="sr-only">View grid</span>
-                <Squares2X2Icon aria-hidden="true" className="size-5" />
-              </button>
+              <button
+                             onClick={resetFilters}
+                             className="text-sm ml-3 font-medium bg-gray-100 border-2 border-gray-500 text-gray-700 py-1.5 px-3 rounded-full shadow-md hover:bg-[rgba(196,30,86,0.2)] hover:text-[rgba(196,30,86,1)] hover:hover:border-[rgba(196,30,86,1)]  transform transition-all hover:scale-105"
+                           >
+                             Clear Filters
+                           </button>
               <button
                 type="button"
                 onClick={() => setMobileFiltersOpen(true)}
@@ -528,7 +530,7 @@ const {loadingProductId} = useSelector((state)=>state.cart)
                          </div>
                          <div>
                            <button
-                             onClick={() => window.location.reload()}
+                             onClick={resetFilters}
                              className="text-lg font-medium bg-blue-500 text-white py-3 px-6 rounded-md shadow-md hover:bg-blue-600 transform transition-all hover:scale-105"
                            >
                              Clear Filters
@@ -562,9 +564,9 @@ const {loadingProductId} = useSelector((state)=>state.cart)
         >
     
     <div className="grid grid-cols-2 md:grid-cols-3  gap-y-2 md:gap-y-4">
-    { filteredProducts.products?.map((product) => (
+    { filteredProducts.products?.map((product,ind) => (
       <div
-        key={product._id}
+        key={ind}
         className="bg-white rounded-lg p-2 md:p-4 shadow-none md:hover:shadow-xl transition-[--tw-shadow] "
       >
         <Link href={`/product/${product._id}`} >
@@ -573,7 +575,7 @@ const {loadingProductId} = useSelector((state)=>state.cart)
           height={300}
           loading="lazy"
           src={product.images[0]}
-          alt={product.name}
+          alt={`product${ind}`}
           className="w-full h-[clamp(14rem,21vw,23rem)] md:h-[clamp(11rem,18vw,20rem)] object-cover rounded-lg "
         />
           <div className="flex justify-between items-center gap-2 mt-2">

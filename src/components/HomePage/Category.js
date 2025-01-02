@@ -30,7 +30,7 @@ export default function ProductCategories() {
 
   return (
     <div className="relative  w-[90%] mx-auto">
-      <div className="w-full md:w-[90%] lg:w-[85%] mx-auto py-4 sm:py-8">
+      <div className="w-full md:w-[90%] lg:w-[85%] mx-auto py-3 sm:py-5">
         <Swiper
           modules={[Navigation]}
           navigation={{
@@ -46,7 +46,7 @@ export default function ProductCategories() {
           {/* Swiper Slides */}
           {!loading
             ? categories?.map((category, ind) => (
-                <SwiperSlide key={ind} className="text-center  hover:bg-red-200 rounded-md">
+                <SwiperSlide key={ind} className="text-center  sm:hover:bg-red-200 rounded-md">
                   <Link className="p-2 sm:p-4 hover:cursor-pointer" href={`/categories/${category?.slug}`}>
                   <Image
                     width={100}

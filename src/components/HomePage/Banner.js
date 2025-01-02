@@ -28,7 +28,7 @@ export default function Banner() {
    }
         return (
                 <>
-     <Carousel className="rounded-xl h-[clamp(8rem,16vw,26rem)] w-[96%] mx-auto" 
+     <Carousel className="rounded-xl h-[clamp(8rem,16vw,26rem)] w-[96%] mx-auto max-w-7xl" 
      autoplay autoplayDelay={10000} loop
      >
       {aboutSlides?.map((item,index)=>  
