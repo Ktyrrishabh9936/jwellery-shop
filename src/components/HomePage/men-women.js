@@ -1,8 +1,8 @@
 import Image from 'next/image';
 import React from 'react'
 const categories = [
-        { id: 1, name: "Women", imageUrl: "/images/women-category.png" },
-        { id: 2, name: "Men", imageUrl: "/images/men-category.png" },
+        { id: 1, name: "Women", imageUrl: "/images/her.png" },
+        { id: 2, name: "Men", imageUrl: "/images/him.png" },
       ];
 export default function MenWomenSection() {
   return (
@@ -16,8 +16,8 @@ export default function MenWomenSection() {
                     className="relative bg-white rounded-lg overflow-hidden  min-w-40 w-1/2 "
                   >
                     <Image
-                      width={133}
-                      height={150}
+                      width={600}
+                      height={400}
                       src={category.imageUrl}
                       alt={category.name}
                       className="object-cover w-full h-full"

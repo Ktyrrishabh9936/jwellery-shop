@@ -48,8 +48,8 @@ export default function NavBar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [imagesInd, setImagesInd] = useState(0);
         return (
-          <>
-             <header className="h-16 hidden lg:block text-[15px]  relative inset-0 z-[15] flex-center bg-white text-[#18181A]  dark:bg:[#18181A] ">
+          <div className="hidden lg:block ">
+             <header className="h-16 text-[15px]  relative inset-0 z-[15] flex-center bg-white text-[#18181A]  dark:bg:[#18181A] ">
         <nav className=" px-3.5 flex-center-between w-full max-w-7xl mx-auto">
         <Menu allowHover open={isMenuOpen} handler={setIsMenuOpen}>
         <MenuHandler>
@@ -66,19 +66,16 @@ export default function NavBar() {
             </MenuItem>
           </Typography>
         </MenuHandler>
-        <MenuList className="hidden w-[36rem] grid-cols-7 gap-3 overflow-visible lg:grid">
-        <Card
-            shadow={false}
-            variant="gradient"
-            className="col-span-3 grid h-full w-full place-items-center rounded-md bg-pink-400"
-          >
-        {imagesInd ? <Image src={navListMenuItems[imagesInd-1].image} height={300} width={200} className="h-30 w-full " alt="men-women"/>:  <Image src="/images/logo_2.png" height={300} width={200} className=" w-full pr-5 " alt="jenii"/>}
-          </Card>
-     
-          <ul className="col-span-4 flex w-full flex-col gap-1">
-            {renderItems}
-          </ul>
-        </MenuList>
+        <MenuList>
+        <MenuItem>Tops (Earrings)</MenuItem>
+        <MenuItem>Rings</MenuItem>
+        <MenuItem>Set (Pendant Sets with Chain)</MenuItem>
+        <MenuItem>Mangalsutra</MenuItem>
+        <MenuItem>Chain (Small Necklace)</MenuItem>
+        <MenuItem>Bracelet + Ring</MenuItem>
+        <MenuItem>Pendant Set + Ring</MenuItem>
+        <MenuItem>Payal</MenuItem>
+      </MenuList>
       </Menu>
 
           <ul className="gap-x-1 lg:flex-center hidden lg:block">
@@ -99,7 +96,7 @@ export default function NavBar() {
               </ul>
             </div>
           </nav> */}
-          </>
+          </div>
         );
       }
       

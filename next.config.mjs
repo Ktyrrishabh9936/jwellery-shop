@@ -12,6 +12,10 @@ images: {
     },
     {
       protocol: "https",
+      hostname: "jenii-storage.s3.ap-south-1.amazonaws.com",
+    },
+    {
+      protocol: "https",
       hostname: "res.cloudinary.com",
     },
   ],

@@ -32,6 +32,37 @@ export const fetchmoretopcollectionProducts = createAsyncThunk(
     }
   }
 );
+export const fetchHotPicks = createAsyncThunk(
+  "products/fetchHotPicks",
+  async ({  page, limit }, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`/api/products/filter?collection=hot-picks&pageNumber=${page}&pageSize=${limit}`);
+      const data = await response.json();
+      console.log(data)
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to fetch products");
+      }
+      return data;
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
+export const fetchMoreHotPicks = createAsyncThunk(
+  "products/fetchMoreHotPicks",
+  async ({  page, limit }, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`/api/products/filter?collection=hot-picks&pageNumber=${page}&pageSize=${limit}`);
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to fetch products");
+      }
+      return data;
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
 
 const collectionSlice = createSlice({
   name: "collection",
@@ -42,6 +73,12 @@ const collectionSlice = createSlice({
     topPicksLoading: false,
     topPicksNextload:false,
     topPickserror: null,
+    hotPicks: [],
+    hotPicksCurrentPage: 1,
+    hotPicksTotalPages: 1,
+    hotPicksLoading: false,
+    hotPicksNextload:false,
+    hotPickserror: null,
   },
 
   extraReducers: (builder) => {
@@ -75,6 +112,35 @@ const collectionSlice = createSlice({
       .addCase(fetchmoretopcollectionProducts.rejected, (state, action) => {
         state.topPicksNextload = false;
         state.topPickserror = action.payload;
+      }).addCase(fetchHotPicks.pending, (state) => {
+        state.hotPicksLoading = true;
+        state.hotPickserror = null;
+      })
+      .addCase(fetchHotPicks.fulfilled, (state, action) => {
+        const { content,currentPage,totalPages} = action.payload;
+        state.hotPicks =content;
+        state.hotPicksCurrentPage =currentPage;
+        state.hotPicksTotalPages =totalPages;
+        state.hotPicksLoading = false;
+      })
+      .addCase(fetchHotPicks.rejected, (state, action) => {
+        state.hotPicksLoading = false;
+        state.hotPickserror = action.payload;
+      })
+      .addCase(fetchMoreHotPicks.pending, (state) => {
+        state.hotPicksNextload = true;
+        state.hotPickserror = null;
+      })
+      .addCase(fetchMoreHotPicks.fulfilled, (state, action) => {
+        const { content,currentPage,totalPages} = action.payload;
+        state.hotPicks = [...state.hotPicks, ...content];
+        state.hotPicksCurrentPage =currentPage;
+        state.hotPicksTotalPages =totalPages;
+        state.hotPicksNextload = false;
+      })
+      .addCase(fetchMoreHotPicks.rejected, (state, action) => {
+        state.hotPicksNextload = false;
+        state.hotPickserror = action.payload;
       });
   },
 });

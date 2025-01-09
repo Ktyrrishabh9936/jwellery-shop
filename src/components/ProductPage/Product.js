@@ -55,6 +55,7 @@ export default function Product({ id }) {
                   setloading(true)
                     const response = await axios.get(`/api/products/${id}`);
                     setProduct(response.data.product);
+                    console.log(response.data.product)
                     setRelatedProducts(response.data.relatedProducts);
                     setloading(false)
                 } catch (error) {
@@ -104,6 +105,13 @@ export default function Product({ id }) {
                     key={`Product${ind}`}
                     className="object-contain w-full h-auto  "
                 />)}
+               
+              {  product?.video &&   <video
+            controls
+            src={product?.video}
+            style={{ maxWidth: '100%'}}
+          />}
+ 
                 </Carousel>
     
             </div>

@@ -23,12 +23,12 @@ export default function MobMenu({ Menus }) {
 
   return (
     <div>
-      <button className="lg:hidden z-[999] relative" onClick={toggleDrawer}>
+      <button className="lg:hidden z-[100] relative" onClick={toggleDrawer}>
         {isOpen ? <X /> : <Menu />}
       </button>
 
       <motion.div
-        className="fixed left-0 right-0 top-0 overflow-y-auto h-screen bg-[#18181A] backdrop-blur text-white p-6 pb-20"
+        className="fixed left-0 right-0 top-0 overflow-y-auto h-screen text-[#18181A] backdrop-blur bg-white p-6 pb-20"
         initial={{ x: "-100%" }}
         animate={{ x: isOpen ? "0%" : "-100%" }}
       >

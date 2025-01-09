@@ -9,6 +9,7 @@ import Testimonials from "@/components/HomePage/Testimonials";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import MenWomenSection from "@/components/HomePage/men-women";
+const HotPicks = dynamic(() => import( "@/components/HomePage/HotPicks"));
 
 // Lazy-loaded components
 const Banner = dynamic(() => import("@/components/HomePage/Banner"));
@@ -60,7 +61,7 @@ export default function HomePage() {
           <Banner />
         </AnimatedSection>
         <AnimatedSection>
-          <ProductsCard />
+          <HotPicks />
         </AnimatedSection>
       </main>
 

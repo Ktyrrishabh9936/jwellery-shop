@@ -59,7 +59,7 @@ export default function Header() {
       <div className="relative mx-auto flex items-center justify-between text-blue-gray-900">
       <div className="lg:hidden">
               <MobMenu Menus={Menus} />
-            </div>
+      </div>
 
         <Typography as="a" href="#" className="mr-4 ml-2 cursor-pointer py-1.5 font-medium">
          <Link href="/"> <Image width={80} height={80} src="/Jenii-Logo.svg" alt="Jenii" /></Link>
@@ -84,7 +84,7 @@ export default function Header() {
           </button>
             <button onClick={()=>{dispatch(setsidebarCart(true)); }} className=' relative cursor-pointer  pr-2 pb-2 pl-1 pt-1 h-max inline-flex items-center shadow-none  text-sm font-medium text-center bg-transparent text-black rounded-full     dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800  hover:text-red-400' >
                 <FiShoppingCart fontSize={25}/>
-                <div class="absolute inline-flex z-40 items-center justify-center w-6 h-6 text-xs font-bold   rounded-full -top-2 -end-2 dark:border-gray-900">{totalItem}</div>
+                <div class="absolute inline-flex  items-center justify-center w-6 h-6 text-xs font-bold   rounded-full -top-2 -end-2 dark:border-gray-900">{totalItem}</div>
                 </button>
          
 

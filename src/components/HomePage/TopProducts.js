@@ -2,9 +2,11 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Swiper, SwiperSlide, useSwiper } from "swiper/react";
 import "swiper/css";
+import "swiper/css/scrollbar";
+import "swiper/css/grid";
 import Link from "next/link";
 import Image from "next/image";
-import { Navigation } from "swiper/modules";
+import { Navigation,Scrollbar,Grid } from "swiper/modules";
 import "swiper/css/navigation";
 import { fetchmoretopcollectionProducts, fetchtopcollectionProducts } from "@/lib/reducers/collectionReducer";
 import { formatPrice } from "@/utils/productDiscount";
@@ -18,7 +20,7 @@ export function CustomNavigation() {
   const swiper = useSwiper();
 
   return (
-    <>
+    <div className=" hidden md:block">
       <IconButton
         size="lg"
         onClick={() => swiper.slidePrev()}
@@ -34,7 +36,7 @@ export function CustomNavigation() {
       >
         <NavArrowRight className="h-7 w-7 translate-x-px stroke-2 text-pink-500  " />
       </IconButton>
-    </>
+    </div>
   );
 }
 const TopProductCarousel = () => {
@@ -66,10 +68,10 @@ const TopProductCarousel = () => {
   };
   const {loadingProductId} = useSelector((state)=>state.cart)
   const breakpoints = {
-    0: { slidesPerView: 2 , slidesPerGroup:2},
+    0: { slidesPerView: "auto" , slidesPerGroup:2},
     540: { slidesPerView: 3, slidesPerGroup: 2},
-    768: { slidesPerView: 4 , slidesPerGroup:2},
-    960: { slidesPerView: 4  , slidesPerGroup:2},
+    768: { slidesPerView: 4 , slidesPerGroup:4},
+    960: { slidesPerView: 4  , slidesPerGroup:4},
   };
 
   return (
@@ -124,14 +126,22 @@ const TopProductCarousel = () => {
       
 
       <Swiper
-        spaceBetween={10}
-        modules={[Navigation]}
+        // spaceBetween={10}
+        modules={[Navigation,Scrollbar,Grid]}
          className=" rounded-lg [&_div.swiper-button-next]:text-background [&_div.swiper-button-prev]:text-background cursor-pointer "
+         direction="horizontal"
+         scrollbar={{ draggable: true }} 
+         spaceBetween={0}
+         grid={{rows: 2, fill: 'row'}}
         onReachEnd={handleFetchMore} // Fetch more products on reaching end
         breakpoints={breakpoints}
+        slidesPerView="auto"   // Automatically adjusts slides per view
+        slidesPerGroupAuto={true} // Automatically adjusts slides per group
+        freeMode={true}        // Allows smooth free scrolling
+        grabCursor={true}      
       >
         {topPicks.map((product) => (
-          <SwiperSlide key={product._id} className="carousel-slide pt-14">
+          <SwiperSlide key={product._id} className="carousel-slide mt-0 md:mt-14 max-w-[200px] md:max-w-none"  >
               <div 
               key={product._id}
               className="bg-white rounded-lg p-2 md:p-4 shadow-none md:hover:shadow-xl hover:bg-gray-100 transition-[--tw-shadow] "
@@ -171,7 +181,7 @@ const TopProductCarousel = () => {
             </div>
           </SwiperSlide>
         ))}
-        <CustomNavigation/>
+        <CustomNavigation />
       </Swiper></> :<div>
         <Skel.Item className="h-8 w-32 bg-gray-200 shimmer mb-4" /> 
 

@@ -28,11 +28,11 @@ export default function Banner() {
    }
         return (
                 <>
-     <Carousel className="rounded-xl h-[clamp(8rem,16vw,26rem)] w-[96%] mx-auto max-w-7xl" 
+     <Carousel className="rounded-xl h-[clamp(8rem,19vw,26rem)] w-[96%] mx-auto max-w-7xl" 
      autoplay autoplayDelay={10000} loop
      >
       {aboutSlides?.map((item,index)=>  
-       {return <Image width={900} height={300} 
+       {return <Image width={900} height={400} 
         loading="lazy"
        key={index}
          src={item.desktopBannerImage}

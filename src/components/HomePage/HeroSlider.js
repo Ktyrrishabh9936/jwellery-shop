@@ -105,7 +105,7 @@ export default function HeroSlider() {
         {heroSlides?.map((item, index) => (
           <SwiperSlide key={index} className="select-none">
         
-             <Image width={900} height={300} 
+             <Image width={2000} height={800} 
           src={item?.desktopBannerImage}
           alt={`Hero ${index}`}
           className="h-full w-full object-cover"

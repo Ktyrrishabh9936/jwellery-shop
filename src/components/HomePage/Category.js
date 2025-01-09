@@ -42,11 +42,13 @@ export default function ProductCategories() {
           slidesPerView={6}
           loop={true}
           className="relative"
+          freeMode={true} // Enables free scrolling like native horizontal scroll
+          grabCursor={true} // Shows a grabbing cursor when interacting
         >
           {/* Swiper Slides */}
           {!loading
             ? categories?.map((category, ind) => (
-                <SwiperSlide key={ind} className="text-center  sm:hover:bg-red-200 rounded-md">
+                <SwiperSlide key={ind} className="text-center group sm:hover:bg-pink-400 sm:hover:text-white rounded-md">
                   <Link className="p-2 sm:p-4 hover:cursor-pointer" href={`/categories/${category?.slug}`}>
                   <Image
                     width={100}
@@ -54,9 +56,9 @@ export default function ProductCategories() {
                     loading="lazy"
                     src={category?.image}
                     alt={category.name}
-                    className="w-[clamp(4rem,6vw,7rem)] h-[clamp(4rem,6vw,7rem)] mx-auto mb-2 rounded-full"
+                    className="w-[clamp(4rem,6vw,7rem)] h-[clamp(4rem,6vw,7rem)] mx-auto mb-2 rounded-full border-2 border-pink-300"
                   />
-                  <h3 className="text-gray-600 capitalize leading-6 transition-colors duration-300">{category?.name}</h3>
+                  <h3 className="text-gray-600 capitalize leading-6 transition-colors duration-300 group-hover:text-white">{category?.name}</h3>
                   </Link>
                 </SwiperSlide>
               ))
