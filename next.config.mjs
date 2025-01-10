@@ -18,6 +18,10 @@ images: {
       protocol: "https",
       hostname: "res.cloudinary.com",
     },
+    {
+      protocol: "https",
+      hostname: "jenii-storage.s3-accelerate.amazonaws.com",
+    },
   ],
 },
         webpack(config) {
