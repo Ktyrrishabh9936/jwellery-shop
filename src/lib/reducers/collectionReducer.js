@@ -23,6 +23,7 @@ export const fetchmoretopcollectionProducts = createAsyncThunk(
     try {
       const response = await fetch(`/api/products/filter?collection=top-products&pageNumber=${page}&pageSize=${limit}`);
       const data = await response.json();
+      console.log(data)
       if (!response.ok) {
         throw new Error(data.message || "Failed to fetch products");
       }
@@ -91,7 +92,6 @@ const collectionSlice = createSlice({
         const { content,currentPage,totalPages} = action.payload;
         state.topPicks =content;
         state.topPicksCurrentPage =currentPage;
-        state.topPicksTotalPages =totalPages;
         state.topPicksLoading = false;
       })
       .addCase(fetchtopcollectionProducts.rejected, (state, action) => {
@@ -106,7 +106,6 @@ const collectionSlice = createSlice({
         const { content,currentPage,totalPages} = action.payload;
         state.topPicks = [...state.topPicks, ...content];
         state.topPicksCurrentPage =currentPage;
-        state.topPicksTotalPages =totalPages;
         state.topPicksNextload = false;
       })
       .addCase(fetchmoretopcollectionProducts.rejected, (state, action) => {
@@ -120,7 +119,6 @@ const collectionSlice = createSlice({
         const { content,currentPage,totalPages} = action.payload;
         state.hotPicks =content;
         state.hotPicksCurrentPage =currentPage;
-        state.hotPicksTotalPages =totalPages;
         state.hotPicksLoading = false;
       })
       .addCase(fetchHotPicks.rejected, (state, action) => {
@@ -135,7 +133,6 @@ const collectionSlice = createSlice({
         const { content,currentPage,totalPages} = action.payload;
         state.hotPicks = [...state.hotPicks, ...content];
         state.hotPicksCurrentPage =currentPage;
-        state.hotPicksTotalPages =totalPages;
         state.hotPicksNextload = false;
       })
       .addCase(fetchMoreHotPicks.rejected, (state, action) => {

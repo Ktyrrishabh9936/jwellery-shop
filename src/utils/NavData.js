@@ -151,10 +151,10 @@ export const Menus = [
 
 
 export const collections = [
-  {name:"Gold with Lab Daimonds",slug:"gold-with-lab"},
-  {name:"Wedding Collection",slug:"wedding-collection"},
-  {name:"Luxury Vault",slug:"luxury-vault"},
-  {name:"Budget Picks",slug:"budget-picks"},
-  {name:"Top Products",slug:"top-products"},
-  {name:"Hot Picks",slug:"hot-picks"},
+  { value: 'gold-with-lab', label: 'Gold with Lab Daimonds'},
+  { value: 'wedding-collection', label: 'Wedding Collection'},
+  { value: 'luxury-vault', label: 'Luxury Vault'},
+  { value: 'budget-picks', label: 'Budget Picks', },
+  { value: 'top-products', label: 'Top Products',},
+  { value: 'hot-picks', label: 'Hot Picks', },
 ]

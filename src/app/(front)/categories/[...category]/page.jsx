@@ -191,7 +191,7 @@ const {loadingProductId} = useSelector((state)=>state.cart)
   };
   useEffect(()=>{
     let parameter = {
-      category:category,
+      category:category.join(','),
       collection:collection||[],
       minPrice,
       maxPrice,
@@ -311,21 +311,6 @@ const {loadingProductId} = useSelector((state)=>state.cart)
       <button type='button' onClick={ResetPrice} className=' bg-gray-500 py-1 px-3 rounded-md hover:text-white hover:bg-red-300' >Reset Price</button>
     </div>
  
-       <h3 className="sr-only">Categories</h3>
-                <ul role="list" className="space-y-4 border-b border-black-600 pb-6 text-sm font-medium text-gray-900">
-                {
-                  loading ? Array(6).fill(0).map((_,ind) => (
-                    <div key={ind} className="h-4 shrink-0  rounded-md bg-gray-200 animate-pulse "></div>
-                  )):categories?.map((cat,ind) => (
-                    <Link href={`/categories/${cat.slug}`} key={ind}><div  className={`  rounded-md capitalize my-2 ${`/categories/${cat.slug}`===pathname?"bg-pink-600 text-white":"hover:bg-[rgba(196,30,86,0.2)]"}`}>
-                      <span  className="block px-3 py-2">
-                        {cat.name}
-                      </span>
-                    </div>
-                    </Link>
-                  ))
-                  }
-                </ul>
               </form>
             </DialogPanel>
           </div>
@@ -333,7 +318,7 @@ const {loadingProductId} = useSelector((state)=>state.cart)
 
         <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex items-baseline justify-between border-b border-gray-200 pb-6 pt-5 sm:pt-12">
-            <h1 className="text-4xl font-bold tracking-tight text-gray-900">New Arrivals</h1>
+            <h1 className="text-3xl font-bold tracking-tight text-gray-900 capitalize">{category.join(" and ")}</h1>
 
             <div className="flex items-center">
               <Menu as="div" className="relative inline-block text-left">
@@ -491,21 +476,7 @@ const {loadingProductId} = useSelector((state)=>state.cart)
       <button type='button' onClick={ResetPrice} className=' bg-gray-500 py-1 px-3 rounded-md hover:text-white hover:bg-red-300' >Reset Price</button>
     </div>
  
-       <h3 className="sr-only">Categories</h3>
-                <ul role="list" className="space-y-4 border-b border-black-600 pb-6 text-sm font-medium text-gray-900">
-                {
-                  loading ? Array(6).fill(0).map((_,ind) => (
-                    <div key={ind} className="h-4 shrink-0  rounded-md bg-gray-200 animate-pulse "></div>
-                  )):categories?.map((cat,ind) => (
-                    <Link href={`/categories/${cat.slug}`} key={ind}><div  className={`  rounded-md capitalize my-2 ${`/categories/${cat.slug}`===pathname?"bg-pink-600 text-white":"hover:bg-[rgba(196,30,86,0.2)]"}`}>
-                      <span  className="block px-3 py-2">
-                        {cat.name}
-                      </span>
-                    </div>
-                    </Link>
-                  ))
-                  }
-                </ul>
+      
               </form>
 
          

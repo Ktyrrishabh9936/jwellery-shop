@@ -2,12 +2,12 @@
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import NavBar from "@/components/HomePage/Navbar";
 import Link from 'next/link';
 import { toast } from 'react-hot-toast'; // Import Toastify components
 import axios from 'axios';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 // Yup validation schema for sign-up
 const signupSchema = yup.object().shape({
@@ -56,12 +56,13 @@ export default function SignUp() {
   };
 
   return (
-    <div className="bg-[url('/spark.png')] bg-white">
-      <NavBar />
+    <>
+ 
 
-      {/* <div className="flex justify-center items-center min-h-[100vh] py-0 sm:py-10 bg-gray-100">
+      <div className="flex justify-center items-center min-h-[100vh] py-0 sm:py-10 bg-gray-100">
         <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
           <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">Sign Up</h2>
+          <Link href="/"> <Image width={80} height={80} src="/Jenii-Logo.svg" alt="Jenii" className=' mx-auto' /></Link>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="mb-4">
               <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
@@ -136,103 +137,7 @@ export default function SignUp() {
           </form>
               {error && <p  className="text-red-500 text-sm text-center">{error}</p>}
         </div>
-      </div> */}
-
-    <div className="flex items-center justify-center min-h-screen  bg-[url('/mask.png')]">
-      <div className="w-full max-w-md p-8 space-y-6 bg-white shadow-md rounded-md">
-        <h2 className="text-2xl font-bold text-center text-gray-800">Create new account</h2>
-        <p className="text-center text-gray-600">
-          Already have an account? <a href="/login" className="text-pink-500 hover:underline">Log in</a>
-        </p>
-        <button
-          type="button"
-          className="flex items-center justify-center w-full px-4 py-2 space-x-2 text-sm font-medium text-gray-600 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200"
-        >
-          <img src="/google-icon.svg" alt="Google" className="w-5 h-5" />
-          <span>Sign up with Google</span>
-        </button>
-
-        <form className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block mb-1 text-sm font-medium text-gray-700">Full Name</label>
-              <input
-                type="text"
-                placeholder="Enter Your Name"
-                className="w-full px-3 py-2 text-gray-700 bg-gray-100 border border-gray-300 rounded-md focus:ring-pink-500 focus:border-pink-500"
-              />
-            </div>
-            <div>
-              <label className="block mb-1 text-sm font-medium text-gray-700">Email</label>
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="w-full px-3 py-2 text-gray-700 bg-gray-100 border border-gray-300 rounded-md focus:ring-pink-500 focus:border-pink-500"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="block mb-1 text-sm font-medium text-gray-700">Phone Number</label>
-            <input
-              type="tel"
-              placeholder="Enter Your Number"
-              className="w-full px-3 py-2 text-gray-700 bg-gray-100 border border-gray-300 rounded-md focus:ring-pink-500 focus:border-pink-500"
-            />
-          </div>
-
-          <div>
-            <label className="block mb-1 text-sm font-medium text-gray-700">Username</label>
-            <input
-              type="text"
-              placeholder="Enter Username"
-              className="w-full px-3 py-2 text-gray-700 bg-gray-100 border border-gray-300 rounded-md focus:ring-pink-500 focus:border-pink-500"
-            />
-          </div>
-
-          <div>
-            <label className="block mb-1 text-sm font-medium text-gray-700">Password</label>
-            <div className="relative">
-              <input
-                type="password"
-                placeholder="Password"
-                className="w-full px-3 py-2 text-gray-700 bg-gray-100 border border-gray-300 rounded-md focus:ring-pink-500 focus:border-pink-500"
-              />
-              <button
-                type="button"
-                className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-600"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12h3m0 0h-3m0 0a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-              </button>
-            </div>
-          </div>
-
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              id="terms"
-              className="w-4 h-4 text-pink-500 border-gray-300 rounded focus:ring-pink-500"
-            />
-            <label htmlFor="terms" className="ml-2 text-sm text-gray-700">
-              I agree with <a href="/terms" className="text-pink-500 hover:underline">Terms and Conditions</a>
-            </label>
-          </div>
-
-          <button
-            type="submit"
-            className="w-full px-4 py-2 text-white bg-pink-500 rounded-md hover:bg-pink-600"
-          >
-            Sign Up
-          </button>
-        </form>
-
-        <p className="text-sm text-center text-gray-500">
-          Get trouble signing up? <a href="/contact" className="text-pink-500 hover:underline">Contact us</a>
-        </p>
       </div>
-    </div>
-    </div>
+    </>
   );
 }

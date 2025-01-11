@@ -22,6 +22,7 @@ import { IconButton } from "@material-tailwind/react";
 import { NavArrowRight, NavArrowLeft } from "iconoir-react";
 
 import { Swiper, SwiperSlide, useSwiper } from "swiper/react";
+import Link from "next/link";
  export function CustomNavigation() {
   const swiper = useSwiper();
 
@@ -105,11 +106,11 @@ export default function HeroSlider() {
         {heroSlides?.map((item, index) => (
           <SwiperSlide key={index} className="select-none">
         
-             <Image width={2000} height={800} 
+           <Link href={item?.links}>  <Image width={2000} height={800} 
           src={item?.desktopBannerImage}
           alt={`Hero ${index}`}
           className="h-full w-full object-cover"
-        />
+        /></Link>
           </SwiperSlide>
         ))}
 

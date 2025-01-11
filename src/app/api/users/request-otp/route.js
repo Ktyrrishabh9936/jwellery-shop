@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 import User from '@/models/userModel';
 import { connect } from '@/dbConfig/dbConfig';
 import { sendEmail } from '@/helper/sendEmail';
-import { NotFoundError } from '@/lib/errors';
 
 function generateOTP() {
 
@@ -16,7 +15,7 @@ export async function POST(request) {
     const user = await User.findOne({ email });
 
     if (!user) {
-      throw new NotFoundError('User not found');
+      return NextResponse.json({ message: 'User not found' });
     }
 
     // Generate OTP and set expiry time (10 minutes from now)

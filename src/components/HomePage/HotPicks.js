@@ -14,14 +14,12 @@ import ProductGridLoader from "../Loaders/ProductGridLoader";
  function Star({rating,size='clamp(1rem,1.3vw,3rem)' ,color='#fe6161'}) {
   const ratingfunc = Array.from({length:5},(elem,index)=>{
           const number = rating+0.5;
-           return(rating >= index+1 ? <TiStarFullOutline   style={{fontSize:size,color}} /> : number >= index+1 ? <TiStarHalfOutline htmlColor={color} style={{fontSize:size,color}}/> : <TiStarOutline htmlColor={color}  style={{fontSize:size,color}}/>)
+           return(rating >= index+1 ? <TiStarFullOutline   style={{fontSize:size,color}} /> : number >= index+1 ? <TiStarHalfOutline style={{fontSize:size,color}}/> : <TiStarOutline   style={{fontSize:size,color}}/>)
 })
 return (
-<>
 <div className="flex flex-row ">
   {ratingfunc}
 </div>
-</>
 )
 }
 const HotPicks = () => {

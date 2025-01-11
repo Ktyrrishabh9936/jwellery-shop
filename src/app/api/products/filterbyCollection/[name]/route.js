@@ -11,9 +11,10 @@ import Category from '@/models/category';
 //                 query = query.where('quantity').gt(1)
 //         }
 // }
-export async function GET(req) {
+export async function GET(req,{ params }) {
   await connect();
   const { searchParams } = new URL(req.url); 
+  const { name } =  await params;
   const pageNumber = searchParams.get('page')||1;
   const pageSize = searchParams.get('pageSize')||10;
   const sort = searchParams.get('sort');
@@ -23,7 +24,7 @@ export async function GET(req) {
   const category = searchParams.get("category");
   const gender = searchParams.get("gender");
   try {
-      let query = Product.find().populate('category.id');
+      let query = Product.find({ collectionName: { $in: [name] } }).populate('category.id');
       if(category){
         const categorySet =category.split(',');
         console.log(categorySet)
@@ -37,7 +38,7 @@ export async function GET(req) {
       if(collection){
         const collectionSet =collection.split(',');
         console.log(collectionSet)
-        query = query.where('collectionName').in(collectionSet)
+        query = query.where('collectionName').in([...collectionSet,name])
 }
       if( maxPrice){
               query = query.where('discountPrice').gt(minPrice||0).lt(maxPrice);

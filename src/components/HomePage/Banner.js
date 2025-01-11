@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { getAboutSlides, getHeroSlides } from "@/lib/reducers/slidesReducer";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
+import Link from "next/link";
 export default function Banner() {
   const dispatch = useAppDispatch();
 
@@ -27,22 +28,21 @@ export default function Banner() {
     return <div className="mx-auto h-[clamp(8rem,16vw,26rem)] w-[96%] bg-gray-200 shimmer rounded-xl" />
    }
         return (
-                <>
+
      <Carousel className="rounded-xl h-[clamp(8rem,19vw,26rem)] w-[96%] mx-auto max-w-7xl" 
      autoplay autoplayDelay={10000} loop
      >
       {aboutSlides?.map((item,index)=>  
-       {return <Image width={900} height={400} 
+       {return <Link href={item?.links}>  <Image width={900} height={400} 
         loading="lazy"
        key={index}
          src={item.desktopBannerImage}
          alt={`Banner ${index}`}
          className="h-full w-full object-cover"
-       />})}
-
+       /> </Link>
+       })}
+       
      </Carousel>
-
-          </>
         );
       }
       
