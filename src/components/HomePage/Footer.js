@@ -10,7 +10,7 @@ const Footer = () => {
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
-  
+  const catgo = [ {link:"/categories/rings",name:"Ring"},{link:"/categories/necklace",name:"Necklace"}, {link:"/categories/anklet",name:"Anklet"}, {link:"/categories/bangle",name:"Bangle"}]
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -60,10 +60,21 @@ const Footer = () => {
 
             {/* Footer Cards */}
             <div>
-              <FooterCard
-                title={"Our Collection"}
-                items={["Ring", "Necklace", "Pendants", "Bracelet", "Anklets"]}
-              />
+            <div className="mt-9">
+      <h3 className="text-2xl font-bold text-black mb-2">Our Collection</h3>
+      <div className="text-md text-[#2A2A2A] mt-2">
+        {catgo.map((item, index) => (
+          <Link
+            key={index}
+            href={item.link}
+            className="hover:underline"
+          >
+            {item.name}
+            {index < catgo.length - 1 && " | "}
+          </Link>
+        ))}
+      </div>
+    </div>
               <FooterCard
                 title={"Shop by Occasion"}
                 items={["Anniversary", "Engagement", "Proposal", "Wedding", "Festivals"]}

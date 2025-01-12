@@ -23,6 +23,7 @@ import { NavArrowRight, NavArrowLeft } from "iconoir-react";
 
 import { Swiper, SwiperSlide, useSwiper } from "swiper/react";
 import Link from "next/link";
+import { useMediaQuery } from 'react-responsive';
  export function CustomNavigation() {
   const swiper = useSwiper();
 
@@ -52,8 +53,7 @@ function customPagination(_, className) {
  
 export default function HeroSlider() {
   const dispatch = useAppDispatch();
- 
-
+  const isSmallScreen = useMediaQuery({ maxWidth: 768 });
   const {heroSlides,heroloading,isherofetched,heroFetcherror}= useAppSelector((state)=>state.slides)
   useEffect(()=>{
     const handleGetSlides = async () => {
@@ -107,7 +107,7 @@ export default function HeroSlider() {
           <SwiperSlide key={index} className="select-none">
         
            <Link href={item?.links}>  <Image width={2000} height={800} 
-          src={item?.desktopBannerImage}
+          src={isSmallScreen ? item?.desktopBannerImage :item?.desktopBannerImage}
           alt={`Hero ${index}`}
           className="h-full w-full object-cover"
         /></Link>

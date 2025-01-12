@@ -8,8 +8,10 @@ export default function ForgotPassword() {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
+  const [loading, setLoading] = useState('');
 
   const handleSubmit = async (e) => {
+    setLoading(true);
     e.preventDefault();
     if (!email) {
       setError('Email/Number is required.');
@@ -19,12 +21,15 @@ export default function ForgotPassword() {
         const response = await axios.post('/api/users/request-otp', { email });
         if (response.data.message) {
           toast.success(response.data.message); 
+          setLoading(false);
+          localStorage.setItem('userEmail',email)
           router.push('/verify-otp');
 
         }
       } catch (error) {
         console.error('Error sending OTP:', error);
         setError('Failed to send OTP.');
+        setLoading(false);
         toast.error('Failed to send OTP. Please try again.'); 
       }
     }
@@ -46,9 +51,19 @@ export default function ForgotPassword() {
             />
             {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
           </div>
-          <button type="submit" className="w-full bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-700 transition-colors">
-            Generate OTP
-          </button>
+          {loading? <button type="button" className="bg-[#fe6161]  h-max w-max rounded-lg text-white font-bold  hover:cursor-not-allowed duration-[500ms,800ms]" disabled>
+              <div className="flex gap-1 items-center justify-center m-[10px]"> 
+            <div className="h-5 w-5 border-t-transparent border-solid animate-spin rounded-full border-white border-4"></div>
+            Processing...
+        </div>
+            
+</button>: <button
+                type="submit"
+                className="px-4 py-2 bg-[#BC264B] text-white rounded-md hover:bg-red-700 transition-colors"
+              >
+                Generate OTP
+              </button>}
+      
         </form>
       </div>
     </div>

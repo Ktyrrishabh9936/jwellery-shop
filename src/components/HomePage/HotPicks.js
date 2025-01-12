@@ -35,16 +35,16 @@ const HotPicks = () => {
 
   useEffect(() => {
     if (hotPicksCurrentPage <= 1) {
-      dispatch(fetchHotPicks({ page: 1, limit: 10 }));
+      dispatch(fetchHotPicks({ page: 1, limit: 8 }));
     }
   }, []);
 
   const fetchMoreData = () => {
     if (hotPicksCurrentPage < hotPicksTotalPages && !hotPicksLoading) {
-      dispatch(fetchMoreHotPicks({ page: hotPicksCurrentPage + 1, limit: 10 }));
+      dispatch(fetchMoreHotPicks({ page: hotPicksCurrentPage + 1, limit: 8 }));
     }
   };
-
+  const { loadingProductId } = useSelector((state) => state.cart);
   const handleAddToCart = async (product) => {
     if (!user) {
       toast.error("Please log in to add products to your cart!");
@@ -53,7 +53,7 @@ const HotPicks = () => {
     dispatch(addToCart({ productId: product._id, quantity: 1 }));
   };
 
-  const { loadingProductId } = useSelector((state) => state.cart);
+ 
 
   return (
     <section className="max-w-7xl mx-auto p-2 sm:p-4 mb-8 pb-4">
@@ -63,10 +63,18 @@ const HotPicks = () => {
           dataLength={hotPicks.length}
           next={fetchMoreData}
           hasMore={hotPicksCurrentPage < hotPicksTotalPages}
-          loader={<ProductGridLoader/>}
-          endMessage={
-            <p className="text-center text-gray-500 mt-4">You have seen all the products!</p>
-          }
+          loader={ Array(8).fill(0).map((_, index) => (
+            <div key={index} className="space-y-4">
+              <Skel.Item className="w-full h-56 bg-gray-200 shimmer rounded-lg" /> 
+              <div className="flex justify-between" >
+              <Skel.Item className="h-3 w-24 bg-gray-200 shimmer" /> 
+              <Skel.Item className="h-3 w-10 bg-gray-200 shimmer" /> 
+              </div>
+              <Skel.Item className="h-4 w-32 bg-gray-200 shimmer" />
+              <Skel.Item className="h-8 w-full rounded-md bg-gray-200 shimmer" />
+            </div>
+          ))}
+          
           className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-1 sm:gap-2 md:gap-3 mt-4"
         >
           {hotPicks.map((product) => (

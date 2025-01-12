@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 export default function DesktopMenu({ menu }) {
   const [isHover, toggleHover] = useState(false);
@@ -70,7 +71,7 @@ export default function DesktopMenu({ menu }) {
                       {menu?.subMenuHeading?.[i]}
                     </p>
                   )}
-                  <div className="flex-center gap-x-4 p-2 rounded-lg group/menubox hover:bg-pink-500 hover:text-white">
+                  <Link href={submenu?.link || "/"} className="flex-center gap-x-4 p-2 rounded-lg group/menubox hover:bg-pink-500 hover:text-white">
                     <div className="bg-white/5 w-fit p-2 rounded-md group-hover/menubox:bg-white group-hover/menubox:text-gray-900 duration-300">
                       {submenu.icon && <submenu.icon />}
                     </div>
@@ -78,7 +79,7 @@ export default function DesktopMenu({ menu }) {
                       <h6 className="font-semibold">{submenu.name}</h6>
                       <p className="text-sm text-gray-400">{submenu.desc}</p>
                     </div>
-                  </div>
+                  </Link>
                 </div>
               ))}
           </div>

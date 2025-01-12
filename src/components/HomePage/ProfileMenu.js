@@ -6,33 +6,22 @@ import { toast } from 'react-toastify';
 import { FaUserCircle } from 'react-icons/fa';
 import Image from 'next/image';
 import { signOut } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 
 
 function ProfileMenu({user}) {
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-
+    const navigate = useRouter()
     const closeMenu = () => setIsMenuOpen(false);
     const profileMenuItems = [
+  
         {
-            label: "My Profile",
-            icon: UserCircleIcon,
-            onClickNavItem:()=>{closeMenu()},
-        },
-        {
-            label: "Edit Profile",
-            icon: Cog6ToothIcon,
-            onClickNavItem:()=>{closeMenu()},
-        },
-        {
-            label: "Inbox",
+            label: "My Orders",
             icon: InboxArrowDownIcon,
-            onClickNavItem:()=>{closeMenu()},
-        },
-        {
-            label: "Help",
-            icon: LifebuoyIcon,
-            onClickNavItem:()=>{closeMenu()},
+            onClickNavItem:()=>{
+                navigate.push('/myorders');
+                closeMenu()},
         },
         {
             label: "Sign Out",

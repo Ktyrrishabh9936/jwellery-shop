@@ -7,10 +7,12 @@ import { toast } from 'react-toastify';
 export default function VerifyOtp() {
   const [otp, setOtp] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState('');
   const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     if (!otp) {
       setError('OTP is required.');
     } else {
@@ -20,16 +22,16 @@ export default function VerifyOtp() {
 
       try {
         const response = await axios.post('/api/users/verify-otp', { email, otp });
-        
         toast.success(response.data.message); 
 
         localStorage.setItem('userId', response.data.userId);
-
+        setLoading(false);
         router.push('/update-password');
       } catch (error) {
         console.error('Error verifying OTP:', error);
         setError('Failed to verify OTP.');
         toast.error('Failed to verify OTP. Please try again.'); 
+        setLoading(false);
       }
     }
   };
@@ -50,9 +52,19 @@ export default function VerifyOtp() {
             />
             {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
           </div>
-          <button type="submit" className="w-full bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-700 transition-colors">
-            Verify OTP
-          </button>
+          {loading? <button type="button" className="bg-[#fe6161]  h-max w-max rounded-lg text-white font-bold  hover:cursor-not-allowed duration-[500ms,800ms]" disabled>
+              <div className="flex gap-1 items-center justify-center m-[10px]"> 
+            <div className="h-5 w-5 border-t-transparent border-solid animate-spin rounded-full border-white border-4"></div>
+            Processing...
+        </div>
+            
+</button>: <button
+                type="submit"
+                className="px-4 py-2 bg-[#BC264B] text-white rounded-md hover:bg-red-700 transition-colors"
+              >
+               Verify OTP
+              </button>}
+       
         </form>
       </div>
     </div>

@@ -15,6 +15,8 @@ export async function POST(request) {
       otpExpires: { $gt: Date.now() }, // Check if OTP is still valid
     });
 
+    console.log(user)
+
     // Check if user exists and OTP is valid
     if (!user) {
       return NextResponse.json(

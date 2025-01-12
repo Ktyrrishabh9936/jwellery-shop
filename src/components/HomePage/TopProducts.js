@@ -18,7 +18,7 @@ import { NavArrowLeft, NavArrowRight } from "iconoir-react";
 
 export function CustomNavigation() {
   const swiper = useSwiper();
-
+  const {topPicksNextload} = useSelector((state) => state.collection);
   return (
     <div className=" hidden md:block">
       <IconButton
@@ -29,13 +29,20 @@ export function CustomNavigation() {
         <NavArrowLeft className="h-7 w-7 -translate-x-0.5 stroke-2 text-pink-500" />
       </IconButton>
 
-      <IconButton
+      {
+        topPicksNextload?<IconButton
+        size="lg"
+        className=" !absolute right-2 top-7 z-10 border-2 border-pink-500  -translate-y-1/2 bg-transparent shadow-none rounded-full bg-white"
+      >
+        <div className="h-5 w-5 border-t-transparent border-solid animate-spin rounded-full border-pink-700 border-4"></div>
+      </IconButton>
+        :<IconButton
         size="lg"
         onClick={() => swiper.slideNext()}
         className=" !absolute right-2 top-7 z-10 border-2 border-pink-500  -translate-y-1/2 bg-transparent shadow-none rounded-full bg-white"
       >
         <NavArrowRight className="h-7 w-7 translate-x-px stroke-2 text-pink-500  " />
-      </IconButton>
+      </IconButton>}
     </div>
   );
 }
@@ -43,11 +50,11 @@ const TopProductCarousel = () => {
    const {user} = useSelector((store)=>store.user);
   
   const dispatch = useDispatch();
-  const {  topPicks, topPicksCurrentPage, topPicksTotalPages,topPicksLoading,topPicksNextload} = useSelector((state) => state.collection);
+  const {  topPicks, topPicksCurrentPage, topPicksTotalPages,topPicksLoading} = useSelector((state) => state.collection);
 
   useEffect(() => {
     if(topPicksCurrentPage <= 1){
-    dispatch(fetchtopcollectionProducts({page: 1, limit: 10 }));
+    dispatch(fetchtopcollectionProducts({page: 1, limit: 8 }));
     }
   }, []);
 

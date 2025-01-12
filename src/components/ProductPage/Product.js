@@ -25,6 +25,7 @@ import {
   Typography,
   Card,
 } from "@/MaterialTailwindNext";
+import { NavArrowLeft, NavArrowRight } from "iconoir-react";
 import { addToCart } from "@/lib/reducers/cartReducer";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
@@ -78,9 +79,26 @@ export default function Product({ id }) {
 
             <Carousel
             className="rounded-xl w-full  max-w-[500px] lg:max-w-none pb-16 mx-auto object-cover"
-
+            prevArrow={({ handlePrev }) => (
+              <IconButton
+                size="lg"
+                onClick={handlePrev}
+                className="!absolute left-2 top-1/2 z-10 -translate-y-1/2 bg-white shadow-none border-2 border-pink-500 rounded-full"
+              >
+                <NavArrowLeft className="h-7 w-7 stroke-2 text-pink-500" />
+              </IconButton>
+            )}
+            nextArrow={({ handleNext }) => (
+              <IconButton
+                size="lg"
+                onClick={handleNext}
+                className="!absolute right-2 top-1/2 z-10 -translate-y-1/2 bg-white shadow-none border-2 border-pink-500 rounded-full"
+              >
+                <NavArrowRight className="h-7 w-7 stroke-2 text-pink-500" />
+              </IconButton>
+            )}
             navigation={({ setActiveIndex, activeIndex }) => (
-                <div  className="absolute bottom-0 left-2/4 z-50 flex -translate-x-2/4 gap-2">
+                <div  className="absolute bottom-0 left-[45%] z-50 flex -translate-x-2/4 gap-2">
                 {product?.images?.map((img, i) => (
                     <Image
                     width={1000}
@@ -94,6 +112,17 @@ export default function Product({ id }) {
                     onClick={() => setActiveIndex(i)}
                     />
                 ))}
+                   <Image
+                    width={1000}
+                    height={1000}
+                    src="/Video-icon.png"
+                    key={`productDetails `}
+                    alt={`productDetails vedio`}
+                    className={`block my-auto cursor-pointer rounded-2xl transition-all content-[''] border-2  ${
+                        activeIndex === product?.images?.length ? "w-16 h-16  bg-white border-pink-300" : "w-10 h-10 bg-white/50 border-blue-gray-100"
+                    }`}
+                    onClick={() => setActiveIndex(product?.images?.length)}
+                    />
                 </div>
             )}
            >
@@ -115,7 +144,7 @@ export default function Product({ id }) {
                 </Carousel>
     
             </div>
-                <Button
+                {/* <Button
             size="sm"
             variant="outlined"
             color="blue-gray"
@@ -123,12 +152,12 @@ export default function Product({ id }) {
             onClick={handleOpen}
           >
            Full View
-          </Button>
+          </Button> */}
             <>
      
      
      
-       <Dialog size="xl" open={open} handler={handleOpen}>
+       {/* <Dialog size="xl" open={open} handler={handleOpen}>
         <DialogHeader className="justify-between">
           <div className="flex items-center gap-3">
           
@@ -175,7 +204,8 @@ export default function Product({ id }) {
             className="h-[70vh] rounded-xl w-[500px]  md:w-full  max-w-[500px] md:max-w-none pb-16"
             navigation={({ setActiveIndex, activeIndex }) => (
                 <div className="">
-                {product?.images?.map((img, i) => (
+                {
+                product?.images?.map((img, i) => (
                     <Image
                     width={1000}
                     height={1000}
@@ -187,7 +217,21 @@ export default function Product({ id }) {
                     }`}
                     onClick={() => setActiveIndex(i)}
                     />
-                ))}
+                )
+              )
+              
+                }
+                <Image
+                    width={1000}
+                    height={1000}
+                    src="Video-icon.png"
+                    key={`productDetails `}
+                    alt={`productDetails vedio`}
+                    className={`block my-auto cursor-pointer rounded-2xl transition-all content-[''] border-2  ${
+                        activeIndex === product?.images?.length-1 ? "w-16 h-16  bg-white border-pink-300" : "w-10 h-10 bg-white/50 border-blue-gray-100"
+                    }`}
+                    onClick={() => setActiveIndex(product?.images?.length-1)}
+                    />
                 </div>
             )}
             >
@@ -205,7 +249,7 @@ export default function Product({ id }) {
        
           
         </DialogFooter>
-      </Dialog>
+      </Dialog> */}
     </>
 
         </div>
@@ -288,8 +332,15 @@ function ProductInfo({info,productId}) {
     const currentUrl = typeof window !== 'undefined' 
     ? `${window.location.origin}${pathname}` 
     : '';
-
-
+const {user} = useSelector((store)=>store.user);
+    const handleAddToCart = async (product) => {
+      if (!user) {
+        toast.error("Please log in to add products to your cart!");
+        return;
+      }
+      dispatch(addToCart({ productId: product._id, quantity: 1 }));
+    };
+  
     const onSubmit  = async (data) => {
       const code = data.pincode;
       try {
@@ -362,12 +413,12 @@ function ProductInfo({info,productId}) {
             <div className="bg-[#F6F6F6] p-3 rounded-md" dangerouslySetInnerHTML={{__html:info?.description}}>
                
             </div>
-            <div className="mt-4">
+            {/* <div className="mt-4">
                 <button className="text-[#BC264B] text-sm mx-3 underline">See the Offers</button>
-            </div>
+            </div> */}
         </div>
             <ProductFeatures />
-            <form onSubmit={handleSubmit(onSubmit)} className="mt-6">
+            <form onSubmit={handleSubmit(onSubmit)} className="mt-6 ml-2">
       <p className="mb-2 text-xl font-semibold">Check our Pincode</p>
       <input
         type="text"
@@ -383,13 +434,14 @@ function ProductInfo({info,productId}) {
           <div className="h-5 w-5  border-t-transparent border-solid animate-spin rounded-full border-red-500 border-4 mx-3"></div>
         ) : (
           <button
-            className="text-[#BC264B] text-sm underline"
+            className="text-[#BC264B]  text-sm underline"
             type="submit"
           >
             Check
           </button>
         )}
       </div>
+      </form>
 
       {/* Error Message */}
       {errors.pincode ? (
@@ -405,13 +457,13 @@ function ProductInfo({info,productId}) {
         </p>
       )}
 
-{loadingProductId === productId ?<button className=" border-[1px] border-[#f76664] hover:bg-[#f76664] text-black font-semibold p-2 rounded w-full m-2" disabled>
+{loadingProductId === productId ?<button className="ml-3 border-[1px] max-w-2xl border-[#f76664] hover:bg-[#f76664] text-black font-semibold p-2 rounded w-full my-2" disabled>
                     Adding...
                 </button>:
-                <button className=" border-[1px] bg-[#F8C0BF] hover:bg-[#f76664] text-black font-semibold p-2 rounded w-full m-2" onClick={()=>dispatch(addToCart({productId:productId,quantity:1}))}>
+                <button className=" ml-3 border-[1px] bg-[#F8C0BF] hover:bg-[#f76664] text-black max-w-2xl  font-semibold p-2 rounded w-full my-2" onClick={()=>handleAddToCart({_id:productId})}>
                     Add to Cart
                 </button>}
-    </form>
+    
         </div>
     );
 }

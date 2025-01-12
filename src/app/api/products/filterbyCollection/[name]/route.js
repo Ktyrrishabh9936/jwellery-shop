@@ -15,7 +15,7 @@ export async function GET(req,{ params }) {
   await connect();
   const { searchParams } = new URL(req.url); 
   const { name } =  await params;
-  const pageNumber = searchParams.get('page')||1;
+  const pageNumber = searchParams.get('pageNumber')||1;
   const pageSize = searchParams.get('pageSize')||10;
   const sort = searchParams.get('sort');
   const minPrice = searchParams.get('minPrice');

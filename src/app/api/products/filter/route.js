@@ -14,7 +14,7 @@ import Category from '@/models/category';
 export async function GET(req) {
   await connect();
   const { searchParams } = new URL(req.url); 
-  const pageNumber = searchParams.get('page')||1;
+  const pageNumber = Number(searchParams.get('pageNumber'))||1;
   const pageSize = searchParams.get('pageSize')||10;
   const sort = searchParams.get('sort');
   const minPrice = searchParams.get('minPrice');
@@ -22,8 +22,9 @@ export async function GET(req) {
   const collection = searchParams.get('collection');
   const category = searchParams.get("category");
   const gender = searchParams.get("gender");
+  console.log(pageNumber)
   try {
-      let query = Product.find().populate('category.id');
+      let query = Product.find();
       if(category){
         const categorySet =category.split(',');
         console.log(categorySet)

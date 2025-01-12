@@ -5,6 +5,7 @@ const nextConfig = {
     ignoreDuringBuilds: true,
 },
 images: {
+  unoptimized: true,
   remotePatterns: [
     {
       protocol: "https",
@@ -19,8 +20,14 @@ images: {
       hostname: "res.cloudinary.com",
     },
     {
-      protocol: "https",
-      hostname: "jenii-storage.s3-accelerate.amazonaws.com",
+      protocol: 'https',
+      hostname: 'jenii-storage.s3-accelerate.amazonaws.com',
+      pathname: '/products/**',
+    },
+    {
+      protocol: 'https',
+      hostname: 'jenii-storage.s3-accelerate.amazonaws.com',
+      pathname: '/category/**',
     },
   ],
 },

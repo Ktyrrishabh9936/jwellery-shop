@@ -93,6 +93,7 @@ const collectionSlice = createSlice({
         state.topPicks =content;
         state.topPicksCurrentPage =currentPage;
         state.topPicksLoading = false;
+        state.topPicksTotalPages = totalPages;
       })
       .addCase(fetchtopcollectionProducts.rejected, (state, action) => {
         state.topPicksLoading = false;
@@ -107,6 +108,7 @@ const collectionSlice = createSlice({
         state.topPicks = [...state.topPicks, ...content];
         state.topPicksCurrentPage =currentPage;
         state.topPicksNextload = false;
+        state.topPicksTotalPages = totalPages;
       })
       .addCase(fetchmoretopcollectionProducts.rejected, (state, action) => {
         state.topPicksNextload = false;
@@ -120,6 +122,7 @@ const collectionSlice = createSlice({
         state.hotPicks =content;
         state.hotPicksCurrentPage =currentPage;
         state.hotPicksLoading = false;
+        state.hotPicksTotalPages = totalPages;
       })
       .addCase(fetchHotPicks.rejected, (state, action) => {
         state.hotPicksLoading = false;
@@ -134,6 +137,7 @@ const collectionSlice = createSlice({
         state.hotPicks = [...state.hotPicks, ...content];
         state.hotPicksCurrentPage =currentPage;
         state.hotPicksNextload = false;
+        state.hotPicksTotalPages = totalPages;
       })
       .addCase(fetchMoreHotPicks.rejected, (state, action) => {
         state.hotPicksNextload = false;

@@ -20,133 +20,107 @@ import { PanelTop } from "lucide-react";
 
 export const Menus = [
   {
-    name: "Features",
-    subMenuHeading: ["Design", "Scale"],
+    name: "By Collection",
+    subMenuHeading: ["silver", "gold"],
     subMenu: [
       {
-        name: "Design",
-        desc: "Responsive design",
+        name: "Rings",
+        desc: "Blue cut Rings",
         icon: PanelsTopLeft,
+        link:"/categories/rings"
       },
       {
-        name: "Management",
-        desc: "Site control",
+        name: "Anklets",
+        desc: "payal",
         icon: Bolt,
+         link:"/categories/anklets"
       },
       {
-        name: "Navigation",
-        desc: "Link pages",
+        name: "Tops",
+        desc: "ear wear",
         icon: PanelTop,
+         link:"/categories/tops"
       },
       {
-        name: "CMS",
-        desc: "Management content",
+        name: "Bangles",
+        desc: "hand wear",
         icon: Database,
+         link:"/categories/bangles"
       },
     ],
     gridCols: 2,
   },
   {
-    name: "Resources",
-    subMenuHeading: ["Get started", "Programs", "Recent"],
+    name: "By Relation",
+    subMenuHeading: ["Love", "Wealthy", "Recent"],
     subMenu: [
       {
-        name: "Markplace",
-        desc: "Browse templates",
+        name: "For Mother",
+        desc: "love",
         icon: ShoppingBag,
+         link:"/collections/for-mother"
       },
       {
-        name: "Meetups",
-        desc: "Upcoming events",
+        name: "For Girlfriend",
+        desc: "love",
         icon: MapPin,
+         link:"/collections/for-girlfriend"
       },
       {
-        name: "Updates",
+        name: "For Husbands",
         desc: "Changelog",
         icon: BellDot,
+         link:"/collections/for-husbands"
       },
       {
-        name: "Academy",
+        name: "For Sister",
         desc: "Watch lessions",
+         link:"/collections/for-sister",
         icon: Play,
+        
       },
       {
-        name: "Blog",
-        desc: "Posts",
+        name: "For Wife",
+        desc: " Wife",
         icon: BookOpenText,
+         link:"/categories/for-wife"
       },
-      {
-        name: "Figma",
-        desc: "Plugin",
-        icon: Figma,
-      },
-      {
-        name: "Experts",
-        desc: "Jobs",
-        icon: BriefcaseBusiness,
-      },
-      {
-        name: "Gallery",
-        desc: "Images",
-        icon: Images,
-      },
-    ],
-    gridCols: 3,
-  },
-  {
-    name: "Support",
-    subMenu: [
-      {
-        name: "Help",
-        desc: "Center",
-        icon: CircleHelp,
-      },
-      {
-        name: "Community",
-        desc: "Project help",
-        icon: MessageCircle,
-      },
-      {
-        name: "Emergency",
-        desc: "Urgent issues",
-        icon: TriangleAlert,
-      },
-    ],
-    gridCols: 1,
-  },
-  {
-    name: "Enterprise",
-    subMenuHeading: ["Overview", "Features"],
-    subMenu: [
-      {
-        name: "Enterprise",
-        desc: "Overview",
-        icon: ShieldPlus,
-      },
-      {
-        name: "Collaboration",
-        desc: "Design together",
-        icon: Users,
-      },
-      {
-        name: "Customers",
-        desc: "Stories",
-        icon: Dessert,
-      },
-      {
-        name: "Security",
-        desc: "Your site secured",
-        icon: Lock,
-      },
+     
     ],
     gridCols: 2,
   },
   {
-    name: "Pricing",
+    name: "By Occasion",
+    subMenuHeading: ["Event", "Features"],
+    subMenu: [
+      {
+        name: "Proposal",
+        desc: "time",
+        icon: ShieldPlus,
+         link:"/collections/proposal"
+      },
+      {
+        name: "Engagement",
+        desc: "love",
+        icon: Users,
+         link:"/collections/engagement"
+      },
+      {
+        name: "Wedding",
+        desc: " special",
+        icon: Dessert,
+         link:"/collections/wedding"
+      },
+      {
+        name: "Festivals",
+        desc: "enjoying",
+        icon: Lock,
+         link:"/collections/festivals"
+      },
+    ],
+    gridCols: 2,
   },
-  {
-    name: "Contact",
-  },
+
 ];
 
 

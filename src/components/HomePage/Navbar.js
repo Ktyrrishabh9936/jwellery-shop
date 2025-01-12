@@ -16,6 +16,7 @@ import {
   ChevronDownIcon,
 } from "@heroicons/react/24/solid";
 import Image from "next/image";
+import Link from "next/link";
 const navListMenuItems = [
   {
     title: "Men",
@@ -67,14 +68,14 @@ export default function NavBar() {
           </Typography>
         </MenuHandler>
         <MenuList>
-        <MenuItem>Tops (Earrings)</MenuItem>
-        <MenuItem>Rings</MenuItem>
-        <MenuItem>Set (Pendant Sets with Chain)</MenuItem>
-        <MenuItem>Mangalsutra</MenuItem>
-        <MenuItem>Chain (Small Necklace)</MenuItem>
-        <MenuItem>Bracelet + Ring</MenuItem>
-        <MenuItem>Pendant Set + Ring</MenuItem>
-        <MenuItem>Payal</MenuItem>
+        <MenuItem> <Link href="/categories/tops">   Tops (Earrings)</Link></MenuItem>
+        <MenuItem> <Link href="/categories/rings">   Rings</Link></MenuItem>
+        <MenuItem> <Link href="/categories/sets">   Set (Pendant Sets with Chain)</Link></MenuItem>
+        <MenuItem> <Link href="/categories/ring">   Mangalsutra</Link></MenuItem>
+        <MenuItem> <Link href="/categories/necklace">   Chain (Small Necklace)</Link></MenuItem>
+        <MenuItem> <Link href="/categories/bracelet/rings">   Bracelet + Ring</Link></MenuItem>
+        <MenuItem> <Link href="/categories/pendent/rings">   Pendant Set + Ring</Link></MenuItem>
+        <MenuItem> <Link href="/categories/anklet">   Payal</Link></MenuItem>
       </MenuList>
       </Menu>
 
@@ -82,6 +83,15 @@ export default function NavBar() {
             {Menus.map((menu) => (
               <DesktopMenu menu={menu} key={menu.name} />
             ))}
+              <Link key={"contact"} href="/contactUs" className="">
+                <span
+                  className="flex-center-between p-4 hover:bg-white/5 rounded-md cursor-pointer relative"
+                 
+                >
+                  Contact Us
+                </span>
+            
+              </Link>
           </ul>
     
         </nav>
