@@ -101,13 +101,13 @@ export default function HeroSlider() {
         
         modules={[Navigation, Pagination,Autoplay]}
         autoplay={{ delay: 3000, disableOnInteraction: false }}
-        className="relative rounded-lg [&_div.swiper-button-next]:text-background [&_div.swiper-button-prev]:text-background cursor-pointer bg-blue-gray-50 h-[clamp(12rem,30vw,40rem)]"
+        className="relative rounded-lg [&_div.swiper-button-next]:text-background [&_div.swiper-button-prev]:text-background cursor-pointer bg-blue-gray-50 h-[clamp(18remrem,36vw,40rem)] md:h-[clamp(12rem,30vw,40rem)]"
       >
         {heroSlides?.map((item, index) => (
           <SwiperSlide key={index} className="select-none">
         
            <Link href={item?.links}>  <Image width={2000} height={800} 
-          src={isSmallScreen ? item?.desktopBannerImage :item?.desktopBannerImage}
+          src={isSmallScreen ? item?.mobileBannerImage :item?.desktopBannerImage}
           alt={`Hero ${index}`}
           className="h-full w-full object-cover"
         /></Link>

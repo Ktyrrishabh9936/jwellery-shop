@@ -57,13 +57,15 @@ export default function Header() {
    
     <Navbar className="mx-auto p-2 lg:pl-6 shadow-none sticky top-0 z-20">
       <div className="relative mx-auto flex items-center justify-between text-blue-gray-900">
-      <div className="lg:hidden">
+      <div className=' flex'>
+      <div className="lg:hidden flex items-center">
               <MobMenu Menus={Menus} />
       </div>
 
-        <Typography as="a" href="#" className="mr-4 ml-2 cursor-pointer py-1.5 font-medium">
+        <Typography  className="mr-4 ml-3 cursor-pointer py-1.5 font-medium">
          <Link href="/"> <Image width={80} height={80} src="/Jenii-Logo.svg" alt="Jenii" /></Link>
         </Typography>
+        </div>
         {/*  */}
         <Search/>
         {/*  */}

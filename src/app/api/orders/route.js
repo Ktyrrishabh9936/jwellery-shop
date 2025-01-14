@@ -49,14 +49,24 @@ export async function GET(request) {
   await connect();
   try {
     const userId = await UserAuth(); // Assume userId is set in middleware
-    
-    const orders = await Order.find({ userId });
+
+    const url = new URL(request.url);
+    const page = parseInt(url.searchParams.get('page')) || 1;
+    const limit = parseInt(url.searchParams.get('limit')) || 10;
+    const skip = (page - 1) * limit;
+
+    const totalOrders = await Order.countDocuments({ userId });
+    const orders = await Order.find({ userId })
+      .skip(skip)
+      .limit(limit);
 
     if (!orders || orders.length === 0) {
       return NextResponse.json({ message: 'No orders found' }, { status: 404 });
     }
 
-    return NextResponse.json({ orders }, { status: 200 });
+    const totalPages = Math.ceil(totalOrders / limit);
+
+    return NextResponse.json({ orders, currentPage: page, totalPages }, { status: 200 });
   } catch (error) {
     console.error('Error fetching orders:', error);
     return NextResponse.json({ message: 'Server error' }, { status: 500 });

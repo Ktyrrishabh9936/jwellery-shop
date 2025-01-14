@@ -10,12 +10,12 @@ export default function MenWomenSection() {
     <div>
         <section className="mb-12">
               <h2 className="text-2xl font-bold mb-6 text-center">Shop by Category</h2>
-              <div className="flex justify-center gap-4 max-w-5xl mx-auto">
+              <div className="flex flex-col sm:flex-row justify-center gap-4 max-w-5xl mx-auto">
                 {categories.map((category) => (
                   
                   <div
                     key={category.id}
-                    className="relative bg-white rounded-lg overflow-hidden  min-w-40 w-1/2 "
+                    className="relative bg-white rounded-lg overflow-hidden  min-w-40 w-[90%] sm:w-1/2 "
                   ><Link href={category.link}>
                     <Image
                       width={600}

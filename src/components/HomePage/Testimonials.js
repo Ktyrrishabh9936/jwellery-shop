@@ -250,11 +250,6 @@ function Testimonials() {
          <h2 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
            Read trusted reviews from our customers
          </h2>
-         <p className="mt-6 max-w-lg leading-relaxed text-gray-700">
-           Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur praesentium natus
-           sapiente commodi. Aliquid sunt tempore iste repellendus explicabo dignissimos placeat,
-           autem harum dolore reprehenderit quis! Quo totam dignissimos earum.
-         </p>
        </div>
 
       <Swiper

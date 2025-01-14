@@ -68,22 +68,22 @@ export default function NavBar() {
           </Typography>
         </MenuHandler>
         <MenuList>
-        <MenuItem> <Link href="/categories/tops">   Tops (Earrings)</Link></MenuItem>
-        <MenuItem> <Link href="/categories/rings">   Rings</Link></MenuItem>
-        <MenuItem> <Link href="/categories/sets">   Set (Pendant Sets with Chain)</Link></MenuItem>
-        <MenuItem> <Link href="/categories/ring">   Mangalsutra</Link></MenuItem>
-        <MenuItem> <Link href="/categories/necklace">   Chain (Small Necklace)</Link></MenuItem>
-        <MenuItem> <Link href="/categories/bracelet/rings">   Bracelet + Ring</Link></MenuItem>
-        <MenuItem> <Link href="/categories/pendent/rings">   Pendant Set + Ring</Link></MenuItem>
-        <MenuItem> <Link href="/categories/anklet">   Payal</Link></MenuItem>
+        <Link href="/categories/tops"> <MenuItem>  Tops (Earrings)</MenuItem></Link>
+        <Link href="/categories/rings"> <MenuItem>   Rings</MenuItem></Link>
+        <Link href="/categories/sets">   <MenuItem> Set (Pendant Sets with Chain)</MenuItem></Link>
+        <Link href="/categories/ring">  <MenuItem>  Mangalsutra</MenuItem></Link>
+        <Link href="/categories/necklace"> <MenuItem>   Chain (Small Necklace)</MenuItem></Link>
+        <Link href="/categories/bracelet/rings"> <MenuItem>   Bracelet + Ring</MenuItem></Link>
+        <Link href="/categories/pendent/rings"> <MenuItem>   Pendant Set + Ring</MenuItem></Link>
+        <Link href="/categories/anklet"> <MenuItem>   Payal</MenuItem></Link>
       </MenuList>
       </Menu>
 
           <ul className="gap-x-1 lg:flex-center hidden lg:block">
-            {Menus.map((menu) => (
-              <DesktopMenu menu={menu} key={menu.name} />
+            {Menus.map((menu,idx) => (
+           idx !== 0 ?  <DesktopMenu menu={menu} key={menu.name} /> :""
             ))}
-              <Link key={"contact"} href="/contactUs" className="">
+              <Link key={"contact"} href="/ContactUs" className="">
                 <span
                   className="flex-center-between p-4 hover:bg-white/5 rounded-md cursor-pointer relative"
                  
