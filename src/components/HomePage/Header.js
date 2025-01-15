@@ -82,11 +82,11 @@ export default function Header() {
         <div className="flex justify-center items-center  gap-2 ">
         <button onClick={()=>navigate.push('/mywishlist')} className=' shadow-none cursor-pointer relative py-2 px-1.5 h-max inline-flex items-center  text-sm font-medium text-center bg-transparent text-black rounded-full    dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800   hover:text-red-400' >
                 <FaRegHeart fontSize={22} />
-<div class="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold  rounded-full -top-2 -end-2 dark:border-gray-900">{wishListByID.length}</div>
+<div className="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold  rounded-full -top-2 -end-2 dark:border-gray-900">{wishListByID.length}</div>
           </button>
             <button onClick={()=>{dispatch(setsidebarCart(true)); }} className=' relative cursor-pointer  pr-2 pb-2 pl-1 pt-1 h-max inline-flex items-center shadow-none  text-sm font-medium text-center bg-transparent text-black rounded-full     dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800  hover:text-red-400' >
                 <FiShoppingCart fontSize={25}/>
-                <div class="absolute inline-flex  items-center justify-center w-6 h-6 text-xs font-bold   rounded-full -top-2 -end-2 dark:border-gray-900">{totalItem}</div>
+                <div className="absolute inline-flex  items-center justify-center w-6 h-6 text-xs font-bold   rounded-full -top-2 -end-2 dark:border-gray-900">{totalItem}</div>
                 </button>
          
 

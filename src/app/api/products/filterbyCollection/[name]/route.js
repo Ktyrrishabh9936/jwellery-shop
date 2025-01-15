@@ -22,9 +22,9 @@ export async function GET(req,{ params }) {
   const maxPrice = searchParams.get('maxPrice');
   const collection = searchParams.get('collection');
   const category = searchParams.get("category");
-  const gender = searchParams.get("gender");
+  const gender = searchParams.get("shopFor");
   try {
-      let query = Product.find({ collectionName: { $in: [name] } }).populate('category.id');
+      let query = Product.find({ collectionName: { $in: [name] } });
       if(category){
         const categorySet =category.split(',');
         console.log(categorySet)
@@ -33,7 +33,7 @@ export async function GET(req,{ params }) {
 
     
       if(gender==="men" ||gender==="women" ){
-              query = query.where('category.id.parentCategory').equals(gender)
+        query = query.where('category.type').equals(gender)
       }
       if(collection){
         const collectionSet =collection.split(',');
@@ -60,6 +60,7 @@ export async function GET(req,{ params }) {
 
     return NextResponse.json({content:products,currentPage:pageNumber,totalPages}, { status: 200 });
   } catch (error) {
+    console.log(error)
     return NextResponse.json({ message: error.message }, { status: 500 })
   }
 }

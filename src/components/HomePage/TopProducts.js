@@ -59,7 +59,7 @@ const TopProductCarousel = () => {
   }, []);
 
   const handleFetchMore = () => {
-    if (topPicksCurrentPage < topPicksTotalPages && !topPicksLoading) {
+    if (topPicksCurrentPage < topPicksTotalPages  && !topPicksLoading) {
       dispatch(fetchmoretopcollectionProducts({ page: topPicksCurrentPage + 1, limit: 8 }));
     }
   };
@@ -144,6 +144,11 @@ const TopProductCarousel = () => {
         breakpoints={breakpoints}
         slidesPerView="auto"   // Automatically adjusts slides per view
         slidesPerGroupAuto={true} // Automatically adjusts slides per group
+        onSlideChange={(swiper) => {
+          if (swiper.activeIndex + swiper.params.slidesPerView >= topPicks.length) {
+            handleFetchMore();
+          }
+        }}
         freeMode={true}        // Allows smooth free scrolling
         grabCursor={true}      
       >
@@ -180,7 +185,7 @@ const TopProductCarousel = () => {
               </Link>
               <Button
                 className="mt-4 bg-[#F8C0BF] hover:bg-[#fe6161] transition-colors py-2 duration-300 px-4 rounded-md w-full capitalize text-sm"
-                onClick={() => handleAddToCart(product)}
+                // onClick={() => handleAddToCart(product)}
                 disabled={loadingProductId === product._id}
               >
                 {loadingProductId === product._id ? "Adding..." : "Add to Cart"}

@@ -112,7 +112,7 @@ export default function Product({ id }) {
                     onClick={() => setActiveIndex(i)}
                     />
                 ))}
-                   <Image
+                   {product?.video && <Image
                     width={1000}
                     height={1000}
                     src="/Video-icon.png"
@@ -122,7 +122,7 @@ export default function Product({ id }) {
                         activeIndex === product?.images?.length ? "w-16 h-16  bg-white border-pink-300" : "w-10 h-10 bg-white/50 border-blue-gray-100"
                     }`}
                     onClick={() => setActiveIndex(product?.images?.length)}
-                    />
+                    />}
                 </div>
             )}
            >

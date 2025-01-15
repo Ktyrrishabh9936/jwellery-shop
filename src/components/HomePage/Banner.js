@@ -32,7 +32,7 @@ export default function Banner() {
    }
         return (
 
-     <Carousel className="rounded-xl h-[clamp(18remrem,36vw,40rem)] md:h-[clamp(10rem,21vw,26rem)] w-[96%] mx-auto max-w-7xl" 
+     <Carousel key="banner Carausel" className="rounded-xl h-[clamp(18remrem,36vw,40rem)] md:h-[clamp(10rem,21vw,26rem)] w-[96%] mx-auto max-w-7xl" 
      autoplay autoplayDelay={10000} loop
      >
       {aboutSlides?.map((item,index)=>  

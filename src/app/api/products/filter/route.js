@@ -21,23 +21,20 @@ export async function GET(req) {
   const maxPrice = searchParams.get('maxPrice');
   const collection = searchParams.get('collection');
   const category = searchParams.get("category");
-  const gender = searchParams.get("gender");
-  console.log(pageNumber)
+  const gender = searchParams.get("shopFor");
   try {
       let query = Product.find();
       if(category){
         const categorySet =category.split(',');
-        console.log(categorySet)
         query.where('category.name').in(categorySet);
       }
 
     
       if(gender==="men" ||gender==="women" ){
-              query = query.where('category.id.parentCategory').equals(gender)
+              query = query.where('category.type').equals(gender)
       }
       if(collection){
         const collectionSet =collection.split(',');
-        console.log(collectionSet)
         query = query.where('collectionName').in(collectionSet)
 }
       if( maxPrice){
