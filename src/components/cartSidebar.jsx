@@ -10,6 +10,7 @@ import { FiShoppingCart } from 'react-icons/fi';
 import Arrow from '@/assets/Arrow.svg'
 import { useRouter } from 'next/navigation'
 import { formatPrice } from '@/utils/productDiscount'
+import { Button } from '@material-tailwind/react'
 const products = [
   {
     id: 1,
@@ -79,13 +80,15 @@ export default function CartSidebar() {
         <h2 className='text-xl font-semibold text-gray-800 mb-2'>Your shelf looks a little empty!</h2>
         <p className='text-gray-600'>Let’s start adding your first product. It’s quick, easy, and you can always customize it later.</p>
       </div>
-      <Link
-        href="/"
+      <Button
+        onClick={()=>{dispatch(setsidebarCart(false) )
+          navigate.push('/')
+        }}
         className="mt-6 inline-flex shrink-0 items-center gap-2 rounded-full border border-rose-600 px-5 py-3 text-rose-600 transition hover:bg-rose-600 text-white bg-pink-500 md:mt-0"
       >
         <span className="font-medium"> Continue Shopping</span>
         <span className="w-[30px]"><Arrow/></span>
-      </Link>
+      </Button>
     </div>
       :<div className="mt-8">
                     <div className="flow-root">

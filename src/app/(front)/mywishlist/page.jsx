@@ -67,13 +67,13 @@ export default function FavoriteItems() {
     );
   }
   if(wishlist.length === 0){
-    return  <div className="flex flex-col items-center justify-center h-screen text-center">
+    return  <div className="flex flex-col items-center justify-center min-h-[80%] text-center">
     <Image
       src="/wishlist-empty.webp" // Replace with your image path or URL
       alt="Empty Wishlist"
       width={300}
       height={300}
-      className="mb-8"
+      className="mt-14"
     />
     <h1 className="text-2xl font-semibold text-gray-700">Your Wishlist is Empty!</h1>
     <p className="text-gray-500 mt-2">
@@ -81,7 +81,7 @@ export default function FavoriteItems() {
     </p>
     <button
       onClick={() => router.push('/products')} // Redirect to products page
-      className="mt-6 bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition duration-300"
+      className="mt-6 bg-pink-500 text-white px-5 py-2 rounded-lg hover:bg-pink-600 transition duration-300"
     >
       Start Adding Favorites
     </button>

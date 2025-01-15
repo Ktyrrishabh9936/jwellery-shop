@@ -55,18 +55,21 @@ export async function GET(request) {
     const limit = parseInt(url.searchParams.get('limit')) || 10;
     const skip = (page - 1) * limit;
 
-    const totalOrders = await Order.countDocuments({ userId });
-    const orders = await Order.find({ userId })
-      .skip(skip)
-      .limit(limit);
+    const orders = await Order.findOne({ userId });
 
-    if (!orders || orders.length === 0) {
+    if (!orders) {
+      return NextResponse.json({ message: 'No orders found' }, { status: 404 });
+    }
+    const totalOrders = orders.orders.length;
+
+    if (!totalOrders || totalOrders.length === 0) {
       return NextResponse.json({ message: 'No orders found' }, { status: 404 });
     }
 
+    const orderPage = orders.orders.slice(skip, skip + limit);
     const totalPages = Math.ceil(totalOrders / limit);
 
-    return NextResponse.json({ orders, currentPage: page, totalPages }, { status: 200 });
+    return NextResponse.json({ orders:orderPage, currentPage: page, totalPages }, { status: 200 });
   } catch (error) {
     console.error('Error fetching orders:', error);
     return NextResponse.json({ message: 'Server error' }, { status: 500 });

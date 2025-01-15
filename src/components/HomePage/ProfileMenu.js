@@ -1,18 +1,17 @@
 import React from 'react';
 import { Button, Avatar, Menu, MenuHandler, MenuList, MenuItem, Typography } from '@material-tailwind/react'; // Ensure you have Material Tailwind components installed
 import { UserCircleIcon, Cog6ToothIcon, InboxArrowDownIcon, LifebuoyIcon, PowerIcon, ChevronDownIcon } from '@heroicons/react/24/outline'; // Make sure you have heroicons installed
-import axios from 'axios'; 
-import { toast } from 'react-toastify'; 
-import { FaUserCircle } from 'react-icons/fa';
+
 import Image from 'next/image';
 import { signOut } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter, } from 'next/navigation';
 
 
 
 function ProfileMenu({user}) {
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
     const navigate = useRouter()
+    const path = usePathname()
     const closeMenu = () => setIsMenuOpen(false);
     const profileMenuItems = [
   
@@ -27,7 +26,7 @@ function ProfileMenu({user}) {
             label: "Sign Out",
             icon: PowerIcon,
             onClickNavItem:()=>{
-                signOut({callbackUrl:'/login',});
+                signOut({callbackUrl:  `${window.location.origin}/login`});
                 closeMenu();
             },
         },

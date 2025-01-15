@@ -12,14 +12,7 @@ import Image from "next/image";
 
 // Yup validation schema
 const schema = yup.object().shape({
-  email: yup
-    .string()
-    .required("Email or Phone number is required")
-    .test("emailOrPhone", "Must be a valid email or phone number", (value) => {
-      const isValidEmail = yup.string().email().isValidSync(value);
-      const isValidPhone = /^[0-9]{10}$/.test(value);
-      return isValidEmail || isValidPhone;
-    }),
+  email: yup.string().required('Email is required').email('Must be a valid email'),
   password: yup
     .string()
     .required("Password is required")
@@ -82,7 +75,7 @@ export default function Login() {
                 htmlFor="email"
                 className="block text-sm font-medium text-gray-700"
               >
-                Email/Number
+                Email
               </label>
               <input
                 type="email"

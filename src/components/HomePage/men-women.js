@@ -15,14 +15,14 @@ export default function MenWomenSection() {
                   
                   <div
                     key={category.id}
-                    className="relative bg-white rounded-lg overflow-hidden  min-w-40 w-[90%] sm:w-1/2 "
+                    className="relative bg-white rounded-lg overflow-hidden mx-auto  min-w-40  w-[90%] sm:w-1/2 "
                   ><Link href={category.link}>
                     <Image
                       width={600}
                       height={400}
                       src={category.imageUrl}
                       alt={category.name}
-                      className="object-cover w-full h-full"
+                      className="object-cover w-full h-full "
                     />
                     {/* <div className="absolute bottom-0 w-full text-center bg-black bg-opacity-50 p-2 text-white">
                       {category.name}

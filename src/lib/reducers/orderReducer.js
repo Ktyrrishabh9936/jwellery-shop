@@ -4,8 +4,16 @@ import axios from 'axios';
 export const fetchOrders = createAsyncThunk(
   'orders/fetchOrders',
   async ({ page, limit }) => {
+    try {
     const response = await axios.get(`/api/orders?page=${page}&limit=${limit}`);
     return response.data;
+  } catch (error) {
+    console.log(error.response);
+    if(!error.status === 404){
+      return;
+    }
+    return rejectWithValue(error.message);
+  }
   }
 );
 

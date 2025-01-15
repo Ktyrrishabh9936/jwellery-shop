@@ -135,7 +135,7 @@ const TopProductCarousel = () => {
       <Swiper
         // spaceBetween={10}
         modules={[Navigation,Scrollbar,Grid]}
-         className=" rounded-lg [&_div.swiper-button-next]:text-background [&_div.swiper-button-prev]:text-background cursor-pointer pb-6"
+         className=" rounded-lg [&_div.swiper-button-next]:text-background [&_div.swiper-button-prev]:text-background cursor-pointer pb-6 no-scrollbar"
          direction="horizontal"
          scrollbar={{ draggable: true }} 
          spaceBetween={0}

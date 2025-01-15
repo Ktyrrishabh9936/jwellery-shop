@@ -41,6 +41,9 @@ body {
     @apply flex items-center justify-between;
   }
 }
+
+.no-scrollbar::-webkit-scrollbar { display: none; } 
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 input[type="checkbox"].star {
   appearance: none;
   -webkit-appearance: none;

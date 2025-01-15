@@ -58,7 +58,7 @@ export default function ProductCategories() {
                     alt={category.name}
                     className="w-[clamp(4rem,6vw,7rem)] h-[clamp(4rem,6vw,7rem)] mx-auto mb-2 rounded-full border-2 border-pink-300"
                   />
-                  <h3 className="text-gray-600 capitalize leading-6 transition-colors duration-300 group-hover:text-white">{category?.name}</h3>
+                  <h3 className="text-gray-600 capitalize leading-6 transition-colors duration-300 sm:group-hover:text-white">{category?.name}</h3>
                   </Link>
                 </SwiperSlide>
               ))
