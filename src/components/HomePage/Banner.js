@@ -32,11 +32,11 @@ export default function Banner() {
    }
         return (
 
-     <Carousel key="banner Carausel" className="rounded-xl h-[clamp(18remrem,36vw,40rem)] md:h-[clamp(10rem,21vw,26rem)] w-[96%] mx-auto max-w-7xl" 
+     <Carousel  className="rounded-xl h-[clamp(18remrem,36vw,40rem)] md:h-[clamp(10rem,21vw,26rem)] w-[96%] mx-auto max-w-7xl" 
      autoplay autoplayDelay={10000} loop
      >
       {aboutSlides?.map((item,index)=>  
-       {return <Link href={item?.links}>  <Image width={900} height={400} 
+       {return <Link href={item?.links} key={index}>  <Image width={900} height={400} 
         loading="lazy"
        key={index}
          src={isSmallScreen ? item?.mobileBannerImage :item?.desktopBannerImage}

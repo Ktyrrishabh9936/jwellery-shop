@@ -135,7 +135,7 @@ const TopProductCarousel = () => {
       <Swiper
         // spaceBetween={10}
         modules={[Navigation,Scrollbar,Grid]}
-         className=" rounded-lg [&_div.swiper-button-next]:text-background [&_div.swiper-button-prev]:text-background cursor-pointer pb-6 no-scrollbar"
+         className=" rounded-lg [&_div.swiper-button-next]:text-background [&_div.swiper-button-prev]:text-background cursor-pointer "
          direction="horizontal"
          scrollbar={{ draggable: true }} 
          spaceBetween={0}
@@ -153,7 +153,7 @@ const TopProductCarousel = () => {
         grabCursor={true}      
       >
         {topPicks.map((product) => (
-          <SwiperSlide key={product._id} className="carousel-slide mt-0 md:mt-14 max-w-[200px] md:max-w-none"  >
+          <SwiperSlide key={product._id} className="carousel-slide mt-0 md:mt-14 max-w-[200px] md:max-w-none mb-8"  >
               <div 
               key={product._id}
               className="bg-white rounded-lg p-2 md:p-4 shadow-none md:hover:shadow-xl hover:bg-gray-100 transition-[--tw-shadow] "

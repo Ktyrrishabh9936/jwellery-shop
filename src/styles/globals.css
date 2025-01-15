@@ -42,7 +42,10 @@ body {
   }
 }
 
-.no-scrollbar::-webkit-scrollbar { display: none; } 
+.no-scrollbar::-webkit-scrollbar { 
+  display: none;
+  border-color: rgba(255, 22, 154, 0.975);
+ } 
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 input[type="checkbox"].star {
   appearance: none;

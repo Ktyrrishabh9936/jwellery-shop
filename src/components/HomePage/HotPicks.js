@@ -11,6 +11,7 @@ import toast from "react-hot-toast";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { TiStarFullOutline,TiStarHalfOutline,TiStarOutline } from "react-icons/ti";
 import ProductGridLoader from "../Loaders/ProductGridLoader";
+import { ChevronDownCircle } from "lucide-react";
  function Star({rating,size='clamp(1rem,1.3vw,3rem)' ,color='#fe6161'}) {
   const ratingfunc = Array.from({length:5},(elem,index)=>{
           const number = rating+0.5;
@@ -61,12 +62,7 @@ const HotPicks = () => {
      {hotPicks.length ? <h2 className="text-2xl font-bold mt-6 ml-3">Hot Picks</h2>:""}
       {hotPicks.length ? (
         <>
-        <InfiniteScroll
-          dataLength={hotPicks.length}
-          next={fetchMoreData}
-          hasMore={hotPicksCurrentPage < hotPicksTotalPages}
-         
-          
+        <div
           className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-1 sm:gap-2 md:gap-3 mt-4"
         >
           {hotPicks.map((product) => (
@@ -107,8 +103,9 @@ const HotPicks = () => {
               </Button>
             </div>
           ))}
-        </InfiniteScroll>
+        </div>
         {hotPicksNextload && <ProductGridLoader />}
+        {hotPicksCurrentPage < hotPicksTotalPages && <p className="mt-4 text-pink-500  hover:bg-pink-600 hover:text-white mx-auto text-center w-max group py-1.5 px-8 rounded-full  cursor-pointer hover:scale-105" onClick={fetchMoreData}> <span>View More </span> <span ><ChevronDownCircle className=" mx-auto  hover:text-2xl "/></span></p>}
         </>
       ) : (
         <div>
