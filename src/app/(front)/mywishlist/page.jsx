@@ -80,7 +80,7 @@ export default function FavoriteItems() {
       Start adding your favorite items to your wishlist.
     </p>
     <button
-      onClick={() => router.push('/products')} // Redirect to products page
+      onClick={() => router.push('/')} // Redirect to products page
       className="mt-6 bg-pink-500 text-white px-5 py-2 rounded-lg hover:bg-pink-600 transition duration-300"
     >
       Start Adding Favorites
