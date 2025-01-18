@@ -123,6 +123,7 @@ const Footer = () => {
               {/* <li>Account</li> */}
               {/* <Link href="">About Us</Link> */}
               <Link href="/ContactUs">Contact Us</Link>
+              <Link href="/refund-and-cancellation-policy">Refund and Cancellation Policy</Link>
               <Link href="/shipping-policy">Shipping Policy</Link>
               {/* <Link href="">Our Blogs</Link> */}
               {/* <Link href="/">Store Locator</Link> */}

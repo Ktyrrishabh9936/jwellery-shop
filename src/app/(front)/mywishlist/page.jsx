@@ -2,6 +2,7 @@
 import { addToCart } from '@/lib/reducers/cartReducer';
 import { getwishList, RemovewishList } from '@/lib/reducers/wishlistReducer';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -9,6 +10,7 @@ export default function FavoriteItems() {
   const dispatch = useDispatch();
   const {wishlist,loading,loadWishlist}  = useSelector((state)=>state.wishlist)
   const {loadingProductId} = useSelector((state)=>state.cart);
+  const router = useRouter();
 
 
   useEffect(()=>{

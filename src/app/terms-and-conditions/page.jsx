@@ -89,7 +89,6 @@ export default function TermsAndConditions() {
                   </li>
                   <li>
                     <strong>Address Accuracy:</strong> Ensure the delivery address provided is correct.
-
                   </li>
                   <li>
                     <strong>Product Description Agreement: </strong>  By ordering, you agree to the terms in the product description.
