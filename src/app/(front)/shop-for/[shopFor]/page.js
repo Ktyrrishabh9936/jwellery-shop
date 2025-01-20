@@ -125,16 +125,11 @@ const {loadingProductId} = useSelector((state)=>state.cart)
     const { name, value } = e.target;
     setPriceRange({ ...priceRange, [name]: Number(value) });
   };
-  const handleAddToCart = async (product) => {
-
-    // Check if the user is logged in
-    if (!user) {
-      toast.error("Please log in to add products to your cart!");
-      return;
-    }
-
-    dispatch(addToCart({productId:product._id,quantity:1}))
-  };
+ const handleAddToCart = async (product) => {
+     const data = { productId:product._id,name:product.name,quantity:1,img_src:product.images[0],price:product.price,discountedPrice:product.discountPrice,category:product.category.name,SKU:product.sku}
+ 
+     dispatch(addToCart(data))
+   };
   const handleFilterChange = (filterId, value, multiple) => {
     setSelectedFilters((prev) => {
       const updatedFilters = { ...prev };

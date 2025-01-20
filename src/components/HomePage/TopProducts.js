@@ -47,7 +47,6 @@ export function CustomNavigation() {
   );
 }
 const TopProductCarousel = () => {
-   const {user} = useSelector((store)=>store.user);
   
   const dispatch = useDispatch();
   const {  topPicks, topPicksCurrentPage, topPicksTotalPages,topPicksLoading} = useSelector((state) => state.collection);
@@ -64,14 +63,9 @@ const TopProductCarousel = () => {
     }
   };
   const handleAddToCart = async (product) => {
+    const data = { productId:product._id,name:product.name,quantity:1,img_src:product.images[0],price:product.price,discountedPrice:product.discountPrice,category:product.category.name,SKU:product.sku}
 
-    // Check if the user is logged in
-    if (!user) {
-      toast.error("Please log in to add products to your cart!");
-      return;
-    }
-
-    dispatch(addToCart({productId:product._id,quantity:1}))
+    dispatch(addToCart(data))
   };
   const {loadingProductId} = useSelector((state)=>state.cart)
   const breakpoints = {
@@ -185,7 +179,7 @@ const TopProductCarousel = () => {
               </Link>
               <Button
                 className="mt-4 bg-[#F8C0BF] hover:bg-[#fe6161] transition-colors py-2 duration-300 px-4 rounded-md w-full capitalize text-sm"
-                // onClick={() => handleAddToCart(product)}
+                onClick={() => handleAddToCart(product)}
                 disabled={loadingProductId === product._id}
               >
                 {loadingProductId === product._id ? "Adding..." : "Add to Cart"}

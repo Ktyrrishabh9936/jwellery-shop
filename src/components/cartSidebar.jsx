@@ -125,12 +125,12 @@ export default function CartSidebar() {
                             <div className="ml-4 flex flex-1 flex-col">
                               <div>
                                 <div className="flex justify-between text-base font-medium text-gray-900">
-                                  <h3>
-                                    <Link href="/">{item.name}</Link>
+                                  <h3 className=' line-clamp-2'>
+                                    {item.name}
                                   </h3>
                                   <p className="ml-4">{formatPrice(item.discountedPrice*item.quantity)}</p>
                                 </div>
-                                <p className="mt-1 text-sm text-gray-500">{item.category}</p>
+                                <p className="mt-1 text-sm text-gray-500 capitalize">{item.category}</p>
                               </div>
                               <div className="flex flex-1 items-end justify-between text-sm">
                                 <p className="text-gray-500">Qty {item.quantity}</p>

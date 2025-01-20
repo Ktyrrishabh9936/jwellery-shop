@@ -9,17 +9,26 @@ import { useRouter } from "next/navigation";
 import Link from 'next/link';
 import { ShoppingBagIcon } from "@heroicons/react/24/solid";
 import { useDispatch, useSelector } from "react-redux";
-import { removefromCart } from '@/lib/reducers/cartReducer'
+import { addToCart, removefromCart } from '@/lib/reducers/cartReducer'
 import { AddwishList } from "@/lib/reducers/productbyIdReducer";
 export default function ShoppingCart() {
-  const {loading,Items,loadingRemoveProduct,discounte, totalDiscountedPrice, totalItem,totalPrice} = useSelector((state)=>state.cart);
+  const {loading,Items,loadingRemoveProduct,discounte,loadingProductId, totalDiscountedPrice, totalItem,totalPrice} = useSelector((state)=>state.cart);
   const dispatch = useDispatch();
   const navigate = useRouter();
   const {wishListByID,loadWishlist}= useSelector((state)=>state.wishlist);
-  
+  const {user} = useSelector((store)=>store.user);
+  const handleCheckout = ()=>{
+    if(user){
+    navigate.push('/delivery')
+    }
+    else{
+      navigate.push('/login')
+    }
+  }
   const formatPrice = (price) => {
-    return price ? `${parseFloat(price).toFixed(2)}` : "N/A";
+    return price ? ` ₹ ${parseFloat(price).toFixed(2)}` : "N/A";
   };
+
 
   return (
     <>
@@ -62,24 +71,35 @@ export default function ShoppingCart() {
                         <span className="text-[#1E1E1E] font-semibold text-base">
                           {formatPrice(item.discountedPrice)}
                         </span>
+                         <strike className=" text-[#F42222] text-xs  line-clamp-1">
+                                              {formatPrice(item.price)}
+                           </strike>
 
                       </div>
                       <h2 className="font-semibold text-[#2A2A2A]">
                         {item.name || "Unknown Product"}
                       </h2>
                       <p className="text-sm text-gray-500">
-                        Add gift wrap to your order (₹50)
+                        {/* Add gift wrap to your order (₹50) */}
+                        Quantity - {item.quantity}
                       </p>
 
                       <div className="mt-4 md:mt-0 flex space-x-4 w-full">
-                   {  loadWishlist === item.productId  ?  <Button className="mt-4 bg-[#F8C0BF] hover:bg-[#fe6161] hover:text-black transition-colors duration-300 py-2 px-4 rounded-md w-full capitalize text-sm">
+                   { user ? loadWishlist === item.productId  ?  <Button className="mt-4 bg-[#F8C0BF] hover:bg-[#fe6161] hover:text-black transition-colors duration-300 py-2 px-4 rounded-md w-full capitalize text-sm">
                           Adding...
                         </Button>:
                         wishListByID.some((wid)=>wid===item.productId) ?<Button className="mt-4 bg-[#F8C0BF] hover:bg-[#fe6161] hover:text-black transition-colors duration-300 py-2 px-4 rounded-md w-full capitalize text-sm" >
                        Already In Wishlist
                       </Button>:<Button className="mt-4 bg-[#F8C0BF] hover:bg-[#fe6161] hover:text-black transition-colors duration-300 py-2 px-4 rounded-md w-full capitalize text-sm" onClick={()=>dispatch(AddwishList(item.productId))}>
                           Add to Wishlist
-                        </Button>}
+                        </Button>:""}
+                       {!user && <Button
+                                        className="mt-4 bg-[#F8C0BF] hover:bg-[#fe6161] transition-colors py-2 duration-300 px-4 rounded-md w-full capitalize text-sm"
+                                        onClick={() => dispatch(addToCart(item))}
+                                        disabled={loadingProductId === item.productId}
+                                      >
+                                        {loadingProductId === item.productId ? "Adding..." : "Add More"}
+                                      </Button>}
                        {loadingRemoveProduct === item.productId ? <button
                           className="mt-4 border-2  bg-gray-500 text-[#F8C0BF] duration-300 py-2 px-4 rounded-md w-full capitalize text-sm"
                         >
@@ -98,12 +118,12 @@ export default function ShoppingCart() {
               </>
             )
             }
-            {totalItem !== 0 ? <div className="mt-8">
+            {/* {totalItem !== 0 ? <div className="mt-8">
           <button className="w-full py-3 bg-pink-500 text-white font-semibold rounded-lg hover:bg-pink-600"
            onClick={()=>navigate.push('/delivery')}>
             Checkout Securely
           </button>
-        </div>:""}
+        </div>:""} */}
           </div>
 
           {/* Order Summary Section */}
@@ -125,7 +145,7 @@ export default function ShoppingCart() {
               <span>Coupon Applied:</span>
               <span className="font-bold">{-formatPrice(200)}</span>
             </div> */}
-            <div className="space-y-2">
+            {/* <div className="space-y-2">
               <input
                 type="text"
                 placeholder="Coupon Code"
@@ -134,7 +154,13 @@ export default function ShoppingCart() {
               <p className="text-xs text-gray-400">
                 Per India flat shipping for orders above ₹500
               </p>
-            </div>
+            </div> */}
+             {totalItem !== 0 ? <div className="mt-8">
+          <button className="w-full py-3 bg-pink-500 text-white font-semibold rounded-lg hover:bg-pink-600"
+           onClick={handleCheckout}>
+            Checkout Securely
+          </button>
+        </div>:""}
           </div>
           
         </div>

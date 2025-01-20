@@ -1,5 +1,6 @@
 'use client';
 import Footer from '@/components/HomePage/Footer';
+import { formatPrice } from '@/utils/productDiscount';
 import axios from 'axios';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -182,8 +183,8 @@ export default function Page() {
             </div>
           </div> */}
           <div className="flex justify-between items-center w-full">
-            <p className="text-base dark:text-white font-semibold leading-4 text-gray-800">Total</p>
-            <p className="text-base dark:text-gray-300 font-semibold leading-4 text-gray-600">{order?.amount}</p>
+            <p className="text-base dark:text-white font-semibold leading-4 text-gray-800">Total Amount</p>
+            <p className="text-base dark:text-gray-300 font-semibold leading-4 text-gray-600">{formatPrice(order?.amount)}</p>
           </div>
         </div>
         <div className="flex flex-col justify-center px-4 py-6 md:p-6 xl:p-8 w-full bg-gray-50 dark:bg-gray-800 space-y-6">
@@ -194,13 +195,13 @@ export default function Page() {
                 <img className="w-full h-full" alt="logo" src="https://i.ibb.co/L8KSdNQ/image-3.png" />
               </div>
               <div className="flex flex-col justify-start items-center">
-                <p className="text-lg leading-6 dark:text-white font-semibold text-gray-800">DPD Delivery<br /><span className="font-normal">Delivery with 24 Hours</span></p>
+                <p className="text-lg leading-6 dark:text-white font-semibold text-gray-800">Shiprocket Delivery<br /><span className="font-normal">Delivery with 24 Hours</span></p>
               </div>
             </div>
-            <p className="text-lg font-semibold leading-6 dark:text-white text-gray-800">$8.00</p>
+            <p className="text-lg font-semibold leading-6 dark:text-white text-gray-800">Rs 0.00</p>
           </div>
           <div className="w-full flex flex-col justify-center items-center">
-          <div className="order-track mt-8 pt-6 border-t border-dashed border-[#2c3e50]">
+          {/* <div className="order-track mt-8 pt-6 border-t border-dashed border-[#2c3e50]">
         {steps.map((step, index) => (
           <div
             key={index}
@@ -228,9 +229,9 @@ export default function Page() {
             </div>
           </div>
         ))}
-      </div>
+      </div> */}
 
-      <div className="flex justify-between mt-6">
+      {/* <div className="flex justify-between mt-6">
         <button
           onClick={decrementStep}
           disabled={currentStep === 0}
@@ -245,7 +246,7 @@ export default function Page() {
         >
           Next
         </button>
-      </div>
+      </div> */}
           </div>
         </div>
       </div>
@@ -282,7 +283,7 @@ export default function Page() {
             </div>
           </div>
           <div className="flex w-full justify-center items-center md:justify-start md:items-start">
-            <button className="mt-6 md:mt-0 dark:border-white dark:hover:bg-gray-900 dark:bg-transparent dark:text-white py-5 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 border border-gray-800 font-medium w-96 2xl:w-full text-base font-medium leading-4 text-gray-800">Edit Details</button>
+            {/* <button className="mt-6 md:mt-0 dark:border-white dark:hover:bg-gray-900 dark:bg-transparent dark:text-white py-5 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 border border-gray-800 font-medium w-96 2xl:w-full text-base font-medium leading-4 text-gray-800">Edit Details</button> */}
           </div>
         </div>
       </div>

@@ -1,12 +1,28 @@
 import {createAsyncThunk,createSlice} from "@reduxjs/toolkit";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { getSession } from "next-auth/react";
+
+const loadCartFromLocalStorage = () => {
+  if (typeof window !== 'undefined') {
+    const cart = localStorage.getItem('cart');
+    return cart ? JSON.parse(cart) : [];
+  }
+  return [];
+};
+
+const saveCartToLocalStorage = (cart) => {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('cart', JSON.stringify(cart));
+  }
+};
 
 export const fetchCart = createAsyncThunk('cart/fetch',
         async(_,{rejectedWithValue})=>{
+          const session = await getSession();
+  if (session) {
                 try {
                         const response = await axios.get('/api/cart')
-                        console.log(response.data)
                         if(response.data.successType == "EMPTY"){
                                 return {totalItem:0}
                         }else{
@@ -15,6 +31,10 @@ export const fetchCart = createAsyncThunk('cart/fetch',
                 } catch (error) {
                        
                         return rejectedWithValue(error.message)
+                }}
+                else {
+                  const cart = loadCartFromLocalStorage();
+                  return {localCart:true,cart};
                 }
         }
 )
@@ -29,10 +49,13 @@ export const getCartByApplyCoupon = createAsyncThunk('cart/applyCopuon',
                 }
         }
 )
+
 export const addToCart = createAsyncThunk('cart/add',
-        async(data,{rejectedWithValue})=>{
+        async(item,{rejectedWithValue})=>{
+          const session = await getSession();
+  if (session) {
                 try {
-                        const response = await axios.post('/api/cart/add',data);
+                        const response = await axios.post('/api/cart/add',{productId:item.productId,quantity:item.quantity});
                         console.log(response.data)
                         toast.success("Product added to cart!");
 
@@ -40,10 +63,23 @@ export const addToCart = createAsyncThunk('cart/add',
                 } catch (error) {
                         return rejectedWithValue(error.message)
                 }
+        }else {
+          const cart = loadCartFromLocalStorage();
+          const existingItem = cart.find((i) => i.productId === item.productId);
+          if (existingItem) {
+            existingItem.quantity += item.quantity;
+          } else {
+            cart.push(item);
+          }
+          saveCartToLocalStorage(cart);
+          toast.success("Product added to cart!");
+          return {localCart:true,cart};
         }
-)
+})
 export const removefromCart = createAsyncThunk('cart/remove',
         async(productId,{rejectedWithValue})=>{
+          const session = await getSession();
+  if (session) {
                 try {
                         const response = await axios.post('/api/cart/remove',{productId})
                         console.log(response.data)
@@ -51,6 +87,12 @@ export const removefromCart = createAsyncThunk('cart/remove',
                 } catch (error) {
                         return rejectedWithValue(error.message)
                 }
+              } else {
+                const cart = loadCartFromLocalStorage();
+                const updatedCart = cart.filter((item) => item.productId !== productId);
+                saveCartToLocalStorage(updatedCart);
+                return {localCart:true,cart:updatedCart};
+              }
         }
 )
 const calculateTotals = (items) => {
@@ -62,8 +104,8 @@ const calculateTotals = (items) => {
     totalPrice += item.price * item.quantity;
     totalItem+=item.quantity;
     totalDiscountedPrice += item.discountedPrice * item.quantity;
-    discounte += totalPrice - totalDiscountedPrice;
-  });
+    discounte = totalPrice - totalDiscountedPrice;
+  });   
  
   return { discounte,totalPrice, totalDiscountedPrice, totalItem };
 };
@@ -72,7 +114,7 @@ const initialState = {
         loadingProductId:null,
         loadingRemoveProduct:null,
         totalItem:0,
-        Items:[],
+        Items: loadCartFromLocalStorage(),
         totalPrice:0,
         discounte:0,
         totalDiscountedPrice:0,
@@ -94,17 +136,17 @@ const initialState = {
             state.openSideCart = action.payload;
           },
           addItem: (state, action) => {
-            const existingItem = state.items.find((item) => item.id === action.payload.id);
+            const existingItem = state.Items.find((item) => item.id === action.payload.id);
             if (existingItem) {
               existingItem.quantity += action.payload.quantity;
             } else {
-              state.items.push(action.payload);
+              state.Items.push(action.payload);
             }
-            localStorage.setItem("cart", JSON.stringify(state.items));
+            localStorage.setItem("cart", JSON.stringify(state.Items));
           },
           removeItem: (state, action) => {
-            state.items = state.items.filter((item) => item.id !== action.payload);
-            localStorage.setItem("cart", JSON.stringify(state.items));
+            state.Items = state.Items.filter((item) => item.id !== action.payload);
+            localStorage.setItem("cart", JSON.stringify(state.Items));
           },
           clearCart: (state) => {
             localStorage.removeItem("cart");
@@ -116,7 +158,6 @@ const initialState = {
               totalPrice:0,
               discounte:0,
               totalDiscountedPrice:0,
-              
               loading: false,
               error: null,
               isFetched:false,};
@@ -125,24 +166,35 @@ const initialState = {
             state.isLoggedIn = action.payload;
           },
           syncCart: (state, action) => {
-            state.items = action.payload;
-            localStorage.setItem("cart", JSON.stringify(state.items));
+            state.Items = action.payload;
+            localStorage.setItem("cart", JSON.stringify(state.Items));
           },
         },
         extraReducers: (builder) => {
           builder
       .addCase(fetchCart.pending, (state) => {
         state.loading = true;
+        state.error = null;
+
       })
       .addCase(fetchCart.fulfilled, (state, action) => {
         state.loading = false;
-        state.Items = action.payload.items;
-        state.totalItem = action.payload.totalItem;
-        state.totalPrice = action.payload.totalPrice;
-        state.discounte = action.payload.discounte;
-        state.totalDiscountedPrice = action.payload.totalDiscountedPrice;
-        state.error = null;
+        let data ;
+        if(action.payload.localCart){
+         data = action.payload.cart;
+
+        }else{
+        data = action.payload.items;
         state.isFetched = true;
+        }
+        state.Items = data;
+        console.log(data)
+        const { discounte,totalPrice, totalDiscountedPrice, totalItem } = calculateTotals(data);
+        state.totalItem = totalItem;
+        state.totalPrice = totalPrice;
+        state.discounte = discounte;
+        state.totalDiscountedPrice = totalDiscountedPrice;
+        
       })
       .addCase(fetchCart.rejected, (state, action) => {
         state.loading = false;
@@ -153,8 +205,10 @@ const initialState = {
         state.loadingProductId = action.meta.arg.productId;
       })
       .addCase(addToCart.fulfilled, (state, action) => {
-       
         let data ;
+       if(action.payload.localCart){
+        data = action.payload.cart;
+       }else{
         if(action.payload.isExist){
           const idx = state.Items.findIndex((val)=>val.productId === action.meta.arg.productId);
             console.log(idx)
@@ -164,7 +218,8 @@ const initialState = {
         else{
           data = state.Items? [...state.Items,action.payload.item] : [action.payload.item]
         }
-        state.Items = data;
+      }
+      state.Items = data;
         const { discounte,totalPrice, totalDiscountedPrice, totalItem } = calculateTotals(data);
         state.totalItem = totalItem;
         state.totalPrice = totalPrice;
@@ -184,7 +239,12 @@ const initialState = {
         
       })
       .addCase(removefromCart.fulfilled, (state, action) => {
-        const data = state.Items.filter((val)=>val.productId !== action.meta.arg);
+        let data ;
+        if(action.payload.localCart){
+         data = action.payload.cart;
+        }else{
+        data = state.Items.filter((val)=>val.productId !== action.meta.arg);
+        }
         state.Items = data;
         const { discounte,totalPrice, totalDiscountedPrice, totalItem } = calculateTotals(data);
         state.totalItem = totalItem;

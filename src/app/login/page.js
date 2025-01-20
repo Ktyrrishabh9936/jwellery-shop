@@ -3,12 +3,12 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
-import { signIn } from 'next-auth/react';
 import Link from "next/link";
 import { toast } from "react-toastify"; 
 import { useRouter } from 'next/navigation';
 import { useState } from "react";
 import Image from "next/image";
+import { signIn, signOut, useSession } from 'next-auth/react';
 
 // Yup validation schema
 const schema = yup.object().shape({
@@ -22,6 +22,8 @@ const schema = yup.object().shape({
 export default function Login() {
   const router = useRouter();
   const [loading,setLoading] = useState(false);
+  const { data: session } = useSession();
+
   const {
     register,
     handleSubmit,
@@ -133,6 +135,11 @@ export default function Login() {
               </button>}
             </div>
           </form>
+          {/* {!session ? (
+        <button onClick={() => signIn('google')}>Sign in with Google</button>
+      ) : (
+        <button onClick={() => signOut()}>Sign out</button>
+      )} */}
           <div className="text-center">
             <Link
               href="/register"

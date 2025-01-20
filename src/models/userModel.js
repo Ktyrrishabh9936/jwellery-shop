@@ -32,7 +32,7 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Product',
     }],
-    profilePhoto:{
+    image:{
         type:String,
     },
     phone: {
