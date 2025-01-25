@@ -29,6 +29,10 @@ images: {
       hostname: 'jenii-storage.s3-accelerate.amazonaws.com',
       pathname: '/category/**',
     },
+    {
+      protocol: 'https',
+      hostname: 'lh3.googleusercontent.com',
+    },
   ],
 },
         webpack(config) {

@@ -19,7 +19,7 @@ const rootReducer = combineReducers({
         filteredProducts:productReducer,
         collection:collectionReducer,
         cart:cartReducer,
-        address:addressReducer,
+        address: addressReducer,
         orders: ordersReducer,
   })
   export default rootReducer;

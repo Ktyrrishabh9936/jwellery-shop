@@ -42,6 +42,7 @@ const buildSearchPipeline = (searchTerm, page = 1, pageSize = 10) => {
                 category:1,
                 price:1,
                 slug:1,
+                sku:1,
               },
             },
           ],

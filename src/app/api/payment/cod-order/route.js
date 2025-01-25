@@ -19,18 +19,15 @@ export const generateOrderId = (length = 10) => {
 export async function POST(req) {
   await connect();
   try {
-    const {selectedDetails, firstName, lastName, contact, street, city, state, postalCode, landmark,isSaveAddress } = await req.json();
+    const {Items,addressId } = await req.json();
     const userId = await UserAuth(); // Assume userId is set in middleware
     const user = await User.findById(userId);
     if (!user) {
       return NextResponse.json({ message: 'User not found' }, { status: 404 });
     }
-    const cart = await Cart.findOne({ userId });
-    if (!cart) {
-      return NextResponse.json({ message: 'Cart not found' }, { status: 404 });
-    }
+ 
     let order_items = [];
-    const total = cart.items.reduce((acc, item) => {
+    const total = Items.reduce((acc, item) => {
         const price = item.discountedPrice; // Optional chaining
         const quantity = item.quantity || 1; // Default to 1 if quantity is not defined
         order_items.push(  {
@@ -46,39 +43,17 @@ export async function POST(req) {
   
         return acc + price * quantity; // Calculate total
       }, 0);
-      console.log(order_items,total)
+      console.log(total)
       // Set up Razorpay order details
       let address;
-      if(!selectedDetails){
-        if ((!firstName || !lastName || !contact || !street || !city || !state || !postalCode)) {
-          return NextResponse.json({ message: 'Given fields are required' }, { status: 400 });
-        }
-  
-         address = {
-          firstName,
-          lastName,
-          contact,
-          street,
-          city,
-          state,
-          postalCode,
-          landmark,
-        }
-        if(isSaveAddress){
-                 const  newadd = new Address({...address,userId});
-                user.addresses.push(newadd._id);
-                await user.save();
-                await newadd.save();
-        }
-}
-      else{
-         address = await Address.findById(selectedDetails);
+      
+         address = await Address.findById(addressId);
         if (!address) {
             return NextResponse.json({
                 message: " Address Not Found"
             }, { status: 404 });
         }
-      }
+      
       const JENII_ORDERID = generateOrderId()
       const shiprocket = await createShiprocketOrder({
         order_id: JENII_ORDERID,
@@ -114,7 +89,7 @@ export async function POST(req) {
       order = new Order({ userId, orders: [] });
     }
     order.orders.push({
-      items: cart.items.map((item) => 
+      items: Items.map((item) => 
       {
         return {
         productId: item.productId,

@@ -1,7 +1,7 @@
 import {createAsyncThunk,createSlice} from "@reduxjs/toolkit";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { getSession } from "next-auth/react";
+// import { getSession } from "next-auth/react";
 
 const loadCartFromLocalStorage = () => {
   if (typeof window !== 'undefined') {
@@ -19,8 +19,8 @@ const saveCartToLocalStorage = (cart) => {
 
 export const fetchCart = createAsyncThunk('cart/fetch',
         async(_,{rejectedWithValue})=>{
-          const session = await getSession();
-  if (session) {
+          // const session = await getSession();
+  if (false) {
                 try {
                         const response = await axios.get('/api/cart')
                         if(response.data.successType == "EMPTY"){
@@ -52,8 +52,8 @@ export const getCartByApplyCoupon = createAsyncThunk('cart/applyCopuon',
 
 export const addToCart = createAsyncThunk('cart/add',
         async(item,{rejectedWithValue})=>{
-          const session = await getSession();
-  if (session) {
+          // const session = await getSession();
+  if (false) {
                 try {
                         const response = await axios.post('/api/cart/add',{productId:item.productId,quantity:item.quantity});
                         console.log(response.data)
@@ -78,8 +78,8 @@ export const addToCart = createAsyncThunk('cart/add',
 })
 export const removefromCart = createAsyncThunk('cart/remove',
         async(productId,{rejectedWithValue})=>{
-          const session = await getSession();
-  if (session) {
+          // const session = await getSession();
+  if (false) {
                 try {
                         const response = await axios.post('/api/cart/remove',{productId})
                         console.log(response.data)

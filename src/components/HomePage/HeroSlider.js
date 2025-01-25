@@ -1,5 +1,4 @@
 "use client"
-import { Carousel} from "@/MaterialTailwindNext";
 import Image from "next/image";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { getHeroSlides } from "@/lib/reducers/slidesReducer";

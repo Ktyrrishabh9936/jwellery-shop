@@ -1,10 +1,9 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
-
-export const getAddress = createAsyncThunk(
-  'address/getUser',
-  async (_, { rejectWithValue }) => {
+// Async thunks for API requests
+export const fetchAddresses = createAsyncThunk('address/fetchAddresses', async (_, { rejectWithValue }) => {
     try {
        const response = await axios.get(`/api/users/address`);
        console.log(response.data)
@@ -12,57 +11,104 @@ export const getAddress = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.message);
     }
+});
+
+export const addAddress = createAsyncThunk('address/addAddress', async (address, { rejectWithValue }) => {
+  try {
+    const response = await axios.post('/api/users/address', address);
+    toast.success("Add Address sucesss")
+    console.log(response.data)
+    return response.data.address;
+  } catch (error) {
+    return rejectWithValue(error.response.data);
   }
-);
+});
 
-export const RemoveAddress = createAsyncThunk(
-  'address/remove',
-  async (addressId, { rejectWithValue }) => {
-    try {
-       await axios.post(`/api/wishlist/remove`,{addressId});
-       return response.data;
-    } catch (error) {
-      return rejectWithValue(error.message);
-    }
+export const updateAddress = createAsyncThunk('address/updateAddress', async (address, { rejectWithValue }) => {
+  try {
+    const response = await axios.put(`/api/users/address`, address);
+    return  response.data.address;
+  } catch (error) {
+    return rejectWithValue(error.response.data);
   }
-);
+});
 
+export const deleteAddress = createAsyncThunk('address/deleteAddress', async (id, { rejectWithValue }) => {
+  try {
+    console.log(id)
+    await axios.delete(`/api/users/address/${id}`);
+    return id;
+  } catch (error) {
+    return rejectWithValue(error.response.data);
+  }
+});
 
-// Reducer slice
+// Initial state
+const initialState = {
+  addresses: [],
+  loading: false,
+  error: null,
+};
+
+// Address slice
 const addressSlice = createSlice({
   name: 'address',
-  initialState: {
-    loadingAddress:null,
-    address:[],   
-    error:null,
-  },
-  reducers: {  },
+  initialState,
+  reducers: {},
   extraReducers: (builder) => {
     builder
-         .addCase(getAddress.pending, (state) => {
+      .addCase(fetchAddresses.pending, (state) => {
         state.loading = true;
-      })
-      .addCase(getAddress.fulfilled, (state,action) => {
-        state.loading = false;
-        state.address = action.payload;
         state.error = null;
       })
-      .addCase(getAddress.rejected, (state, action) => {
+      .addCase(fetchAddresses.fulfilled, (state, action) => {
+        state.loading = false;
+        state.addresses = action.payload;
+      })
+      .addCase(fetchAddresses.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
-      .addCase(RemoveAddress.pending, (state,action) => {
-        state.loadingAddress = action.meta.arg;
-      })
-      .addCase(RemoveAddress.fulfilled, (state,action) => {
-        state.loadingAddress = null;
-        state.address = state.address.filter((val)=> val._id=== action.meta.arg);
+      .addCase(addAddress.pending, (state) => {
+        state.loading = true;
         state.error = null;
       })
-      .addCase(RemoveAddress.rejected, (state, action) => {
-        state.loadingAddress = null;
+      .addCase(addAddress.fulfilled, (state, action) => {
+        state.loading = false;
+        state.addresses.push(action.payload);
+      })
+      .addCase(addAddress.rejected, (state, action) => {
+        state.loading = false;
         state.error = action.payload;
       })
+      .addCase(updateAddress.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateAddress.fulfilled, (state, action) => {
+        state.loading = false;
+        const index = state.addresses.findIndex((address) => address._id === action.payload._id);
+        if (index !== -1) {
+          state.addresses[index] = action.payload;
+        }
+      })
+      .addCase(updateAddress.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(deleteAddress.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteAddress.fulfilled, (state, action) => {
+        state.loading = false;
+        state.addresses = state.addresses.filter((address) => address._id !== action.payload);
+      })
+      .addCase(deleteAddress.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
   },
 });
+
 export default addressSlice.reducer;

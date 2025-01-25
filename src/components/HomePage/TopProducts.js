@@ -1,20 +1,21 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Swiper, SwiperSlide, useSwiper } from "swiper/react";
 import "swiper/css";
 import "swiper/css/scrollbar";
 import "swiper/css/grid";
-import Link from "next/link";
-import Image from "next/image";
+
 import { Navigation,Scrollbar,Grid } from "swiper/modules";
 import "swiper/css/navigation";
 import { fetchmoretopcollectionProducts, fetchtopcollectionProducts } from "@/lib/reducers/collectionReducer";
-import { formatPrice } from "@/utils/productDiscount";
-import { addToCart } from "@/lib/reducers/cartReducer";
+
 import { Button, IconButton } from "@/MaterialTailwindNext";
 import Skel from "@skel-ui/react";
 import toast from "react-hot-toast";
 import { NavArrowLeft, NavArrowRight } from "iconoir-react";
+import { Autoplay } from 'swiper/modules';
+import 'swiper/swiper-bundle.css';
+import ProductCard from "./ProductsCard";
 
 export function CustomNavigation() {
   const swiper = useSwiper();
@@ -48,8 +49,15 @@ export function CustomNavigation() {
 }
 const TopProductCarousel = () => {
   
+  
   const dispatch = useDispatch();
   const {  topPicks, topPicksCurrentPage, topPicksTotalPages,topPicksLoading} = useSelector((state) => state.collection);
+  const breakpoints = {
+    0: { slidesPerView: "auto" , slidesPerGroup:2},
+    540: { slidesPerView: 3, slidesPerGroup: 2},
+    768: { slidesPerView: 4 , slidesPerGroup:4},
+    960: { slidesPerView: 4  , slidesPerGroup:4},
+  };
 
   useEffect(() => {
     if(topPicksCurrentPage <= 1){
@@ -62,18 +70,7 @@ const TopProductCarousel = () => {
       dispatch(fetchmoretopcollectionProducts({ page: topPicksCurrentPage + 1, limit: 8 }));
     }
   };
-  const handleAddToCart = async (product) => {
-    const data = { productId:product._id,name:product.name,quantity:1,img_src:product.images[0],price:product.price,discountedPrice:product.discountPrice,category:product.category.name,SKU:product.sku}
-
-    dispatch(addToCart(data))
-  };
-  const {loadingProductId} = useSelector((state)=>state.cart)
-  const breakpoints = {
-    0: { slidesPerView: "auto" , slidesPerGroup:2},
-    540: { slidesPerView: 3, slidesPerGroup: 2},
-    768: { slidesPerView: 4 , slidesPerGroup:4},
-    960: { slidesPerView: 4  , slidesPerGroup:4},
-  };
+ 
 
   return (
     <section className=" relative max-w-7xl mx-auto p-2 sm:p-4 mb-8 pb-4">
@@ -148,43 +145,7 @@ const TopProductCarousel = () => {
       >
         {topPicks.map((product) => (
           <SwiperSlide key={product._id} className="carousel-slide mt-0 md:mt-14 max-w-[200px] md:max-w-none mb-8"  >
-              <div 
-              key={product._id}
-              className="bg-white rounded-lg p-2 md:p-4 shadow-none md:hover:shadow-xl hover:bg-gray-100 transition-[--tw-shadow] "
-            >
-              <Link href={`/product/${product._id}`} >
-              <Image
-                width={300}
-                height={300}
-                loading="lazy"
-                src={product.images[0]}
-                alt={product.name}
-                className="w-full h-[clamp(11rem,18vw,20rem)] object-cover rounded-lg "
-              />
-                <div className="flex justify-between items-center gap-2 mt-2">
-                  <div className="flex  items-center gap-x-2  line-clamp-1 w-[90%]">
-                    <span className="text-[#1E1E1E] font-semibold text-sm md:text-base ">
-                      {formatPrice(product.discountPrice)}
-                    </span>
-                    <strike className=" text-[#F42222] text-xs  line-clamp-1">
-                      {formatPrice(product.price)}
-                    </strike>
-                  </div>
-                  <div className="text-sm text-gray-500  flex justify-center items-center gap-2 w-[40px]">
-                    <span className="text-[#F42222]">★</span>
-                    <span>{product.averageRating.toFixed(1)}</span>
-                  </div>
-                </div>
-                <div className="text-gray-600 line-clamp-1">{product.name}</div>
-              </Link>
-              <Button
-                className="mt-4 bg-[#F8C0BF] hover:bg-[#fe6161] transition-colors py-2 duration-300 px-4 rounded-md w-full capitalize text-sm"
-                onClick={() => handleAddToCart(product)}
-                disabled={loadingProductId === product._id}
-              >
-                {loadingProductId === product._id ? "Adding..." : "Add to Cart"}
-              </Button>
-            </div>
+            <ProductCard product={product}/>
           </SwiperSlide>
         ))}
         <CustomNavigation />

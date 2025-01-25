@@ -14,7 +14,7 @@ const razorpayInstance = new Razorpay({
 export async function POST(req) {
   await connect();
   try {
-    const {selectedDetails, firstName, lastName, contact, street, city, state, postalCode, landmark,isSaveAddress } = await req.json();
+    const {Items,addressId} = await req.json();
     const userId = await UserAuth();
     
     // Validate fields manually if Yup is not used
@@ -24,11 +24,11 @@ export async function POST(req) {
     if (!user) {
       return NextResponse.json({ message: 'User Exist' }, { status: 404 });
     }
-    const cart = await Cart.findOne({ userId });
-    if (!cart) {
-      return NextResponse.json({ message: 'Cart does not exist' }, { status: 404 });
-    }
-    const total = cart.items.reduce((acc, item) => {
+    // const cart = await Cart.findOne({ userId });
+    // if (!cart) {
+    //   return NextResponse.json({ message: 'Cart does not exist' }, { status: 404 });
+    // }
+    const total = Items.reduce((acc, item) => {
       const price = item.discountedPrice; // Optional chaining
       const quantity = item.quantity || 1; // Default to 1 if quantity is not defined
 
@@ -53,35 +53,8 @@ export async function POST(req) {
     // Create Razorpay order
 
     const order = await razorpayInstance.orders.create(options);
-    if(!selectedDetails){
-      if ((!firstName || !lastName || !contact || !street || !city || !state || !postalCode)) {
-        return NextResponse.json({ message: 'Given fields are required' }, { status: 400 });
-      }
-
-      let addressObj = {
-        firstName,
-        lastName,
-        contact,
-        street,
-        city,
-        state,
-        postalCode,
-        landmark,
-      }
-      if(!isSaveAddress){
-        return NextResponse.json({ message: 'Order created successfully', order:order , address:addressObj,amount:total}, { status: 200 });
-      }
-      
-  
-      // Create and save new address
-      let address = new Address({...addressObj,userId});
-      user.addresses.push(address._id);
-      await user.save();
-      await address.save();
-      return NextResponse.json({ message: 'Order created successfully', order:order , address:address,amount:total}, { status: 200 });
-    }
-    else{
-      const address = await Address.findById(selectedDetails);
+   
+      const address = await Address.findById(addressId);
       if (!address) {
           return NextResponse.json({
               message: " Address Not Found"
@@ -89,7 +62,7 @@ export async function POST(req) {
       }
       // Confirm successful order creation
       return NextResponse.json({ message: 'Order created successfully', order:order,address,amount:total}, { status: 200 });
-    }
+   
   } catch (error) {
     console.error('Error creating order:', error);
     return NextResponse.json({ message: 'Error creating Razorpay order', error: error.message }, { status: 500 });

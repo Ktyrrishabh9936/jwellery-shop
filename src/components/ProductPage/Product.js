@@ -49,6 +49,7 @@ export default function Product({ id }) {
   const handleOpen = () => setOpen((cur) => !cur);
   const handleIsFavorite = () => setIsFavorite((cur) => !cur);
 
+
     useEffect(() => {
         if (id) {
             const fetchProduct = async () => {
@@ -132,7 +133,7 @@ export default function Product({ id }) {
                     src={img}
                     alt={`Product${ind}`}
                     key={`Product${ind}`}
-                    className="object-contain w-full h-auto  "
+                    className="object-contain w-full h-auto   transform transition-transform duration-500 hover:scale-125"
                 />)}
                
               {  product?.video &&   <video
@@ -322,6 +323,7 @@ function ProductInfo({info,productId}) {
     const [serviceable, setServiceable] = useState(null);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
+    
     const {
       register,
       handleSubmit,
@@ -332,14 +334,12 @@ function ProductInfo({info,productId}) {
     const currentUrl = typeof window !== 'undefined' 
     ? `${window.location.origin}${pathname}` 
     : '';
-const {user} = useSelector((store)=>store.user);
-    const handleAddToCart = async (product) => {
-      if (!user) {
-        toast.error("Please log in to add products to your cart!");
-        return;
-      }
-      dispatch(addToCart({ productId: product._id, quantity: 1 }));
-    };
+   const handleAddToCart = async (product) => {
+       const data = { productId:product._id,name:product.name,quantity:1,img_src:product.images[0],price:product.price,discountedPrice:product.discountPrice,category:product.category.name,SKU:product.sku}
+   
+       dispatch(addToCart(data))
+     };
+     const {user} = useSelector((state)=>state.user);
   
     const onSubmit  = async (data) => {
       const code = data.pincode;
@@ -380,8 +380,8 @@ const {user} = useSelector((store)=>store.user);
             </h2>
             <div className="flex py-2">
                 <p className="text-sm text-gray-600">Made with 925 Silver |</p>
-                {loadWishlist ===productId? <span className="h-5 w-5 border-t-transparent border-solid animate-spin rounded-full border-red-500 border-4 mx-3 "></span>:wishListByID.some((item)=>item===productId) ?<button className="text-[#BC264B] text-sm mx-3 underline" onClick={()=>dispatch(RemovewishList(productId))}><FaHeartCircleCheck  fontSize={20}/></button>
-                :<button className=" text-sm mx-3 underline" onClick={()=>dispatch(AddwishList(productId))}><FaRegHeart  fontSize={20}/></button>}
+                {user ? loadWishlist ===productId? <span className="h-5 w-5 border-t-transparent border-solid animate-spin rounded-full border-red-500 border-4 mx-3 "></span>:wishListByID.some((item)=>item===productId) ?<button className="text-[#BC264B] text-sm mx-3 underline" onClick={()=>dispatch(RemovewishList(productId))}><FaHeartCircleCheck  fontSize={20}/></button>
+                :<button className=" text-sm mx-3 underline" onClick={()=>dispatch(AddwishList(productId))}><FaRegHeart  fontSize={20}/></button> : ""}
                 
                 <RWebShare
                 data={{
@@ -460,7 +460,7 @@ const {user} = useSelector((store)=>store.user);
 {loadingProductId === productId ?<button className="ml-3 border-[1px] max-w-2xl border-[#f76664] hover:bg-[#f76664] text-black font-semibold p-2 rounded w-full my-2" disabled>
                     Adding...
                 </button>:
-                <button className=" ml-3 border-[1px] bg-[#F8C0BF] hover:bg-[#f76664] text-black max-w-2xl  font-semibold p-2 rounded w-full my-2" onClick={()=>handleAddToCart({_id:productId})}>
+                <button className=" ml-3 border-[1px] bg-[#F8C0BF] hover:bg-[#f76664] text-black max-w-2xl  font-semibold p-2 rounded w-full my-2" onClick={()=>handleAddToCart(info)}>
                     Add to Cart
                 </button>}
     

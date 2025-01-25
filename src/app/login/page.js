@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from "react";
 import Image from "next/image";
 import { signIn, signOut, useSession } from 'next-auth/react';
+import { FaGoogle } from "react-icons/fa6";
 
 // Yup validation schema
 const schema = yup.object().shape({
@@ -135,11 +136,15 @@ export default function Login() {
               </button>}
             </div>
           </form>
-          {/* {!session ? (
-        <button onClick={() => signIn('google')}>Sign in with Google</button>
+          {!session ? (
+            <button onClick={() => signIn('google')} className="flex items-center bg-white dark:bg-gray-900 border border-gray-300 rounded-lg shadow-md px-6 py-2 text-sm font-medium text-gray-800 dark:text-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 mx-auto mb-3">
+         <span><FaGoogle/></span>
+                <span className="pl-3">Continue with Google</span>
+            </button>
       ) : (
-        <button onClick={() => signOut()}>Sign out</button>
-      )} */}
+        
+        <button onClick={() => signOut()} className="flex items-center bg-white dark:bg-gray-900 border border-gray-300 rounded-lg shadow-md px-6 py-2 text-sm font-medium text-gray-800 dark:text-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 mx-auto mb-3">Sign out</button>
+      )}
           <div className="text-center">
             <Link
               href="/register"

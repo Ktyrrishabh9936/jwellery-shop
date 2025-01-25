@@ -5,6 +5,7 @@ import { UserCircleIcon, Cog6ToothIcon, InboxArrowDownIcon, LifebuoyIcon, PowerI
 import Image from 'next/image';
 import { signOut } from 'next-auth/react';
 import { usePathname, useRouter, } from 'next/navigation';
+import { User } from 'lucide-react';
 
 
 
@@ -16,10 +17,17 @@ function ProfileMenu({user}) {
     const profileMenuItems = [
   
         {
+            label: "Profile",
+            icon: User,
+            onClickNavItem:()=>{
+                navigate.push('/profile');
+                closeMenu()},
+        },
+        {
             label: "My Orders",
             icon: InboxArrowDownIcon,
             onClickNavItem:()=>{
-                navigate.push('/myorders');
+                navigate.push('/orders');
                 closeMenu()},
         },
         {
@@ -41,13 +49,20 @@ function ProfileMenu({user}) {
                     color="blue-gray"
                     className="flex items-center gap-1 rounded-full py-0.5 pr-2 pl-0.5 lg:ml-auto"
                 >
-                    <Avatar
+                    {user ? <Avatar
                         variant="circular"
                         size="sm"
                         alt="User Profile"
                         className="border border-pink-300 p-0.5 text-black"
-                        src="/images/user.svg"
-                    />
+                        src={user?.image}
+                    /> :<Avatar
+                    variant="circular"
+                    size="sm"
+                    alt="User Profile"
+                    className="border border-pink-300 p-0.5 text-black"
+                    src="/images/user.svg"
+                />
+                    }
                     <ChevronDownIcon
                         strokeWidth={2.5}
                         className={`h-3 w-3 transition-transform text-pink-500 ${isMenuOpen ? "rotate-180" : ""}`}
@@ -57,20 +72,26 @@ function ProfileMenu({user}) {
             <MenuList className="p-1">
             <div className="flex items-center gap-3 px-4 py-3">
                 <div className="relative aspect-square w-10 rounded-full">
-                  <Image
+                  {user ? <Image
+                  height={30}
+                  width={30}
+                    src={user?.image}
+                    alt="account"
+                    className="w-full rounded-full object-cover object-center"
+                  />:<Image
                   height={30}
                   width={30}
                     src="/images/user.svg"
                     alt="account"
                     className="w-full rounded-full object-cover object-center"
-                  />
+                  />}
                   <span className="absolute -right-0.5 -top-0.5 block h-3.5 w-3.5 rounded-full border-2 border-white bg-green dark:border-dark"></span>
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-dark dark:text-white">
                    {user?.name}
                   </p>
-                  <p className="text-sm text-body-color dark:text-dark-6">
+                  <p className="text-sm text-body-color dark:text-dark-6 line-clamp-1">
                     {user?.email}
                   </p>
                 </div>

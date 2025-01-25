@@ -37,11 +37,9 @@ const userSchema = new mongoose.Schema({
     },
     phone: {
         type: Number,
-        required: true
     },
     password: {
         type: String,
-        required: true
     },
     addresses:[{
         type:mongoose.Schema.Types.ObjectId,

@@ -21,7 +21,7 @@ export async function POST(req) {
         if (!address) {
             return NextResponse.json({
                 message: "Error while adding address"
-            });
+            },{status:404});
         }
 
         return NextResponse.json({
@@ -32,7 +32,7 @@ export async function POST(req) {
         return NextResponse.json({
             message: "Server error",
             error: err.message
-        });
+        },{status:500});
     }
 }
 
@@ -45,7 +45,7 @@ export async function GET() {
             return NextResponse.json({
                 address:[],
                 message: "No Address  Found"
-            });
+            },{status:404});
         }
 
         return NextResponse.json({address},{status:200});
@@ -56,6 +56,42 @@ export async function GET() {
         },{status:500});
     }
 }
+
+export async function PUT(request) {
+  await connect();
+  try {
+    const userId = await UserAuth(); // Assume userId is set in middleware
+    const data = await request.json();
+    const { id, ...updateData } = data;
+
+    const updatedAddress = await Address.findOneAndUpdate(
+      { _id: id, userId },
+      updateData,
+      { new: true }
+    );
+
+    if (!updatedAddress) {
+      return NextResponse.json(
+        {
+          message: 'Address not found',
+        },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({ address: updatedAddress }, { status: 200 });
+  } catch (err) {
+    return NextResponse.json(
+      {
+        message: 'Server error',
+        error: err.message,
+      },
+      { status: 500 }
+    );
+  }
+}
+
+
 
 // import { NextResponse } from "next/server";
 // import User from "@/models/userModel";

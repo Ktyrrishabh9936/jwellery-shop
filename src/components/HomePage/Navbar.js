@@ -68,14 +68,14 @@ export default function NavBar() {
           </Typography>
         </MenuHandler>
         <MenuList>
-        <Link href="/categories/tops"> <MenuItem>  Tops (Earrings)</MenuItem></Link>
-        <Link href="/categories/rings"> <MenuItem>   Rings</MenuItem></Link>
-        <Link href="/categories/sets">   <MenuItem> Set (Pendant Sets with Chain)</MenuItem></Link>
-        <Link href="/categories/ring">  <MenuItem>  Mangalsutra</MenuItem></Link>
-        <Link href="/categories/necklace"> <MenuItem>   Chain (Small Necklace)</MenuItem></Link>
-        <Link href="/categories/bracelet/rings"> <MenuItem>   Bracelet + Ring</MenuItem></Link>
-        <Link href="/categories/pendent/rings"> <MenuItem>   Pendant Set + Ring</MenuItem></Link>
-        <Link href="/categories/anklet"> <MenuItem>   Payal</MenuItem></Link>
+        <Link href="/categories/all"> <MenuItem> All</MenuItem></Link>
+        <Link href="/categories/rings"> <MenuItem> Rings</MenuItem></Link>
+        <Link href="/categories/pendant-sets">   <MenuItem> Pendant Sets </MenuItem></Link>
+        <Link href="/categories/tops"> <MenuItem>Tops</MenuItem></Link>
+        <Link href="/categories/pendant-chain"> <MenuItem> Pendant Chain </MenuItem></Link>
+        <Link href="/categories/anklet"> <MenuItem>   Anklets</MenuItem></Link>
+        <Link href="/categories/bracelet"> <MenuItem>   Bracelet</MenuItem></Link>
+        <Link href="/categories/mangalsutra">  <MenuItem>  Mangalsutra</MenuItem></Link>
       </MenuList>
       </Menu>
 

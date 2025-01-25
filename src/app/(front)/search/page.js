@@ -12,6 +12,7 @@ import axios from "axios";
 import { toast } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "@/lib/reducers/cartReducer";
+import ProductCard from "@/components/HomePage/ProductsCard";
 
 export default function SearchPage() {
     const [products, setProducts] = useState([]);
@@ -74,41 +75,8 @@ export default function SearchPage() {
                 ) : products.length > 0 ? (
                     <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-y-2 md:gap-y-4 gap-x-1">
                         {products.map((product) => (
-            <div
-              key={product._id}
-              className="bg-white rounded-lg p-2 md:p-4 hover:shadow-xl transition-[--tw-shadow] "
-            >
-              <Image
-                width={300}
-                height={300}
-                src={product.images[0]}
-                alt={product.name}
-                className="w-full h-52 object-cover rounded-lg mb-4 "
-              />
-              <div className="px-1">
-                <div className="flex justify-between items-center gap-2 mt-2">
-                  <div className="flex  items-center gap-x-2  line-clamp-1 w-[90%]">
-                    <span className="text-[#1E1E1E] font-semibold text-base ">
-                      {formatPrice(product.discountPrice)}
-                    </span>
-                    <span className="line-through text-[#F42222] text-xs  line-clamp-1">
-                      {formatPrice(product.price)}
-                    </span>
-                  </div>
-                  <div className="text-sm text-gray-500  flex justify-center items-center gap-2 w-[40px]">
-                    <span className="text-[#F42222]">★</span>
-                    <span>3.6</span>
-                  </div>
-                </div>
-                <div className="text-gray-600 line-clamp-1">{product.name}</div>
-              </div>
-              <Button
-                className="mt-4 bg-[#F8C0BF] hover:bg-[#fe6161] transition-colors py-2 duration-300 px-4 rounded-md w-full capitalize text-sm"
-                onClick={() => handleAddToCart(product)}
-                disabled={loadingProductId === product._id}
-              >
-                {loadingProductId === product._id ? "Adding..." : "Add to Cart"}
-              </Button>
+            <div key={product._id} >
+             <ProductCard product={product}/>
             </div>
           ))}
                     </ul>

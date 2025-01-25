@@ -8,6 +8,8 @@ import axios from 'axios';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { FaGoogle } from 'react-icons/fa';
+import { signIn, signOut, useSession } from 'next-auth/react';
 
 // Yup validation schema for sign-up
 const signupSchema = yup.object().shape({
@@ -25,6 +27,7 @@ const signupSchema = yup.object().shape({
 });
 
 export default function SignUp() {
+  const { data: session } = useSession();
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: yupResolver(signupSchema),
   });
@@ -134,8 +137,18 @@ export default function SignUp() {
                 Sign Up
               </button>}
             </div>
-          </form>
+
               {error && <p  className="text-red-500 text-sm text-center">{error}</p>}
+          </form>
+            {!session ? (
+                      <button onClick={() => signIn('google')} className="flex items-center bg-white dark:bg-gray-900 border border-gray-300 rounded-lg shadow-md px-6 py-2 text-sm font-medium text-gray-800 dark:text-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 mx-auto mb-3">
+                   <span><FaGoogle/></span>
+                          <span className="pl-3">Continue with Google</span>
+                      </button>
+                ) : (
+                  
+                  <button onClick={() => signOut()} className="flex items-center bg-white dark:bg-gray-900 border border-gray-300 rounded-lg shadow-md px-6 py-2 text-sm font-medium text-gray-800 dark:text-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 mx-auto mb-3">Sign out</button>
+                )}
         </div>
       </div>
     </>

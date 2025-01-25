@@ -17,7 +17,7 @@ export const generateOrderId = (length = 10) => {
 export async function POST(req) {
   await connect();
   try {
-    const { paymentId, address, amount, orderId, signature } = await req.json();
+    const { paymentId, address, amount, orderId, signature,Items } = await req.json();
     const secret = process.env.RAZORPAY_SECRET; // Use environment variables for sensitive data
     const shasum = crypto.createHmac('sha256', secret);
     shasum.update(`${orderId}|${paymentId}`);
@@ -38,7 +38,7 @@ export async function POST(req) {
       order = new Order({ userId, orders: [] });
     }
     let order_items = [];
-    const items =  cart.items.map((item) => 
+    const items = Items.map((item) => 
       {
         order_items.push(  {
           name: item.name,

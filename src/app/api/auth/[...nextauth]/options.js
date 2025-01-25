@@ -46,9 +46,8 @@ const authOptions = {
     maxAge: 3600, // Token expires after 1 hour
   },
   callbacks: {
-    async signIn({ account, profile }) {
+    async signIn({user, account, profile }) {
       await connect();
-      console.log(account,profile)
       if (account.provider === "google") {
         const existingUser = await User.findOne({ email: profile.email });
 
@@ -59,24 +58,23 @@ const authOptions = {
             name: profile.name || profile.given_name,
             image: profile.picture, // Save profile picture if available
           });
-          profile.id = newUser._id;
+          user.id = newUser._id;
         } else {
-          profile.id = existingUser._id;
+          user.id = existingUser._id;
         }
       }
+      console.log(user,account,profile)
       return true;
     },
-    async jwt({ token, user, account, profile }) {
-      if (account?.provider === "google" && profile) {
-        token.userid= profile.id;
-      } else if (user) {
-        token.userid = user.id;
+    async jwt({ token, user}) {
+      if (user) {
+        token.id = user.id; // Save user ID in the token
       }
       token.exp = Math.floor(Date.now() / 1000) + 3600;
       return token;
     },
     async session({ session, token }) {
-      session.user.id = token.userid;
+      session.user.id = token.id;
       session.expires = token.exp;
       return session;
     },
