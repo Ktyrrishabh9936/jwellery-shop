@@ -30,10 +30,10 @@ export default function profile({children}) {
             title: "Wishlist",
             link: "/mywishlist",
           },
-          {
-            title: "Help Desk & Support",
-            link: "/support",
-          },
+          // {
+          //   title: "Help Desk & Support",
+          //   link: "/support",
+          // },
         ];
   return (
     <div className="flex  min-h-screen  max-w-7xl mx-auto">
