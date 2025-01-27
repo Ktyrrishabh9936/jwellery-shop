@@ -1,3 +1,4 @@
+"use client"
 import React, { useState } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay } from 'swiper/modules';
@@ -20,7 +21,7 @@ export default function ProductCard({product}) {
   
   return (
     <div 
-    key={product._id}
+    
     className="bg-white rounded-lg p-2 md:p-4 shadow-none md:hover:shadow-xl hover:bg-gray-100 transition-[--tw-shadow] " onMouseEnter={() => setIsHovered(true)}
     onMouseLeave={() => setIsHovered(false)}
   >

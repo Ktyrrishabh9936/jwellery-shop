@@ -28,10 +28,7 @@ export async function POST(req) {
     if (!user) {
       return NextResponse.json({ message: 'User not found' }, { status: 404 });
     }
-    const cart = await Cart.findOne({ userId });
-    if (!cart) {
-      return NextResponse.json({ message: 'Cart not found' }, { status: 404 });
-    }
+  
 
     let order = await Order.findOne({ userId });
     if (!order) {
@@ -106,8 +103,7 @@ export async function POST(req) {
       }
     });
     await order.save();
-    await Cart.findOneAndDelete({ userId }); // Clear the cart after placing the order
-     user.cart = null;
+    
      await user.save();
     return NextResponse.json(order, { status: 201 });
     } else {

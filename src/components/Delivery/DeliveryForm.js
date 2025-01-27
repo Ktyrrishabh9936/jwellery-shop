@@ -75,7 +75,7 @@ const DeliveryForm = () => {
       console.log(data)
       console.log("Order placed successfully");
       const { key, ...restProps } = {
-        key:"rzp_test_sy0ik5pd9JpjmO", // Razorpay Key ID
+        key:process.env.RAZORPAY_KEY_ID, // Razorpay Key ID
         amount: order.amount,
         currency: order.currency,
         name: "Jenii JP Sterling Silver",

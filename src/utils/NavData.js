@@ -40,43 +40,43 @@ export const Menus = [
     ],
     gridCols: 2,
   },
-  {
-    name: "Shop By Collection",
-    subMenuHeading: ["Fashion", "gold"],
-    subMenu: [
-      {
-        name: "Wedding Collection",
-        desc: "Bride & Groom",
-        icon: PanelsTopLeft,
-        link:"/collections/wedding"
-      },
-      {
-        name: "Luxury Vault",
-        desc: "Premium",
-        icon: Bolt,
-         link:"/collections/luxury-vault"
-      },
-      {
-        name: "Budget Picks",
-        desc: "Cost oriented",
-        icon: PanelTop,
-         link:"/collections/budget-picks"
-      },
-      {
-        name: "Hot Picks",
-        desc: "High Quality",
-        icon: Database,
-         link:"/collections/hot-picks"
-      },
-      {
-        name: "Top Products",
-        desc: "Best Sellings",
-        icon: AiFillProduct,
-         link:"/collections/top-products"
-      },
-    ],
-    gridCols: 2,
-  },
+  // {
+  //   name: "Shop By Collection",
+  //   subMenuHeading: ["Fashion", "gold"],
+  //   subMenu: [
+  //     {
+  //       name: "Wedding Collection",
+  //       desc: "Bride & Groom",
+  //       icon: PanelsTopLeft,
+  //       link:"/collections/wedding"
+  //     },
+  //     {
+  //       name: "Luxury Vault",
+  //       desc: "Premium",
+  //       icon: Bolt,
+  //        link:"/collections/luxury-vault"
+  //     },
+  //     {
+  //       name: "Budget Picks",
+  //       desc: "Cost oriented",
+  //       icon: PanelTop,
+  //        link:"/collections/budget-picks"
+  //     },
+  //     {
+  //       name: "Hot Picks",
+  //       desc: "High Quality",
+  //       icon: Database,
+  //        link:"/collections/hot-picks"
+  //     },
+  //     {
+  //       name: "Top Products",
+  //       desc: "Best Sellings",
+  //       icon: AiFillProduct,
+  //        link:"/collections/top-products"
+  //     },
+  //   ],
+  //   gridCols: 2,
+  // },
   {
     name: "Shop By Relation",
     subMenuHeading: ["Love", "Wealthy", "Recent"],

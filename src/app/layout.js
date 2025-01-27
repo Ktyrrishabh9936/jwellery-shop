@@ -5,6 +5,7 @@ import AuthProvider from "@/context/auth-session-proivder";
 import SessionManager from "@/context/session-manager";
 import StoreProvider from "./StoreProvider";
 import { Toaster } from 'react-hot-toast';
+import Script from "next/script";
 // Define custom fonts
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -29,6 +30,27 @@ export default function RootLayout({ children }) {
   return (
           <StoreProvider>
     <html lang="en">
+    <Script
+        strategy="afterInteractive"
+        src="https://www.googletagmanager.com/gtag/js?id=G-2T3HXDM6TT"
+      />
+      <Script id="google-analytics" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-2T3HXDM6TT');
+        `}
+      </Script>
+      <Script type="text/javascript">
+  {`  (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "q0c2vfolg9");`}
+</Script>
+
+
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ClientLayout>
       <AuthProvider>
