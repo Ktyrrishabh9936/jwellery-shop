@@ -5,7 +5,8 @@ import { UserCircleIcon, Cog6ToothIcon, InboxArrowDownIcon, LifebuoyIcon, PowerI
 import Image from 'next/image';
 import { signOut } from 'next-auth/react';
 import { usePathname, useRouter, } from 'next/navigation';
-import { User } from 'lucide-react';
+import { User, View } from 'lucide-react';
+import { FaAddressBook } from 'react-icons/fa';
 
 
 
@@ -24,6 +25,20 @@ function ProfileMenu({user}) {
                 closeMenu()},
         },
         {
+            label: "Overview",
+            icon: View,
+            onClickNavItem:()=>{
+                navigate.push('/overview');
+                closeMenu()},
+        },
+        {
+            label: "Our Address",
+            icon: FaAddressBook,
+            onClickNavItem:()=>{
+                navigate.push('/address');
+                closeMenu()},
+        },
+        {
             label: "My Orders",
             icon: InboxArrowDownIcon,
             onClickNavItem:()=>{
@@ -34,7 +49,7 @@ function ProfileMenu({user}) {
             label: "Sign Out",
             icon: PowerIcon,
             onClickNavItem:()=>{
-                signOut({callbackUrl:  `${window.location.origin}/login`});
+                signOut({callbackUrl:  '/login'});
                 closeMenu();
             },
         },

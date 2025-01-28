@@ -44,7 +44,6 @@ const addressSchema = mongoose.Schema({
       },
       landmark: {
         type: String,
-        minlength: 3,
         maxlength: 100,
       },
    

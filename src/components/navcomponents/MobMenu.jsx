@@ -43,7 +43,7 @@ export default function MobMenu({ Menus }) {
         </p>
         <div className=" w-full pt-5 mt-4">
       { user ? <div className=" mx-auto my-10 bg-white rounded-lg shadow-md p-5">
-    <Image height={600} width={600}  className="w-32 h-32 rounded-full mx-auto" src="/images/user.svg" alt="Profile picture"/>
+    <Image height={600} width={600}  className="w-32 h-32 rounded-full mx-auto"  src={user?.image || "/images/user.svg"} alt="Profile picture"/>
     <h2 className="text-center text-2xl font-semibold mt-3 capitalize">{user?.name}</h2>
     <p className="text-center text-gray-600 mt-1">{user?.email}</p>
   </div> : <Button size="lg" className=" bg-pink-700 text-white" onClick={()=>navigate.push("/login")}> 

@@ -5,7 +5,7 @@ import * as yup from "yup";
 
 import Link from "next/link";
 import { toast } from "react-toastify"; 
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from "react";
 import Image from "next/image";
 import { signIn, signOut, useSession } from 'next-auth/react';
@@ -24,6 +24,7 @@ export default function Login() {
   const router = useRouter();
   const [loading,setLoading] = useState(false);
   const { data: session } = useSession();
+  const searchparams = useSearchParams()
 
   const {
     register,
@@ -40,18 +41,19 @@ export default function Login() {
       const result = await signIn('credentials',{
         redirect:false,
         email:data.email,
-        password:data.password
+        password:data.password,
+        callbackUrl: searchparams.get('callbackUrl')|| '/',
       })
       if(result?.error){
         if(result.error === "CredentialsSignIn"){
           alert("Incorrect Password")
         }
-        else[
+        else{
           alert(result.error)
-        ]
+        }
       }
       if(result?.url){
-        router.push('/')
+        router.push(result.url)
       }
     }catch (error) {
       console.error("Error logging in:", error);
@@ -137,7 +139,7 @@ export default function Login() {
             </div>
           </form>
           {!session ? (
-            <button onClick={() => signIn('google')} className="flex items-center bg-white dark:bg-gray-900 border border-gray-300 rounded-lg shadow-md px-6 py-2 text-sm font-medium text-gray-800 dark:text-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 mx-auto mb-3">
+            <button onClick={() => signIn('google',{callbackUrl: searchparams.get('callbackUrl') || '/'})} className="flex items-center bg-white dark:bg-gray-900 border border-gray-300 rounded-lg shadow-md px-6 py-2 text-sm font-medium text-gray-800 dark:text-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 mx-auto mb-3">
          <span><FaGoogle/></span>
                 <span className="pl-3">Continue with Google</span>
             </button>

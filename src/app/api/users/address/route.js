@@ -7,6 +7,7 @@ export async function POST(req) {
     await connect();
     try {
         const {firstName, lastName, contact,street, city, state, postalCode, landmark } = await req.json(); 
+        console.log(landmark)
         const userId = await UserAuth();
         const address = await Address.create({
             userId, 
@@ -29,6 +30,7 @@ export async function POST(req) {
             address: address
         });
     } catch (err) {
+      console.log(err)
         return NextResponse.json({
             message: "Server error",
             error: err.message

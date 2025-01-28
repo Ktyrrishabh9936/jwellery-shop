@@ -16,6 +16,8 @@ import AddressList from "./adddressList";
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react';
 import Addressform from "./Addressform";
 import { AddressSchema } from "./addressSchema";
+import { motion } from "framer-motion";
+import Image from "next/image";
 
 const DeliveryForm = () => {
   const navigate  = useRouter();
@@ -28,6 +30,7 @@ const DeliveryForm = () => {
   const [paymentMethod, setPaymentMethod] = useState("Prepaid");
   const { addresses, loading, error } = useSelector((state) => state.address);
   const {user} = useSelector((state)=>state.user);
+  const [showThankYou, setShowThankYou] = useState(false);
   const session = useSession();
 
   useEffect(() => {
@@ -99,9 +102,13 @@ const DeliveryForm = () => {
             orderData
           );
 
-          console.log(result.data);
-          navigate.push("/")
-          dispatch(clearCart())
+          setShowThankYou(true);
+
+          // Clear the cart and navigate after animation
+          setTimeout(() => {
+            dispatch(clearCart());
+            navigate.push("/");
+          }, 5000); // 5 seconds delay for animation
         },
         prefill: {
           name: address.name,
@@ -151,6 +158,25 @@ const DeliveryForm = () => {
     id="razorpay-checkout-js"
     src="https://checkout.razorpay.com/v1/checkout.js"
   />
+  {showThankYou ? (<motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.8 }}
+          transition={{ duration: 0.5 }}
+          className="fixed inset-0 flex items-center justify-center bg-white z-50"
+        >
+          <div className="text-center">
+            <Image
+            width={40}
+            height={40}
+              src="/thank-you-animation.gif" // Replace with your animation/gif
+              alt="Thank You"
+              className="w-40 h-40 mx-auto"
+            />
+            <h2 className="text-xl font-bold mt-4">Thank You for Your Order!</h2>
+            <p className="text-gray-600 mt-2">Your order was placed successfully.</p>
+          </div>
+        </motion.div>):""}
     <form className="max-w-lg mx-auto p-4 text-black space-y-4">
       {/* Delivery Section */}
       <h2 className="text-xl font-bold mb-4">Delivery</h2>

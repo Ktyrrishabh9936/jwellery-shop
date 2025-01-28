@@ -122,8 +122,12 @@ export default function Page() {
   <div className="mt-10 flex flex-col xl:flex-row jusitfy-center items-stretch w-full xl:space-x-8 space-y-4 md:space-y-6 xl:space-y-0">
     <div className="flex flex-col justify-start items-start w-full space-y-4 md:space-y-6 xl:space-y-8">
       <div className="flex flex-col justify-start items-start dark:bg-gray-800 bg-gray-50 px-4 py-4 md:py-6 md:p-6 xl:p-8 w-full">
+        <div className=' flex justify-between items-center w-full '>
+        <div className='p-7'><p className=' px-2 flex'>Order Status </p> <p className=' border-2 border-pink-500 text-pink-500 bg-pink-100 py-1 px-4 rounded-full'>{order?.orderStatus}</p></div>
+        <div className='p-7'><p className='px-2 flex'>Payment Status </p> <p className=' border-2 border-pink-500 text-pink-500 bg-pink-100 py-1 px-4 rounded-full'>{order?.payment?.mode}</p></div>
+        </div>
         <p className="text-lg md:text-xl dark:text-white font-semibold leading-6 xl:leading-5 text-gray-800">Customer’s Cart</p>
-       { order?.items?.map((item) =><div className="mt-4 md:mt-6 flex flex-col md:flex-row justify-start items-start md:items-center md:space-x-6 xl:space-x-8 w-full">
+       { order?.items?.map((item,index) =><div key={index} className="mt-4 md:mt-6 flex flex-col md:flex-row justify-start items-start md:items-center md:space-x-6 xl:space-x-8 w-full">
           <div className="pb-4 md:pb-8 w-full md:w-40">
             <Image className="w-full hidden md:block" src={item.productId.images[0]} width={100} height={100} alt="dress" />
           </div>
@@ -137,7 +141,7 @@ export default function Page() {
               </div>
             </div>
             <div className="flex justify-between space-x-8 items-start w-full">
-              <p className="text-base dark:text-white xl:text-lg leading-6">Rs.{item.productId.price} <span className="text-red-300 line-through"> {item.productId.discountPrice}</span></p>
+              <p className="text-base dark:text-white xl:text-lg leading-6"> {formatPrice(item.productId.discountPrice)}<span className="text-red-300 line-through"> {formatPrice(item.productId.price)} </span></p>
               <p className="text-base dark:text-white xl:text-lg leading-6 text-gray-800">{item.quantity}</p>
               <p className="text-base dark:text-white xl:text-lg font-semibold leading-6 text-gray-800">Rs.{item.price}</p>
             </div>

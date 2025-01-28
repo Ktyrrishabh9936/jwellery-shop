@@ -68,7 +68,7 @@ export default function NavBar() {
           </Typography>
         </MenuHandler>
         <MenuList>
-        <Link href="/categories/all"> <MenuItem> All</MenuItem></Link>
+        {/* <Link href="/categories/all"> <MenuItem> All</MenuItem></Link> */}
         <Link href="/categories/rings"> <MenuItem> Rings</MenuItem></Link>
         <Link href="/categories/pendant-sets">   <MenuItem> Pendant Sets </MenuItem></Link>
         <Link href="/categories/tops"> <MenuItem>Tops</MenuItem></Link>

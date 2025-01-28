@@ -163,7 +163,7 @@ export default function CartSidebar() {
                   <div className="mt-6">
                     <button
                       onClick={()=>{dispatch(setsidebarCart(false));navigate.push("/checkout")}}
-                      className=" cursor-pointer flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700 w-full"
+                      className=" cursor-pointer flex items-center justify-center rounded-md border border-transparent bg-pink-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-pink-700 w-full"
                     >
                       Checkout
                     </button>
@@ -173,8 +173,8 @@ export default function CartSidebar() {
                       or{' '}
                       <button
                         type="button"
-                        onClick={() => setOpen(false)}
-                        className="font-medium text-indigo-600 hover:text-indigo-500"
+                        onClick={()=>{dispatch(setsidebarCart(false) )}}
+                        className="font-medium text-pink-600 hover:text-indigo-500"
                       >
                         Continue Shopping
                         <span aria-hidden="true"> &rarr;</span>
