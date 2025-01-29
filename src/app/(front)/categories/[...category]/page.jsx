@@ -29,6 +29,7 @@ import Skel from '@skel-ui/react'
 import { formatPrice } from '@/utils/productDiscount'
 import Image from 'next/image'
 import ProductGridLoader from '@/components/Loaders/ProductGridLoader'
+import { collections } from '@/utils/NavData'
 const sortOptions = [
   { name: 'Most Popular', href: '', current: true },
   { name: 'Best Rating', href: 'best_rating', current: false },
@@ -36,27 +37,13 @@ const sortOptions = [
   { name: 'Price: Low to High', href: 'price_low', current: false },
   { name: 'Price: High to Low', href: 'price_high', current: false },
 ]
-const subCategories = [
-  
-  { name: 'Totes', href: '#' },
-  { name: 'Backpacks', href: '#' },
-  { name: 'Travel Bags', href: '#' },
-  { name: 'Hip Bags', href: '#' },
-  { name: 'Laptop Sleeves', href: '#' },
-]
+
 const filters = [
   {
     id: 'collection',
     name: 'Collection',
     multiple: true,
-    options: [
-      { value: 'gold-with-lab', label: 'Gold with Lab Daimonds'},
-      { value: 'wedding-collection', label: 'Wedding Collection'},
-      { value: 'luxury-vault', label: 'Luxury Vault'},
-      { value: 'budget-picks', label: 'Budget Picks', },
-      { value: 'top-products', label: 'Top Products',},
-      { value: 'hot-picks', label: 'Hot Picks', },
-    ],
+    options: collections,
   },
   {
     id: 'shopFor',

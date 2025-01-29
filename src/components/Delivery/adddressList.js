@@ -7,8 +7,10 @@ import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/re
 import { deleteAddress, updateAddress } from '@/lib/reducers/addressReducer';
 import { useDispatch } from 'react-redux';
 import Addressform from './Addressform';
+import {state_arr,s_a} from "./statescitydata";
 const AddressList = ({ addresses,selectedAddress,setSelectedAddress }) => {
           const [isModalOpen, setIsModalOpen] = useState(false); 
+          const [initalCities, setInitalCities] = useState([]); 
           const dispatch  = useDispatch();
           const { register, handleSubmit,control,setValue, formState: { errors }, } = useForm({
               resolver: yupResolver(AddressSchema)
@@ -29,7 +31,11 @@ const AddressList = ({ addresses,selectedAddress,setSelectedAddress }) => {
                 dispatch(updateAddress(address))
                 setSelectedAddress(address);
                 setIsModalOpen(false);
+                const stateIndex = state_arr.indexOf(address.state) + 1; // +1 to match the city array indexing
+                  const cityArray = s_a[stateIndex]?.split("|") || [];
+                  setInitalCities(cityArray);
               };
+
 
               useEffect(()=>{
                 if(addresses.length){
@@ -41,14 +47,14 @@ const AddressList = ({ addresses,selectedAddress,setSelectedAddress }) => {
     <div>
       {addresses.length ?  
       addresses.map((address, index) => (
-        <div key={index} className={`mt-5  shadow cursor-pointer rounded-xl ${selectedAddress?._id === address._id ? "bg-deep-orange-200": ""}` } onClick={() => setSelectedAddress(address)}>
+        <div key={index} className={`mt-5  shadow cursor-pointer rounded-xl ${selectedAddress?._id === address._id ? "bg-pink-100": ""}` } onClick={() => setSelectedAddress(address)}>
           <div className="flex">
             <div className="flex-1 py-5 pl-5 overflow-hidden">
               <ul>
-                <li className="text-xs text-gray-600 uppercase ">{address.firstName} {address.lastName}</li>
-                <li>{address.contact}</li>
-                <li>{address.landmark} {address.street}</li>
-                <li>{address.city}, {address.state} - {address.postalCode}</li>
+                <li className=" text-black-600  font-semibold capitalize ">{address.firstName} {address.lastName}</li>
+                <li className="text-sm  ">{address.contact}</li>
+                <li className="text-sm ">{address.landmark} {address.street}</li>
+                <li className="text-sm ">{address.city}, {address.state} - {address.postalCode}</li>
               </ul>
             </div>
             <div className="flex-none pt-2.5 pr-2.5 pl-1">
@@ -73,10 +79,10 @@ const AddressList = ({ addresses,selectedAddress,setSelectedAddress }) => {
                   <div className="fixed inset-0 flex items-center justify-center p-4">
                     <DialogPanel className="w-full max-w-md bg-white rounded-lg p-6">
                       <DialogTitle className="text-lg font-medium text-gray-900">Update Address</DialogTitle>
-                     <Addressform register={register} errors={errors} setValue={setValue}/>
+                     <Addressform register={register} errors={errors} setValue={setValue} initailCities ={initalCities}/>
                    <div className="flex flex-row-reverse p-3">
                          <div className="flex-initial pl-3">
-                            <button type="button" onClick={handleSubmit(handleUpdateAddress)} className="flex items-center px-5 py-2.5 font-medium tracking-wide text-white capitalize   bg-black rounded-md hover:bg-gray-800  focus:outline-none focus:bg-gray-900  transition duration-300 transform active:scale-95 ease-in-out">
+                            <button type="button" onClick={handleSubmit(handleUpdateAddress)} className="flex items-center px-5 py-2.5 font-medium tracking-wide text-white capitalize   bg-pink-600 rounded-md hover:bg-pink-700  focus:outline-none focus:bg-pink-900  transition duration-300 transform active:scale-95 ease-in-out">
                                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#FFFFFF">
                                   <path d="M0 0h24v24H0V0z" fill="none"></path>2468
                                   <path d="M5 5v14h14V7.83L16.17 5H5zm7 13c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-8H6V6h9v4z" opacity=".3"></path>

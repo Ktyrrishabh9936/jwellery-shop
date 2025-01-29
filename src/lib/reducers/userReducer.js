@@ -63,8 +63,8 @@ const userSlice = createSlice({
                       })
                       .addCase(updateProfile.fulfilled, (state, { payload }) => {
                         state.updateprofileloading = false;
-                        state.name = payload.name;
-                        state.phone = payload.phone;
+                        state.user.name = payload.name;
+                        state.user.phone = payload.phone;
                       })
                       .addCase(updateProfile.rejected, (state, { payload }) => {
                         state.updateprofileloading = false;

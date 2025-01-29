@@ -53,7 +53,7 @@ export default function page() {
       {loading && <p>Loading...</p>}
       {error && <p>Error: {error}</p>}
       <AddressList addresses={addresses} selectedAddress={selectedAddress} setSelectedAddress={setSelectedAddress} />
-      <button type="button" className="relative w-full flex justify-center items-center px-5 my-4 py-2.5 font-medium tracking-wide text-white capitalize bg-black rounded-md hover:bg-gray-900 focus:outline-none transition duration-300 transform active:scale-95 ease-in-out" onClick={handleCreateNewAddress}>
+      <button type="button" className="relative w-full flex justify-center items-center px-5 my-4 py-2.5 font-medium tracking-wide text-white capitalize bg-pink-400 rounded-md hover:bg-pink-600 focus:outline-none transition duration-300 transform active:scale-95 ease-in-out" onClick={handleCreateNewAddress}>
         <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#FFFFFF">
           <g>
             <rect fill="none" height="24" width="24"></rect>
@@ -75,7 +75,7 @@ export default function page() {
            <Addressform register={register} errors={errors} setValue={setValue}/>
          <div className="flex flex-row-reverse p-3">
                <div className="flex-initial pl-3">
-                  <button type="button" onClick={(handleSubmit(handleAddAddress))} className="flex items-center px-5 py-2.5 font-medium tracking-wide text-white capitalize   bg-black rounded-md hover:bg-gray-800  focus:outline-none focus:bg-gray-900  transition duration-300 transform active:scale-95 ease-in-out">
+                  <button type="button" onClick={(handleSubmit(handleAddAddress))} className="flex items-center px-5 py-2.5 font-medium tracking-wide text-white capitalize   bg-pink-400 rounded-md hover:bg-pink-600  focus:outline-none focus:bg-pink-700  transition duration-300 transform active:scale-95 ease-in-out">
                      <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#FFFFFF">
                         <path d="M0 0h24v24H0V0z" fill="none"></path>2468
                         <path d="M5 5v14h14V7.83L16.17 5H5zm7 13c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-8H6V6h9v4z" opacity=".3"></path>

@@ -64,20 +64,13 @@ function ProfileMenu({user}) {
                     color="blue-gray"
                     className="flex items-center gap-1 rounded-full py-0.5 pr-2 pl-0.5 lg:ml-auto"
                 >
-                    {user ? <Avatar
+                     <Avatar
                         variant="circular"
                         size="sm"
                         alt="User Profile"
                         className="border border-pink-300 p-0.5 text-black"
-                        src={user?.image}
-                    /> :<Avatar
-                    variant="circular"
-                    size="sm"
-                    alt="User Profile"
-                    className="border border-pink-300 p-0.5 text-black"
-                    src="/images/user.svg"
-                />
-                    }
+                        src={user?.image || "/images/user.svg"}
+                    /> 
                     <ChevronDownIcon
                         strokeWidth={2.5}
                         className={`h-3 w-3 transition-transform text-pink-500 ${isMenuOpen ? "rotate-180" : ""}`}

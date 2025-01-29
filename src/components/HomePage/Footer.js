@@ -67,7 +67,7 @@ const Footer = () => {
           <Link
             key={index}
             href={item.link}
-            className="hover:underline"
+            className=""
           >
             {item.name}
             {index < catgo.length - 1 && " | "}
@@ -168,7 +168,7 @@ const FooterCard = ({ title, items }) => {
           <Link
             key={index}
             href={`/collections/${item.replace(/\s+/g, "-").toLowerCase()}`}
-            className="hover:underline"
+            className=""
           >
             {item}
             {index < items.length - 1 && " | "}

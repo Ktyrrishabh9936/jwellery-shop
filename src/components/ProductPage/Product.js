@@ -389,7 +389,6 @@ function ProductInfo({info,productId}) {
                     url: currentUrl,
                     title: "Jenii - A JP Sterling Silver Brand | Premium Sterling Silver Jewellery",
                 }}
-                onClick={() => toast.success("shared successfully!")}
             >
                <button className="text-pink-300 text-sm  underline"><FaShare fontSize={20}/></button>
             </RWebShare>
@@ -404,7 +403,7 @@ function ProductInfo({info,productId}) {
     </svg>
     <p className="ms-2 text-sm font-bold text-gray-900 dark:text-white">{info?.averageRating.toFixed(1)}</p>
     <span className="w-1 h-1 mx-1.5 bg-gray-500 rounded-full dark:bg-gray-400"></span>
-    <a href="#" className="text-sm font-medium text-gray-900 underline hover:no-underline dark:text-white">{info?.numReviews} reviews</a>
+    <a href="#" className="text-sm font-medium text-gray-900  dark:text-white">{info?.numReviews} reviews</a>
 </div>
 
             </div>

@@ -81,9 +81,10 @@ export default function Header() {
         </IconButton> */}
 
         <div className="flex justify-center items-center  gap-2 ">
-        <Link href='https://www.google.co.in/maps/dir//Broadway+Empire,+Nilamber+Circle,+Vasna+Bhayli+Main+Rd,+near+Akshar+Pavilion,+Saiyed+Vasna,+Vadodara,+Gujarat+391410/@22.301387,73.0587415,12z/data=!3m1!4b1!4m8!4m7!1m0!1m5!1m1!1s0x395fc97a52df2dff:0x8a31a8ec9fed0ebb!2m2!1d73.1411431!2d22.3014078?entry=ttu&g_ep=EgoyMDI0MTAxNS4wIKXMDSoASAFQAw%3D%3D'> <button className=' shadow-none cursor-pointer relative py-2 px-1.5 h-max inline-flex items-center  text-sm font-medium text-center bg-transparent text-black rounded-full    dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800   hover:text-red-400' >
+        <Link  href="https://jeniijewellery.bio.link/" className="text-[#C41E56]  font-medium cursor-pointer ">
+          <IconButton size='md' className=' bg-pink-400'> 
                 <Store fontSize={22} />
-          </button>
+                </IconButton>
           </Link>
         {user ? <button onClick={()=>navigate.push('/mywishlist')} className=' shadow-none cursor-pointer relative py-2 px-1.5 h-max inline-flex items-center  text-sm font-medium text-center bg-transparent text-black rounded-full    dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800   hover:text-red-400' >
                 <FaRegHeart fontSize={22} />

@@ -16,7 +16,7 @@ const ContactUsHeader = () => {
           <div className=" text-base sm:text-lg">
             <ul className="flex gap-5 sm:gap-8 items-center">
               {/* About Us */}
-              <Link  href="https://jeniijewellery.bio.link/" className="text-[#C41E56]  font-medium cursor-pointer hover:underline">
+              <Link  href="https://jeniijewellery.bio.link/" className="text-[#C41E56]  font-medium cursor-pointer ">
                 About Us
               </Link>
               {/* Visit Store Button */}

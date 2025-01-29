@@ -1,6 +1,7 @@
 "use client"
 import { addToCart } from '@/lib/reducers/cartReducer';
 import { getwishList, RemovewishList } from '@/lib/reducers/wishlistReducer';
+import { formatPrice } from '@/utils/productDiscount';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
@@ -122,25 +123,25 @@ export default function FavoriteItems() {
                 <td className="px-4 py-4">
                   {item.price && (
                     <span className="line-through text-gray-400 mr-2">
-                      ${item.price}
+                      {formatPrice(item.price)}
                     </span>
                   )}
                   <span className="font-semibold text-gray-700">
-                    ${item.discountPrice}
+                    ${formatPrice(item.discountPrice)}
                   </span>
                 </td>
-                {item.stock <=0 ? <td className="px-4 py-4 text-gray-500">Out of Stock</td>: <td className="px-4 py-4 text-green-500">In Stock</td>}
+                {item.stock <=0 ? <td className="px-4 py-4 text-gray-500">Out of Stock</td>: <td className="px-4 py-4 text-pink-500">In Stock</td>}
                
-                <td className="px-4 py-4 flex items-center gap-4">
-                {loadingProductId === item._id? <button className="bg-gray-500 text-white px-4 py-2 rounded " >
+                <td className="">
+                {loadingProductId === item._id? <button className="bg-gray-500 text-white px-4 py-2 rounded my-auto " >
                     Adding
-                  </button>:<button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" onClick={()=>dispatch(addToCart({productId:item._id,quantity:1}))}>
+                  </button>:<button className="bg-pink-500 text-white px-4 py-1.5 rounded-lg hover:bg-pink-600" onClick={()=>dispatch(addToCart({productId:item._id,quantity:1}))}>
                     Add to Cart
                   </button>
 }
                   {loadWishlist===item._id?<button className="text-gray-500 hover:text-red-500">
                   Removing
-                </button>:<button className="text-gray-500 hover:text-red-500" onClick={()=>dispatch(RemovewishList(item._id))}>
+                </button>:<button className="text-red-200 border-2 px-4 py-1.5 rounded-lg  border-red-400 hover:text-red-500" onClick={()=>dispatch(RemovewishList(item._id))}>
                     Remove
                   </button>}
 

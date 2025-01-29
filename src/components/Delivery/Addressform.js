@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import {state_arr,s_a} from "./statescitydata";
-export default function Addressform({register,errors,setValue}) {
-        const [cities, setCities] = useState([]);
+export default function Addressform({register,errors,setValue,initaiCity=[]}) {
+        const [cities, setCities] = useState(initaiCity);
         const handleStateChange = (event) => {
                 const state = event.target.value;
             

@@ -245,7 +245,7 @@ function Testimonials() {
   }, []);
   return (
     <section className="" style={{ backgroundImage: "url('/bg.png')" }}>
-   <div className="mx-auto max-w-screen-2xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16 ">
+   <div className="mx-auto max-w-screen-2xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16  ">
        <div className="max-w-xl mb-12">
          <h2 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
            Read trusted reviews from our customers
@@ -276,7 +276,7 @@ function Testimonials() {
       >
         {reviews.map(({ id, name, image, review }) => (
           <SwiperSlide key={id}>
-      <blockquote className="flex h-full flex-col justify-between bg-white p-6 shadow-sm sm:p-8  rounded-xl">
+      <blockquote className="flex h-full flex-col justify-between bg-white hover:bg-pink-50 p-6  sm:p-8  rounded-xl border-2 shadow-md border-blue-gray-500">
         <div>
         <img
                 src={image}
@@ -291,7 +291,7 @@ function Testimonials() {
           </div>
 
           <div className="mt-4">
-            <p className="text-2xl font-bold text-rose-600 sm:text-3xl">{name}</p>
+            {/* <p className="text-2xl font-bold text-rose-600 sm:text-3xl">{name}</p> */}
 
             <p className="mt-4 leading-relaxed text-gray-700">
            {review}
