@@ -58,7 +58,7 @@ const ProductDescription = () => {
       {/* Card 1 */}
       <Link href="https://maps.app.goo.gl/GZ8TsMN4NF8Mko6S8">
 
-      <div className="flex flex-col items-center border p-4 shadow-md rounded-lg">
+      <div className="flex flex-col items-center border p-4 shadow-md rounded-lg group">
         <div className="w-full h-80  bg-gray-300 rounded-md mb-4">
                 <Image
                 src="/jp-sterling.jpg"
@@ -69,7 +69,7 @@ const ProductDescription = () => {
                 />
         </div>
         <div>
-          <h3 className="text-lg font-bold mb-2">Vasna Bhayli,
+          <h3 className="text-lg font-bold mb-2  group-hover:underline">Vasna Bhayli,
 Broadway Empire, Nilamber Circle, Near Akshar
 Pavilion, Vasna Bhayli Main Road, Vadodara, Gujarat,
 391410</h3>
@@ -92,7 +92,7 @@ Pavilion, Vasna Bhayli Main Road, Vadodara, Gujarat,
 
       {/* Card 2 */}
       <Link href="https://maps.app.goo.gl/wUGnfqDFHjsByPno7">
-      <div className="flex flex-col items-center border p-4 shadow-md rounded-lg">
+      <div className="flex flex-col items-center border p-4 shadow-md rounded-lg group">
         <div className="w-full h-80  bg-gray-300 rounded-md mb-4">
         <Image
                 src="/jp-sterling-2.jpg"
@@ -103,7 +103,7 @@ Pavilion, Vasna Bhayli Main Road, Vadodara, Gujarat,
                 />
         </div>
         <div>
-          <h3 className="text-lg font-bold mb-2">Karelibaug,
+          <h3 className="text-lg font-bold mb-2 group-hover:underline">Karelibaug,
 Kalakunj, opposite Avakar Hall, Near Water,
 Karelibaug, Vadodara, Gujarat, 390018</h3>
           {/* <div className="mb-2">
@@ -122,7 +122,7 @@ Karelibaug, Vadodara, Gujarat, 390018</h3>
       </Link>
  
     </div>
-      <iframe src="https://www.google.com/maps/d/embed?mid=1UKvlAmU9PXanXwBn9M5tJ5IRXLm6t7o&ehbc=2E312F" width="640" height="480" className=" w-full  max-w-6xl mx-auto"></iframe>
+    <iframe src="https://www.google.com/maps/d/embed?mid=1V8BsLIrMCSx2SfxH7Qmtj1l2OdUtCeY&ehbc=2E312F&noprof=1" width="640" height="480" className=" w-full  max-w-6xl mx-auto"></iframe>
 
     </div>
   );

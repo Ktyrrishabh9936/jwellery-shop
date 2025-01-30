@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {state_arr,s_a} from "./statescitydata";
-export default function Addressform({register,errors,setValue,initaiCity=[]}) {
-        const [cities, setCities] = useState(initaiCity);
+export default function Addressform({register,errors,setValue,cityval="",stat=""}) {
+        const [cities, setCities] = useState([]);
         const handleStateChange = (event) => {
                 const state = event.target.value;
             
@@ -11,6 +11,13 @@ export default function Addressform({register,errors,setValue,initaiCity=[]}) {
                 setCities(cityArray);
                 setValue("city","")
               };
+              useEffect(()=>{
+                if(!cities.length){
+                  const stateIndex = state_arr.indexOf(stat) + 1; // +1 to match the city array indexing
+                  const cityArray = s_a[stateIndex]?.split("|") || [];
+                  setCities(cityArray);
+                }
+              },[stat])
   return (
         <div >
         <div className="">
@@ -132,6 +139,7 @@ export default function Addressform({register,errors,setValue,initaiCity=[]}) {
             id="city"
             {...register("city")}
             disabled={!cities.length}
+            defaultValue={cityval}
             className={`border bg-[#F2F2F2] text-black rounded-lg p-3 w-full ${errors.city ? "border-red-500" : "border-gray-100"} ${
               !cities.length ? "bg-gray-100 cursor-not-allowed" : ""
             }`}
@@ -161,12 +169,12 @@ export default function Addressform({register,errors,setValue,initaiCity=[]}) {
           placeholder="Ex - 202302"
           className={`border bg-[#F2F2F2] text-black rounded-lg p-3 w-full md:w-1/2 ${errors.postalCode ? "border-red-500" : "border-gray-100"}`}
         />
-        <p class="flex items-center mt-2 text-xs text-slate-500">
+        <p className="flex items-center mt-2 text-xs text-slate-500">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
         fill="currentColor"
-        class="w-5 h-5 mr-2"
+        className="w-5 h-5 mr-2"
       >
         <path
           fillRule="evenodd"

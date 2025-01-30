@@ -212,12 +212,12 @@ function Testimonials() {
       name: "Neha Gupta",
       image: "/5-removebg-preview.png",
       review: "\"This silver pendant necklace is beautiful, but the chain could be a bit sturdier. Overall, it's a good value for the price. I'm happy with my purchase.\"",
-    },
-   { id: 6,
-      name: "Ravish Kumar",
-      image: "/1-removebg-preview.png",
-      review: " \"I'm so impressed with the quality of this silver ring. It\'s well\-made, comfortable to wear, and the stone sparkles beautifully. JENII has exceeded my expectations. I'll definitely be shopping here again.\"",
     }
+  //  { id: 6,
+  //     name: "Ravish Kumar",
+  //     image: "/1-removebg-preview.png",
+  //     review: " \"I'm so impressed with the quality of this silver ring. It\'s well\-made, comfortable to wear, and the stone sparkles beautifully. JENII has exceeded my expectations. I'll definitely be shopping here again.\"",
+  //   }
   ];
   const [value, setValue] = useState(getValueBasedOnWidth());
 

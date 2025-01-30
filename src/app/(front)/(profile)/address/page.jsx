@@ -54,7 +54,7 @@ export default function page() {
       {error && <p>Error: {error}</p>}
       <AddressList addresses={addresses} selectedAddress={selectedAddress} setSelectedAddress={setSelectedAddress} />
       <button type="button" className="relative w-full flex justify-center items-center px-5 my-4 py-2.5 font-medium tracking-wide text-white capitalize bg-pink-400 rounded-md hover:bg-pink-600 focus:outline-none transition duration-300 transform active:scale-95 ease-in-out" onClick={handleCreateNewAddress}>
-        <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#FFFFFF">
+        <svg xmlns="http://www.w3.org/2000/svg" enableBackground="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#FFFFFF">
           <g>
             <rect fill="none" height="24" width="24"></rect>
           </g>

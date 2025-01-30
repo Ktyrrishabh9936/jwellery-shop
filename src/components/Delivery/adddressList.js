@@ -12,9 +12,11 @@ const AddressList = ({ addresses,selectedAddress,setSelectedAddress }) => {
           const [isModalOpen, setIsModalOpen] = useState(false); 
           const [initalCities, setInitalCities] = useState([]); 
           const dispatch  = useDispatch();
-          const { register, handleSubmit,control,setValue, formState: { errors }, } = useForm({
+          const { register, handleSubmit,control,setValue, formState: { errors },watch } = useForm({
               resolver: yupResolver(AddressSchema)
             });
+            const stat = watch("state");
+            const cityval = watch("city");
             const openUpdateModal = (address) =>{
               setValue("id", address._id);
               setValue("firstName", address.firstName);
@@ -31,9 +33,7 @@ const AddressList = ({ addresses,selectedAddress,setSelectedAddress }) => {
                 dispatch(updateAddress(address))
                 setSelectedAddress(address);
                 setIsModalOpen(false);
-                const stateIndex = state_arr.indexOf(address.state) + 1; // +1 to match the city array indexing
-                  const cityArray = s_a[stateIndex]?.split("|") || [];
-                  setInitalCities(cityArray);
+            
               };
 
 
@@ -79,7 +79,7 @@ const AddressList = ({ addresses,selectedAddress,setSelectedAddress }) => {
                   <div className="fixed inset-0 flex items-center justify-center p-4">
                     <DialogPanel className="w-full max-w-md bg-white rounded-lg p-6">
                       <DialogTitle className="text-lg font-medium text-gray-900">Update Address</DialogTitle>
-                     <Addressform register={register} errors={errors} setValue={setValue} initailCities ={initalCities}/>
+                     <Addressform register={register} errors={errors} setValue={setValue} stat={stat} cityval={cityval}/>
                    <div className="flex flex-row-reverse p-3">
                          <div className="flex-initial pl-3">
                             <button type="button" onClick={handleSubmit(handleUpdateAddress)} className="flex items-center px-5 py-2.5 font-medium tracking-wide text-white capitalize   bg-pink-600 rounded-md hover:bg-pink-700  focus:outline-none focus:bg-pink-900  transition duration-300 transform active:scale-95 ease-in-out">

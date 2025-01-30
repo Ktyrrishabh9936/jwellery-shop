@@ -80,7 +80,7 @@ export default function Header() {
           <Bars2Icon className="h-6 w-6" />
         </IconButton> */}
 
-        <div className="flex justify-center items-center  gap-2 ">
+        <div className="flex justify-center items-center  gap-1.5 ">
                 {user ? 
                 <div className=' flex flex-col justify-center items-center'>
                  <button onClick={()=>navigate.push('/mywishlist')} className=' shadow-none cursor-pointer relative py-2 px-1.5 h-max inline-flex items-center  text-sm font-medium text-center bg-transparent text-black rounded-full    dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800   hover:text-red-400 mx-auto' >
@@ -112,7 +112,7 @@ export default function Header() {
           ) : (
               <Link href='/login'>
             <Button
-              className="whitespace-nowrap bg-gray-200 text-pink-600 hover:bg-pink-200 hover:text-white "
+              className="whitespace-nowrap bg-gray-200 text-pink-600 hover:bg-pink-200 hover:text-white ml-0  md:ml-1.5"
               size="sm"
               variant="text"
               
