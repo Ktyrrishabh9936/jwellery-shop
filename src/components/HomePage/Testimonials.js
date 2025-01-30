@@ -171,6 +171,7 @@ import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 
 import { EffectCoverflow, Pagination, Navigation, Autoplay } from 'swiper/modules';
+import Image from 'next/image';
 
 // import slide_image_1 from './assets/images/img_1.jpg';
 // import slide_image_2 from './assets/images/img_2.jpg';
@@ -185,36 +186,36 @@ function Testimonials() {
     {
       id: 1,
       name: "Ankita Sharma",
-      image: "/testimonials-2.jpg",
+      image: "/2-removebg-preview.png",
       review: "\"I'm absolutely in love with my new silver necklace! It's delicate, elegant, and the perfect finishing touch to my outfit. The quality is exceptional, and it feels so luxurious on my skin. Highly recommend!\"",
     },
     {
       id: 2,
       name: "Rajesh Kumar",
-      image: "/testimonials-1.jpg",
+      image: "/4-removebg-preview.png",
       review: " \"I'm so impressed with the quality of this silver ring. It\'s well\-made, comfortable to wear, and the stone sparkles beautifully. JENII has exceeded my expectations. I'll definitely be shopping here again.\"",
     },
     {
       id: 3,
       name: "Aafreen Khan",
-      image: "/testimonials-4.jpg",
+      image: "/3-removebg-preview.png",
       review: "\"This silver bracelet is a true gem. It's delicate, elegant, and perfect for everyday wear. The packaging was also top-notch. I'm satisfied with my purchase!\"",
     },
     {
       id: 4,
       name: "Priyanka Singh",
-      image: "/testimonials-3.jpg",
+      image: "/8-removebg-preview.png",
       review: "\"The earrings are lovely and they're very stylish and affordable. I'd recommend cleaning them regularly to maintain their shine.\"",
     },
     {
       id: 5,
       name: "Neha Gupta",
-      image: "/testimonials-6.jpg",
+      image: "/5-removebg-preview.png",
       review: "\"This silver pendant necklace is beautiful, but the chain could be a bit sturdier. Overall, it's a good value for the price. I'm happy with my purchase.\"",
     },
    { id: 6,
-      name: "Rajesh Kumar",
-      image: "/testimonials-5.jpg",
+      name: "Ravish Kumar",
+      image: "/1-removebg-preview.png",
       review: " \"I'm so impressed with the quality of this silver ring. It\'s well\-made, comfortable to wear, and the stone sparkles beautifully. JENII has exceeded my expectations. I'll definitely be shopping here again.\"",
     }
   ];
@@ -276,12 +277,14 @@ function Testimonials() {
       >
         {reviews.map(({ id, name, image, review }) => (
           <SwiperSlide key={id}>
-      <blockquote className="flex h-full flex-col justify-between bg-white hover:bg-pink-50 p-6  sm:p-8  rounded-xl border-2 shadow-md border-blue-gray-500">
+      <blockquote className=" group transition-colors duration-200 flex h-full flex-col justify-between bg-white hover:bg-pink-50 p-6  sm:p-8  rounded-xl border-2 shadow-md border-blue-gray-500">
         <div>
-        <img
+        <Image
+        width={40}
+        height={40}
                 src={image}
                 alt={name}
-                className="w-24 h-24 rounded-full mb-4 border-2 border-blue-500"
+                className="w-24 h-24 rounded-full mb-4 border-2 border-blue-500 group-hover:bg-blue-800"
               />
           <div className="flex gap-0.5 text-pink-200">
           {Array(5).fill(0).map((_, index) => (

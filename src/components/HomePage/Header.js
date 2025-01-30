@@ -22,7 +22,7 @@ const Search = dynamic(() => import('./Search'));
 import { useRouter } from 'next/navigation.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { setsidebarCart } from '@/lib/reducers/cartReducer';
-import { FaHeart } from 'react-icons/fa';
+import { FaHeart, FaStore } from 'react-icons/fa';
 import { FaCartShopping, FaRegHeart } from 'react-icons/fa6';
 import { ShoppingCartIcon } from '@heroicons/react/24/outline';
 import { FiShoppingCart } from 'react-icons/fi';
@@ -81,20 +81,30 @@ export default function Header() {
         </IconButton> */}
 
         <div className="flex justify-center items-center  gap-2 ">
-        <Link  href="https://jeniijewellery.bio.link/" className="text-[#C41E56]  font-medium cursor-pointer ">
-          <IconButton size='md' className=' bg-pink-400'> 
-                <Store fontSize={22} />
-                </IconButton>
-          </Link>
-        {user ? <button onClick={()=>navigate.push('/mywishlist')} className=' shadow-none cursor-pointer relative py-2 px-1.5 h-max inline-flex items-center  text-sm font-medium text-center bg-transparent text-black rounded-full    dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800   hover:text-red-400' >
-                <FaRegHeart fontSize={22} />
+                {user ? 
+                <div className=' flex flex-col justify-center items-center'>
+                 <button onClick={()=>navigate.push('/mywishlist')} className=' shadow-none cursor-pointer relative py-2 px-1.5 h-max inline-flex items-center  text-sm font-medium text-center bg-transparent text-black rounded-full    dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800   hover:text-red-400 mx-auto' >
+                <FaRegHeart fontSize={22}  />
 <div className="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold  rounded-full -top-2 -end-2 dark:border-gray-900">{wishListByID.length}</div>
-          </button> :""}
-            <button onClick={()=>{dispatch(setsidebarCart(true)); }} className=' relative cursor-pointer  pr-2 pb-2 pl-1 pt-1 h-max inline-flex items-center shadow-none  text-sm font-medium text-center bg-transparent text-black rounded-full     dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800  hover:text-red-400' >
+          </button> 
+          <p className='hidden md:block'>Wishlist</p>
+          </div>
+          :""}
+          <div className='mx-0 md:mx-2'>
+            <button onClick={()=>{dispatch(setsidebarCart(true)); }} className=' relative cursor-pointer  pr-2  pl-1 pt-2 h-max inline-flex items-center shadow-none  text-sm font-medium text-center bg-transparent text-black rounded-full     dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800  hover:text-red-400' >
                 <FiShoppingCart fontSize={25}/>
                 <div className="absolute inline-flex  items-center justify-center w-6 h-6 text-xs font-bold   rounded-full -top-2 -end-2 dark:border-gray-900">{totalItem}</div>
                 </button>
-         
+                <p className='hidden md:block text-center'>Cart</p>
+                </div>
+
+
+                <Link  href="/store" className="text-[#C41E56]  font-medium cursor-pointer mx-0 md:mx-2">
+          <IconButton size='md' className=' bg-pink-400'> 
+                <FaStore fontSize={22} />
+                </IconButton>
+                <p className='hidden md:block'>Store</p>
+          </Link>
 
           {/* Conditionally render ProfileMenu or Login button */}
           {user ? (
@@ -111,6 +121,7 @@ export default function Header() {
                 </Button>
               </Link>
           )}
+        
         </div>
       </div>
       <Collapse open={isNavOpen} className="overflow-scroll">

@@ -127,23 +127,25 @@ export default function FavoriteItems() {
                     </span>
                   )}
                   <span className="font-semibold text-gray-700">
-                    ${formatPrice(item.discountPrice)}
+                    {formatPrice(item.discountPrice)}
                   </span>
                 </td>
                 {item.stock <=0 ? <td className="px-4 py-4 text-gray-500">Out of Stock</td>: <td className="px-4 py-4 text-pink-500">In Stock</td>}
                
                 <td className="">
-                {loadingProductId === item._id? <button className="bg-gray-500 text-white px-4 py-2 rounded my-auto " >
-                    Adding
-                  </button>:<button className="bg-pink-500 text-white px-4 py-1.5 rounded-lg hover:bg-pink-600" onClick={()=>dispatch(addToCart({productId:item._id,quantity:1}))}>
+                  <div className=' space-y-2 p-2 '>
+                {loadingProductId === item._id? <button className="bg-gray-500 text-white px-4 py-1.5 rounded my-auto  w-full " >
+                    Adding..
+                  </button>:<button className="bg-pink-500 text-white px-4 py-1.5 rounded-lg hover:bg-pink-600 w-full " onClick={()=>dispatch(addToCart({productId:item._id,quantity:1}))}>
                     Add to Cart
                   </button>
 }
-                  {loadWishlist===item._id?<button className="text-gray-500 hover:text-red-500">
+                  {loadWishlist===item._id?<button className="text-gray-500 hover:text-red-500 w-full border-2 px-4 py-1 ">
                   Removing
-                </button>:<button className="text-red-200 border-2 px-4 py-1.5 rounded-lg  border-red-400 hover:text-red-500" onClick={()=>dispatch(RemovewishList(item._id))}>
+                </button>:<button className="text-red-200 border-2 px-4 py-1 rounded-lg  border-red-400 hover:text-red-500 w-full " onClick={()=>dispatch(RemovewishList(item._id))}>
                     Remove
                   </button>}
+                  </div>
 
                 </td>
               </tr>

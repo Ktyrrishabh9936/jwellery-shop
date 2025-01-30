@@ -72,7 +72,7 @@ export default function profile({children}) {
       </aside>
 
       {/* Main Content */}
-      <main className="w-3/4 p-3 md:p-6 space-y-8">
+      <main className="w-3/4 pl-3 md:pl-6 space-y-8">
       
        {children}
       </main>

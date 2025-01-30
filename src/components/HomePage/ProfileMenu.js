@@ -80,19 +80,13 @@ function ProfileMenu({user}) {
             <MenuList className="p-1">
             <div className="flex items-center gap-3 px-4 py-3">
                 <div className="relative aspect-square w-10 rounded-full">
-                  {user ? <Image
+             <Image
                   height={30}
                   width={30}
-                    src={user?.image}
+                    src={user?.image || "/images/user.svg"}
                     alt="account"
                     className="w-full rounded-full object-cover object-center"
-                  />:<Image
-                  height={30}
-                  width={30}
-                    src="/images/user.svg"
-                    alt="account"
-                    className="w-full rounded-full object-cover object-center"
-                  />}
+                  />
                   <span className="absolute -right-0.5 -top-0.5 block h-3.5 w-3.5 rounded-full border-2 border-white bg-green dark:border-dark"></span>
                 </div>
                 <div>

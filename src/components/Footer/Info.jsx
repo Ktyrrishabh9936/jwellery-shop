@@ -49,7 +49,7 @@ function Slideshow() {
   return (
     <div className="relative flex flex-col md:flex-row  items-center justify-center">
       {/* Social Media Icons */}
-      <div className="  static md:absolute left-1/3 md:left-6 top-0  md:top-1/2 transform -translate-y-1/2 flex flex-row md:flex-col gap-4">
+      <div className="  static md:absolute left-1/3 md:left-6 top-0  md:top-1/2 transform -translate-y-1/2 flex flex-row md:flex-col gap-4 mt-20 md:mt-0">
         <SocialIcon href="https://m.facebook.com/jenii.jp.jewellery/" Icon={FaFacebook} />
         <SocialIcon href={`https://wa.me/919157071575?text=${Message}`}Icon={FaWhatsapp} />
         <SocialIcon href="https://www.instagram.com/jenii.jp.jewellery?igsh=eXZ1ajkwMTZyeDlt" Icon={FaInstagram} />
@@ -209,11 +209,12 @@ const FormComponent = () => {
     </div>
     <div className="flex flex-col items-center px-6  mx-auto text-center max-w-4xl ">
       {/* Coming Soon Main Text */}
-      <h1 className=" text-4xl sm:text-5xl md:text-6xl text-[#C41E56] font-semibold ">We're Coming to You Online!</h1>
+      <h1 className=" text-4xl sm:text-5xl md:text-6xl text-[#C41E56] font-semibold "> We’re Available Offline too
+      </h1>
       <p className="text-gray-800 text-lg  mt-2 ">
       Hey Vadodara, something special is on its way!
       </p>
-      <p className="text-gray-800">Join our Contact List to be the first to know when our online store opens and enjoy exclusive early access to discounts and offers of up to 40%.</p>
+      <p className="text-gray-800">Contact us now to get Extra 5% off to Purchase from Offline Store.</p>
     </div>
     </div>
 
@@ -225,6 +226,7 @@ const FormComponent = () => {
 
 const Footer = () => {
   return (
+    <div className=" space-y-3">
     <Link  href="https://www.google.co.in/maps/dir//Broadway+Empire,+Nilamber+Circle,+Vasna+Bhayli+Main+Rd,+near+Akshar+Pavilion,+Saiyed+Vasna,+Vadodara,+Gujarat+391410/@22.301387,73.0587415,12z/data=!3m1!4b1!4m8!4m7!1m0!1m5!1m1!1s0x395fc97a52df2dff:0x8a31a8ec9fed0ebb!2m2!1d73.1411431!2d22.3014078?entry=ttu&g_ep=EgoyMDI0MTAxNS4wIKXMDSoASAFQAw%3D%3D"  className="rounded-lg bg-[#C41E56] text-white justify-center flex p-4">
       <p className=" my-auto">
       <FaLocationDot size={20} />
@@ -233,6 +235,16 @@ const Footer = () => {
         Broadway Empire, Nilamber Circle, Vasna Bhayli Main Rd, near Akshar Pavilion, Saiyed Vasna, Vadodara, Gujarat 391410
       </p>
     </Link>
+    <Link  href="https://www.google.co.in/maps/dir//Broadway+Empire,+Nilamber+Circle,+Vasna+Bhayli+Main+Rd,+near+Akshar+Pavilion,+Saiyed+Vasna,+Vadodara,+Gujarat+391410/@22.301387,73.0587415,12z/data=!3m1!4b1!4m8!4m7!1m0!1m5!1m1!1s0x395fc97a52df2dff:0x8a31a8ec9fed0ebb!2m2!1d73.1411431!2d22.3014078?entry=ttu&g_ep=EgoyMDI0MTAxNS4wIKXMDSoASAFQAw%3D%3D"  className="rounded-lg bg-[#C41E56] text-white justify-center flex p-4">
+      <p className=" my-auto">
+      <FaLocationDot size={20} />
+      </p>
+      <p className="font-semibold ml-3 hover:underline">
+      Karelibaug,Kalakunj, opposite Avakar Hall, Near Water,Karelibaug, Vadodara, Gujarat, 390018
+      </p>
+    </Link>
+
+    </div>
   );
 };
 
