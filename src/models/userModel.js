@@ -45,6 +45,10 @@ const userSchema = new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:"Address"
 }],
+ couponUsed:[{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:"Coupon"
+}],
     otp: {
         type: String
     },
