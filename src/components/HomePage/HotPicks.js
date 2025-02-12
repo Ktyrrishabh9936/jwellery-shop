@@ -1,3 +1,4 @@
+"use client"
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Link from "next/link";
@@ -12,6 +13,9 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { TiStarFullOutline,TiStarHalfOutline,TiStarOutline } from "react-icons/ti";
 import ProductGridLoader from "../Loaders/ProductGridLoader";
 import { ChevronDownCircle } from "lucide-react";
+import { useRouter } from "next/navigation";
+// import { useRouter } from "next/router";
+
  function Star({rating,size='clamp(1rem,1.3vw,3rem)' ,color='#fe6161'}) {
   const ratingfunc = Array.from({length:5},(elem,index)=>{
           const number = rating+0.5;
@@ -26,7 +30,7 @@ return (
 const HotPicks = () => {
   const { user } = useSelector((store) => store.user);
   const dispatch = useDispatch();
-
+  const router = useRouter();
   const {
     hotPicks,
     hotPicksCurrentPage,
@@ -53,6 +57,11 @@ const handleAddToCart = async (product) => {
     dispatch(addToCart(data))
   };
  
+  const handleBuyNow = async (product) => {
+    const data = { productId: product._id, name: product.name, quantity: 1, img_src: product.images[0], price: product.price, discountedPrice: product.discountPrice, category: product.category.name, SKU: product.sku };
+    dispatch(addToCart(data));
+    router.push('/checkout');
+  };
 
   return (
     <section className="max-w-7xl mx-auto p-2 sm:p-4 mb-8 pb-4">
@@ -92,12 +101,20 @@ const handleAddToCart = async (product) => {
                 </div>
               </div>
               <Button
-                className="mt-4 bg-[#F8C0BF] hover:bg-[#fe6161] transition-colors py-2 px-4 rounded-md w-full capitalize text-sm"
-                onClick={() => handleAddToCart(product)}
-                disabled={loadingProductId === product._id}
-              >
-                {loadingProductId === product._id ? "Adding..." : "Add to Cart"}
-              </Button>
+                        className="mt-4 bg-[#F8C0BF] hover:bg-[#fe6161] transition-colors py-2 duration-300 px-4 rounded-md w-full capitalize text-sm"
+                        onClick={() => handleAddToCart(product)}
+                        disabled={loadingProductId === product._id}
+                    >
+                        {loadingProductId === product._id ? "Adding..." : "Add to Cart"}
+                    </Button>
+                    <Button
+                        className="mt-4 bg-[#F8C0BF] hover:bg-[#fe6161] transition-colors py-2 duration-300 px-4 rounded-md w-full capitalize text-sm"
+                        onClick={() => handleBuyNow(product)}
+                       
+                    >
+                        Buy Now
+                    </Button>
+
             </div>
           ))}
         </div>

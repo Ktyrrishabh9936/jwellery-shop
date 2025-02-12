@@ -30,6 +30,7 @@ import { addToCart } from "@/lib/reducers/cartReducer";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useRouter } from "next/navigation";
 
 const schema = yup.object().shape({
   pincode: yup
@@ -44,7 +45,7 @@ export default function Product({ id }) {
     const [open, setOpen] =useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
   const [loading, setloading] = useState(false);
-
+const router = useRouter();
  
   const handleOpen = () => setOpen((cur) => !cur);
   const handleIsFavorite = () => setIsFavorite((cur) => !cur);
@@ -323,6 +324,7 @@ function ProductInfo({info,productId}) {
     const [serviceable, setServiceable] = useState(null);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
+    const router = useRouter();
     
     const {
       register,
@@ -372,6 +374,12 @@ function ProductInfo({info,productId}) {
       },5000)
     }
   };
+
+   const handleBuyNow = async (product) => {
+      const data = { productId: product._id, name: product.name, quantity: 1, img_src: product.images[0], price: product.price, discountedPrice: product.discountPrice, category: product.category.name, SKU: product.sku };
+      dispatch(addToCart(data));
+      router.push('/checkout');
+    };
 
     return (
         <div className="py-4 pr-4 max-w-[800px]">
@@ -462,6 +470,9 @@ function ProductInfo({info,productId}) {
                 <button className=" ml-3 border-[1px] bg-[#F8C0BF] hover:bg-[#f76664] text-black max-w-2xl  font-semibold p-2 rounded w-full my-2" onClick={()=>handleAddToCart(info)}>
                     Add to Cart
                 </button>}
+                <button className=" ml-3 border-[1px] bg-[#F8C0BF] hover:bg-[#f76664] text-black max-w-2xl  font-semibold p-2 rounded w-full my-2" onClick={()=>handleBuyNow(info)}>
+                    Buy Now
+                </button>
     
         </div>
     );

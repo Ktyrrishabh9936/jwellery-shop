@@ -5,10 +5,11 @@ import { toast } from "react-toastify";
 import { useState } from "react";
 import axios from "axios";
 import { getServerCookie } from "@/utils/serverCookie";
+import { useRouter } from "next/navigation";
 
 export default function ProductList({ products }) {
     const [loadingProductId, setLoadingProductId] = useState(null);
-
+    const router = useRouter();
     const handleAddToCart = async (product) => {
         const token = await getServerCookie('token');
 
@@ -44,6 +45,12 @@ export default function ProductList({ products }) {
             setLoadingProductId(null);
         }
     };
+
+     const handleBuyNow = async (product) => {
+        const data = { productId: product._id, name: product.name, quantity: 1, img_src: product.images[0], price: product.price, discountedPrice: product.discountPrice, category: product.category.name, SKU: product.sku };
+        dispatch(addToCart(data));
+        router.push('/checkout');
+      };
 
     return (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -81,6 +88,13 @@ export default function ProductList({ products }) {
                         disabled={loadingProductId === product._id}
                     >
                         {loadingProductId === product._id ? "Adding..." : "Add to Cart"}
+                    </Button>
+                    <Button
+                        className="mt-4 bg-[#F8C0BF] hover:bg-[#fe6161] transition-colors py-2 duration-300 px-4 rounded-md w-full capitalize text-sm"
+                        onClick={() => handleBuyNow(product)}
+                       
+                    >
+                        Buy Now
                     </Button>
                 </div>
             ))}
