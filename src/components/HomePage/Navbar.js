@@ -48,36 +48,111 @@ export default function NavBar() {
   
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [imagesInd, setImagesInd] = useState(0);
+  const submenu = [{
+    name:"Rings",
+    link:"/categories/rings",
+   list:[
+    {name:"Rings Under 500",minPrice:"NaN",maxPrice:"500"},
+    {name:" 500 to 1000",minPrice:"",maxPrice:"1000"},
+    {name:" 1000 to 5000",minPrice:"1000",maxPrice:"5000"},
+    {name:"Above 5000",minPrice:"5000",maxPrice:"NaN"},
+   ]
+  },
+  {
+    name:"Pendant Sets",
+    link:"/categories/pendant-sets",
+    list:[
+      {name:"Sets Under 500",minPrice:"NaN",maxPrice:"500"},
+      {name:" 500 to 1000",minPrice:"",maxPrice:"1000"},
+      {name:" 1000 to 5000",minPrice:"1000",maxPrice:"5000"},
+      {name:"Above 5000",minPrice:"5000",maxPrice:"NaN"},
+     ]
+  },
+  {
+    name:"Earrings",
+    link:"/categories/earrings",
+    list:[
+      {name:"Earrings Under 500",minPrice:"NaN",maxPrice:"500"},
+      {name:" 500 to 1000",minPrice:"",maxPrice:"1000"},
+      {name:" 1000 to 5000",minPrice:"1000",maxPrice:"5000"},
+      {name:"Above 5000",minPrice:"5000",maxPrice:"NaN"},
+     ]
+  },
+  {
+    name:"Pendant Chain",
+    link:"/categories/pendant-chain",
+    list:[
+      {name:"Chain Under 500",minPrice:"NaN",maxPrice:"500"},
+      {name:" 500 to 1000",minPrice:"",maxPrice:"1000"},
+      {name:" 1000 to 5000",minPrice:"1000",maxPrice:"5000"},
+      {name:"Above 5000",minPrice:"5000",maxPrice:"NaN"},
+     ]
+  },
+  {
+    name:"Anklet",
+    link:"/categories/anklet",
+    list:[
+      {name:"Anklet Under 500",minPrice:"NaN",maxPrice:"500"},
+      {name:" 500 to 1000",minPrice:"",maxPrice:"1000"},
+      {name:" 1000 to 5000",minPrice:"1000",maxPrice:"5000"},
+      {name:"Above 5000",minPrice:"5000",maxPrice:"NaN"},
+     ]
+  },
+  {
+    name:"Bracelet",
+    link:"/categories/bracelet",
+    list:[
+      {name:"Bracelet Under 500",minPrice:"NaN",maxPrice:"500"},
+      {name:" 500 to 1000",minPrice:"",maxPrice:"1000"},
+      {name:" 1000 to 5000",minPrice:"1000",maxPrice:"5000"},
+      {name:"Above 5000",minPrice:"5000",maxPrice:"NaN"},
+     ]
+  },
+  {
+    name:"Mangalsutra",
+    link:"/categories/mangalsutra",
+    list:[
+      {name:"Mangalsutra Under 500",minPrice:"NaN",maxPrice:"500"},
+      {name:" 500 to 1000",minPrice:"",maxPrice:"1000"},
+      {name:" 1000 to 5000",minPrice:"1000",maxPrice:"5000"},
+      {name:"Above 5000",minPrice:"5000",maxPrice:"NaN"},
+     ]
+  },
+]
         return (
           <div className="hidden lg:block ">
              <header className="h-16 text-[15px]  relative inset-0 z-[15] flex-center bg-white text-[#18181A]  dark:bg:[#18181A] ">
         <nav className=" px-3.5 flex-center-between w-full max-w-7xl mx-auto">
         <Menu allowHover open={isMenuOpen} handler={setIsMenuOpen}>
-        <MenuHandler>
-          <Typography  variant="small" className="font-normal">
-            <MenuItem className="hidden items-center gap-2 font-medium text-blue-gray-900 lg:flex lg:rounded-full">
-              <Square3Stack3DIcon className="h-[18px] w-[18px] text-blue-gray-500" />{" "}
-              Shop by Category{" "}
-              <ChevronDownIcon
-                strokeWidth={2}
-                className={`h-3 w-3 transition-transform ${
-                  isMenuOpen ? "rotate-180" : ""
-                }`}
-              />
-            </MenuItem>
-          </Typography>
-        </MenuHandler>
-        <MenuList>
-        {/* <Link href="/categories/all"> <MenuItem> All</MenuItem></Link> */}
-        <Link href="/categories/rings"> <MenuItem> Rings</MenuItem></Link>
-        <Link href="/categories/pendant-sets">   <MenuItem> Pendant Sets </MenuItem></Link>
-        <Link href="/categories/tops"> <MenuItem>Tops</MenuItem></Link>
-        <Link href="/categories/pendant-chain"> <MenuItem> Pendant Chain </MenuItem></Link>
-        <Link href="/categories/anklet"> <MenuItem>   Anklets</MenuItem></Link>
-        <Link href="/categories/bracelet"> <MenuItem>   Bracelet</MenuItem></Link>
-        <Link href="/categories/mangalsutra">  <MenuItem>  Mangalsutra</MenuItem></Link>
+      <MenuHandler>
+        <Typography variant="small" className="font-normal">
+          <MenuItem className="hidden items-center gap-2 font-medium text-blue-gray-900 lg:flex lg:rounded-full">
+            <Square3Stack3DIcon className="h-[18px] w-[18px] text-blue-gray-500" />
+            Shop by Category
+            <ChevronDownIcon
+              strokeWidth={2}
+              className={`h-3 w-3 transition-transform ${isMenuOpen ? "rotate-180" : ""}`}
+            />
+          </MenuItem>
+        </Typography>
+      </MenuHandler>
+      <MenuList className="w-64">
+        {submenu.map((category) => (
+          <Menu allowHover key={category.name} placement="right-start">
+            <MenuHandler>
+              <MenuItem>{category.name}</MenuItem>
+            </MenuHandler>
+            <MenuList className="w-48">
+              {category.list.map((sub) => (
+                <Link key={sub.name} href={`${category.link}?${sub.minPrice!=="NaN"?`minPrice=${sub.minPrice}&`:""}${sub.maxPrice!=="NaN"?`maxPrice=${sub.maxPrice}`:""}`}>
+                  <MenuItem>{sub.name}</MenuItem>
+                </Link>
+              ))}
+            </MenuList>
+          </Menu>
+        ))}
       </MenuList>
-      </Menu>
+    </Menu>
 
           <ul className="gap-x-1 lg:flex-center hidden lg:block">
             {Menus.map((menu,idx) => (
@@ -86,7 +161,6 @@ export default function NavBar() {
               <Link key={"contact"} href="/ContactUs" className="">
                 <span
                   className="flex-center-between p-4 hover:bg-white/5 rounded-md cursor-pointer relative"
-                 
                 >
                   Contact Us
                 </span>

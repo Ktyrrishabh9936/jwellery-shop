@@ -28,11 +28,11 @@ export default function Banner() {
     handleGetSlides();
   },[])
   if(heroloading){
-    return <div className="mx-auto h-[clamp(8rem,16vw,26rem)] w-[96%] bg-gray-200 shimmer rounded-xl" />
+    return <div className="mx-auto h-[clamp(8rem,16vw,26rem)] w-[96%] bg-gray-200 shimmer rounded-xl mt-7 md:mt-12" />
    }
         return (
 
-     <Carousel  className="rounded-xl h-[clamp(18remrem,36vw,40rem)] md:h-[clamp(10rem,21vw,26rem)] w-[96%] mx-auto max-w-7xl" 
+     <Carousel  className="rounded-xl h-[clamp(18remrem,36vw,40rem)] md:h-[clamp(10rem,21vw,26rem)] w-[96%] mx-auto max-w-7xl mt-7 md:mt-12" 
      autoplay autoplayDelay={10000} loop
      >
       {aboutSlides?.map((item,index)=>  

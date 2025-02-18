@@ -74,7 +74,7 @@ const TopProductCarousel = () => {
 
   return (
     <section className=" relative max-w-7xl mx-auto p-2 sm:p-4 mb-8 pb-4">
-    {topPicks.length ? <>  
+    {!topPicksLoading ? <>  
     <div className=" ">
       <div>
     <h2 className="text-2xl font-bold  ml-3">Top Products</h2>

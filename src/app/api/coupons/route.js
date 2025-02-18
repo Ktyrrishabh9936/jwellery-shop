@@ -6,13 +6,13 @@ export async function POST(req) {
   try {
     await connect();
 
-    const { userId, couponCode } = await req.json();
+    const {  couponCode, totalDiscountedPrice } = await req.json();
 
-    const user = await User.findById(userId).populate("couponUsed");
+    // const user = await User.findById(userId);
 
-    if (!user) {
-      return new Response(JSON.stringify({ success: false, message: "User not found" }), { status: 404 });
-    }
+    // if (!user) {
+    //   return new Response(JSON.stringify({ success: false, message: "User not found" }), { status: 404 });
+    // }
 
     const coupon = await Coupon.findOne({ code: couponCode });
 
@@ -20,9 +20,9 @@ export async function POST(req) {
       return new Response(JSON.stringify({ success: false, message: "Invalid coupon code" }), { status: 400 });
     }
 
-    if (user.couponUsed.some((usedCoupon) => usedCoupon._id.toString() === coupon._id.toString())) {
-      return new Response(JSON.stringify({ success: false, message: "Coupon already used" }), { status: 400 });
-    }
+    // if (user.couponUsed.some((usedCoupon) => usedCoupon._id.toString() === coupon._id.toString())) {
+    //   return new Response(JSON.stringify({ success: false, message: "Coupon already used" }), { status: 400 });
+    // }
 
     if (new Date() > coupon.validUntil) {
       return new Response(JSON.stringify({ success: false, message: "Coupon expired" }), { status: 400 });
@@ -32,7 +32,12 @@ export async function POST(req) {
       return new Response(JSON.stringify({ success: false, message: "Coupon usage limit exceeded" }), { status: 400 });
     }
 
-    return new Response(JSON.stringify({ success: true, message: "Coupon is valid", discountType: coupon.discountType, discountValue: coupon.discountValue }), { status: 200 });
+    if (coupon.minimumOrderValue > totalDiscountedPrice) {
+      return new Response(JSON.stringify({ success: false, message: `Minimum order amount is ${coupon.minOrderAmount}` }), { status: 400 });
+    }
+
+
+    return new Response(JSON.stringify({ success: true, message: "Coupon is valid", discountType: coupon.discountType, discountValue: coupon.discountValue,minvalue:coupon.minimumOrderValue,couponCode:coupon.code }), { status: 200 });
 
   } catch (error) {
     console.error("Error validating coupon:", error);

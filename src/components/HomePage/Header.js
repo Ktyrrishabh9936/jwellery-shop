@@ -29,6 +29,7 @@ import { FiShoppingCart } from 'react-icons/fi';
 import MobMenu from "../navcomponents/MobMenu";
 import { Menus } from '@/utils/NavData';
 import { Store } from 'lucide-react';
+import { FaRegUserCircle } from "react-icons/fa";
 
 
 export default function Header() {
@@ -112,12 +113,12 @@ export default function Header() {
           ) : (
               <Link href='/login'>
             <Button
-              className="whitespace-nowrap bg-gray-200 text-pink-600 hover:bg-pink-200 hover:text-white ml-0  md:ml-1.5"
+              className="whitespace-nowrap bg-gray-200 text-black hover:bg-pink-200 hover:text-white ml-0  md:ml-1.5"
               size="sm"
               variant="text"
-              
             >
-              <span>Log In</span>
+              <span><FaRegUserCircle fontSize={22} className='mx-auto mb-2 hidden md:block'/></span>
+              <span >Sign In</span>
                 </Button>
               </Link>
           )}

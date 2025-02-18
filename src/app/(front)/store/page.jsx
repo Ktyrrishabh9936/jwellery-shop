@@ -15,7 +15,7 @@ const JeniiDescription = () => {
   return (
     <div className="p-6 max-w-4xl ">
       <h1 className="text-2xl font-bold mb-4">Jenii - JP Sterling Silver</h1>
-      <p className="text-gray-700">
+      <div className="text-gray-700">
         {showMore ? 
         (
                 <div className=" space-y-3">
@@ -30,7 +30,7 @@ const JeniiDescription = () => {
                 </div>
         )
          : shortDescription}
-      </p>
+      </div>
       <button
         onClick={() => setShowMore(!showMore)}
         className="mt-4 text-pink-600 hover:underline focus:outline-none"

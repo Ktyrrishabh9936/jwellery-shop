@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Footer from "@/components/HomePage/Footer";
 import NavBar from "@/components/HomePage/Navbar";
 import Image from "next/image";
@@ -9,17 +9,20 @@ import { useRouter } from "next/navigation";
 import Link from 'next/link';
 import { ShoppingBagIcon } from "@heroicons/react/24/solid";
 import { useDispatch, useSelector } from "react-redux";
-import { addToCart, removefromCart } from '@/lib/reducers/cartReducer'
+import { addCoupon, addToCart, applyCoupon, removeCoupon, removefromCart } from '@/lib/reducers/cartReducer'
 import { AddwishList } from "@/lib/reducers/productbyIdReducer";
+import { CheckCircle, LoaderPinwheel, X } from "lucide-react";
+import Cookies from "js-cookie";
 export default function ShoppingCart() {
-  const { loading, Items, loadingRemoveProduct, discounte, loadingProductId, totalDiscountedPrice, totalItem, totalPrice } = useSelector((state) => state.cart);
+  const { loading, Items, loadingRemoveProduct, discounte, loadingProductId, totalDiscountedPrice, totalItem, totalPrice,coupon,couponDiscount,loadingCoupon } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
   const navigate = useRouter();
-  const [couponCode, setCouponCode] = useState("");
-  const [couponDiscount, setCouponDiscount] = useState(0);
-  const [cartTotalPrice,setTotalPrice]=useState(0);
   const { wishListByID, loadWishlist } = useSelector((state) => state.wishlist);
   const { user } = useSelector((store) => store.user);
+
+  const [couponCode,setCouponCode]=useState("");
+  const [success,setSuccess]=useState(false);
+  const [error,setError]=useState(false);
   const handleCheckout = () => {
     if (user) {
       navigate.push('/delivery')
@@ -30,40 +33,6 @@ export default function ShoppingCart() {
   }
   const formatPrice = (price) => {
     return price ? ` ₹ ${parseFloat(price).toFixed(2)}` : "N/A";
-  };
-
-  const handleCoupon = async () => {
-    try {
-      if (!couponCode) {
-        alert("Please enter a coupon code");
-        return;
-      }
-
-      const response = await fetch("/api/coupons", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: user._id, couponCode }),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        alert(`Coupon applied! You get ${data.discountValue} ${data.discountType === "percentage" ? "%" : "₹"} discount.`);
-
-        const discountAmount = data.discountType === "percentage"
-        ? (totalDiscountedPrice * data.discountValue) / 100
-        : data.discountValue;
-
-      setCouponDiscount(discountAmount);
-      setTotalPrice(totalDiscountedPrice- discountAmount);
-
-      } else {
-        alert(data.message);
-      }
-    } catch (error) {
-      console.error("Error applying coupon:", error);
-      alert("Something went wrong. Please try again.");
-    }
   };
 
 
@@ -163,9 +132,50 @@ export default function ShoppingCart() {
           </button>
         </div>:""} */}
           </div>
+<div className="p-6  ">
+<h2 className="text-xl font-semibold mb-4">Apply Coupons</h2>
+          <div className="space-y-2 mb-4">
+             { loadingCoupon ?  <div className=" inset-0 backdrop-blur-sm bg-opacity-50 flex items-center justify-center z-10">
+          <div className="animate-spin">
+            <LoaderPinwheel size={50} className="text-pink-400" />
+          </div>
+        </div> : coupon ?   <div className="flex items-center justify-between border border-green-400 rounded-lg p-4 bg-green-50">
+      <div className="flex items-center gap-2">
+        <CheckCircle className="text-green-500 w-5 h-5" />
+        <div>
+          <p className="font-semibold text-gray-900">{coupon?.couponCode} applied</p>
+          { coupon.discountType === "percentage" ? <p className="text-sm text-gray-600">{couponDiscount.toFixed(2)} ({coupon?.discountValue})% off</p>:<p className="text-sm text-gray-600">Rs {couponDiscount.toFixed(2)} OFF</p>}
+        </div>
+      </div>
+      <button onClick={()=>dispatch(removeCoupon())}  className="text-pink-500 font-semibold hover:underline">
+        Remove
+      </button>
+    </div>: <div className="block md:flex items-center"> 
+                <div className="mr-2"> 
+                  <input
+                    type="text"
+                    placeholder="Coupon Code"
+                    value={couponCode}
+                    onChange={(e) => setCouponCode(e.target.value)}
+                    className="border border-pink-300  bg-blue-gray-100 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-200"
+                  />
+                </div>
+                <div>
+                  <button
+                    className="bg-pink-500 hover:bg-pink-300 text-yellow-50 font-bold p-2 rounded-md transition duration-300 mt-3 md:mt-0 text-sm"
+                    onClick={()=>dispatch(applyCoupon({  couponCode, totalDiscountedPrice }))}
+                  >
+                    Apply Coupon
+                  </button>
+                </div>
+              </div>}
+
+              
+            
+            </div>
 
           {/* Order Summary Section */}
-          <div className="border p-6 rounded-lg">
+          <div className="border  rounded-lg">
             <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
             <div className="flex justify-between mb-4">
               <span>Estimated Total:</span>
@@ -175,45 +185,22 @@ export default function ShoppingCart() {
               <span>Discount :</span>
               <span className="font-bold">-{formatPrice(discounte)}</span>
             </div>
-            <div className="flex justify-between mb-4">
+          {coupon &&  <div className="flex justify-between mb-4">
               <span>Coupon Discount:</span>
               <span className="font-bold">-{formatPrice(couponDiscount)}</span>
-            </div>
+            </div>}
             <div className="flex justify-between mb-4">
               <span>Cart Total:</span>
-              <span className="font-bold">{cartTotalPrice?formatPrice(cartTotalPrice):formatPrice(totalDiscountedPrice)}</span>
+              <span className="font-bold">{formatPrice(totalDiscountedPrice)}</span>
             </div>
-            <div className="space-y-2">
-              <div className="block md:flex items-center"> 
-                <div className="mr-2"> 
-                  <input
-                    type="text"
-                    placeholder="Coupon Code"
-                    value={couponCode}
-                    onChange={(e) => setCouponCode(e.target.value)}
-                    className="border border-pink-300 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-200"
-                  />
-                </div>
-                <div>
-                  <button
-                    className="bg-pink-500 hover:bg-pink-600 text-white font-bold p-2 rounded-md transition duration-300 mt-3 md:mt-0"
-                    onClick={handleCoupon}
-                  >
-                    Apply Coupon
-                  </button>
-                </div>
-              </div>
-
-              <p className="text-xs text-gray-400">
-                Per India flat shipping for orders above ₹500
-              </p>
-            </div>
+         
             {totalItem !== 0 ? <div className="mt-8">
               <button className="w-full py-3 bg-pink-500 text-white font-semibold rounded-lg hover:bg-pink-600"
                 onClick={handleCheckout}>
                 Checkout Securely
               </button>
             </div> : ""}
+          </div>
           </div>
 
         </div>

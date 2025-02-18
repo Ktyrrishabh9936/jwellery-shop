@@ -16,7 +16,7 @@ import { ChevronDownCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 // import { useRouter } from "next/router";
 
- function Star({rating,size='clamp(1rem,1.3vw,3rem)' ,color='#fe6161'}) {
+export  function Star({rating,size='clamp(1rem,1.3vw,3rem)' ,color='#fe6161'}) {
   const ratingfunc = Array.from({length:5},(elem,index)=>{
           const number = rating+0.5;
            return(rating >= index+1 ? <TiStarFullOutline   style={{fontSize:size,color}} key={index}/> : number >= index+1 ? <TiStarHalfOutline style={{fontSize:size,color}} key={index}/> : <TiStarOutline   style={{fontSize:size,color}} key={index}/>)

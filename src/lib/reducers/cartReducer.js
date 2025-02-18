@@ -1,6 +1,7 @@
 import {createAsyncThunk,createSlice} from "@reduxjs/toolkit";
 import axios from "axios";
 import toast from "react-hot-toast";
+import Cookies from "js-cookie";
 // import { getSession } from "next-auth/react";
 
 const loadCartFromLocalStorage = () => {
@@ -17,6 +18,16 @@ const saveCartToLocalStorage = (cart) => {
   }
 };
 
+export const applyCoupon = createAsyncThunk('coupon/apply',
+        async(data,{rejectedWithValue})=>{
+                try {
+                        const response = await axios.post('/api/coupons',data)
+                        return response.data;
+                } catch (error) {
+                        return rejectedWithValue(error.message)
+        }
+      }
+)
 export const fetchCart = createAsyncThunk('cart/fetch',
         async(_,{rejectedWithValue})=>{
           // const session = await getSession();
@@ -53,6 +64,7 @@ export const getCartByApplyCoupon = createAsyncThunk('cart/applyCopuon',
 export const addToCart = createAsyncThunk('cart/add',
         async(item,{rejectedWithValue})=>{
           // const session = await getSession();
+          
   if (false) {
                 try {
                         const response = await axios.post('/api/cart/add',{productId:item.productId,quantity:item.quantity});
@@ -95,19 +107,31 @@ export const removefromCart = createAsyncThunk('cart/remove',
               }
         }
 )
-const calculateTotals = (items) => {
+const calculateTotals = (items,cpn=null,dispatch) => {
   let totalPrice=0;
   let totalDiscountedPrice=0;
   let totalItem=0;
   let discounte=0;
+  let discountAmount=0;
   items.forEach((item) => {
     totalPrice += item.price * item.quantity;
     totalItem+=item.quantity;
     totalDiscountedPrice += item.discountedPrice * item.quantity;
     discounte = totalPrice - totalDiscountedPrice;
   });   
- 
-  return { discounte,totalPrice, totalDiscountedPrice, totalItem };
+  if(cpn){
+    if(cpn.minvalue > totalDiscountedPrice )
+    {
+      dispatch(removeCoupon());
+      toast.error(`Coupon removed: Minimum order amount is ${coupon.minvalue}`);
+    }
+    else{
+   discountAmount = cpn.discountType === "percentage"
+      ? (totalDiscountedPrice * cpn.discountValue) / 100 : cpn.discountValue;
+      totalDiscountedPrice -= discountAmount;
+    }
+  }
+  return { discounte,totalPrice, totalDiscountedPrice, totalItem,discountAmount };
 };
 const initialState = {
         openSideCart:false,
@@ -118,7 +142,8 @@ const initialState = {
         totalPrice:0,
         discounte:0,
         totalDiscountedPrice:0,
-        
+        couponDiscount:0,
+        coupon:null,
         loading: false,
         error: null,
         isFetched:false,
@@ -135,21 +160,37 @@ const initialState = {
           setsidebarCart: (state,action) => {
             state.openSideCart = action.payload;
           },
-          addItem: (state, action) => {
-            const existingItem = state.Items.find((item) => item.id === action.payload.id);
-            if (existingItem) {
-              existingItem.quantity += action.payload.quantity;
-            } else {
-              state.Items.push(action.payload);
-            }
-            localStorage.setItem("cart", JSON.stringify(state.Items));
+          addCoupon: (state, action) => {
+            state.coupon = action.payload;
+            Cookies.set('cpn-cde', action.payload.couponCode, { expires: 1 });
           },
-          removeItem: (state, action) => {
-            state.Items = state.Items.filter((item) => item.id !== action.payload);
-            localStorage.setItem("cart", JSON.stringify(state.Items));
+          removeCoupon: (state) => {
+            state.coupon = null;
+            Cookies.remove('cpn-cde');
+            const { discounte,totalPrice, totalDiscountedPrice, totalItem,discountAmount } = calculateTotals(state.Items);
+        state.totalItem = totalItem;
+        state.totalPrice = totalPrice;
+        state.discounte = discounte;
+        state.totalDiscountedPrice = totalDiscountedPrice;
+        state.loadingCoupon = false;
+        state.couponDiscount = discountAmount;
           },
+          // addItem: (state, action) => {
+          //   const existingItem = state.Items.find((item) => item.id === action.payload.id);
+          //   if (existingItem) {
+          //     existingItem.quantity += action.payload.quantity;
+          //   } else {
+          //     state.Items.push(action.payload);
+          //   }
+          //   localStorage.setItem("cart", JSON.stringify(state.Items));
+          // },
+          // removeItem: (state, action) => {
+          //   state.Items = state.Items.filter((item) => item.id !== action.payload);
+          //   localStorage.setItem("cart", JSON.stringify(state.Items));
+          // },
           clearCart: (state) => {
             localStorage.removeItem("cart");
+            Cookies.remove('cpn-cde');
             return {...state, openSideCart:false,
               loadingProductId:null,
               loadingRemoveProduct:null,
@@ -160,15 +201,21 @@ const initialState = {
               totalDiscountedPrice:0,
               loading: false,
               error: null,
-              isFetched:false,};
+              isFetched:false,
+              couponDiscount:0,
+              coupon:null,
+              loadingCoupon:false,
+              validateCoupons:null,
+            };
           },
-          setLoggedIn: (state, action) => {
-            state.isLoggedIn = action.payload;
-          },
-          syncCart: (state, action) => {
-            state.Items = action.payload;
-            localStorage.setItem("cart", JSON.stringify(state.Items));
-          },
+
+          // setLoggedIn: (state, action) => {
+          //   state.isLoggedIn = action.payload;
+          // },
+          // syncCart: (state, action) => {
+          //   state.Items = action.payload;
+          //   localStorage.setItem("cart", JSON.stringify(state.Items));
+          // },
         },
         extraReducers: (builder) => {
           builder
@@ -187,13 +234,15 @@ const initialState = {
         data = action.payload.items;
         state.isFetched = true;
         }
+          // const couponCode = Cookies.get("cpn-cde");
+          // if(couponCode) dispatch(applyCoupon({  couponCode  , totalDiscountedPrice }))
         state.Items = data;
-        console.log(data)
-        const { discounte,totalPrice, totalDiscountedPrice, totalItem } = calculateTotals(data);
+        const { discounte,totalPrice, totalDiscountedPrice, totalItem,discountAmount } = calculateTotals(data,state.coupon);
         state.totalItem = totalItem;
         state.totalPrice = totalPrice;
         state.discounte = discounte;
         state.totalDiscountedPrice = totalDiscountedPrice;
+        state.couponDiscount = discountAmount;
         
       })
       .addCase(fetchCart.rejected, (state, action) => {
@@ -211,7 +260,6 @@ const initialState = {
        }else{
         if(action.payload.isExist){
           const idx = state.Items.findIndex((val)=>val.productId === action.meta.arg.productId);
-            console.log(idx)
           state.Items[idx] = action.payload.item;
           data=state.Items;
         }
@@ -220,12 +268,13 @@ const initialState = {
         }
       }
       state.Items = data;
-        const { discounte,totalPrice, totalDiscountedPrice, totalItem } = calculateTotals(data);
+        const { discounte,totalPrice, totalDiscountedPrice, totalItem,discountAmount } = calculateTotals(data,state.coupon);
         state.totalItem = totalItem;
         state.totalPrice = totalPrice;
         state.discounte = discounte;
         state.totalDiscountedPrice = totalDiscountedPrice;
         state.loadingProductId = null;
+        state.couponDiscount = discountAmount;
         state.error = null;
         state.loading = false;
       })
@@ -246,21 +295,41 @@ const initialState = {
         data = state.Items.filter((val)=>val.productId !== action.meta.arg);
         }
         state.Items = data;
-        const { discounte,totalPrice, totalDiscountedPrice, totalItem } = calculateTotals(data);
+        const { discounte,totalPrice, totalDiscountedPrice, totalItem,discountAmount } = calculateTotals(data,state.coupon);
         state.totalItem = totalItem;
         state.totalPrice = totalPrice;
         state.discounte = discounte;
         state.totalDiscountedPrice = totalDiscountedPrice;
         state.loadingRemoveProduct = null;
+        state.couponDiscount = discountAmount;
         state.error = null;
       })
       .addCase(removefromCart.rejected, (state, action) => {
         state.loadingRemoveProduct = null;
         state.error = action.payload;
       })
+      .addCase(applyCoupon.pending, (state) => {
+        state.loadingCoupon = true;
+        state.validateCoupons = null;
+      })
+      .addCase(applyCoupon.fulfilled, (state,action) => {
+        const { discounte,totalPrice, totalDiscountedPrice, totalItem,discountAmount } = calculateTotals(state.Items,action.payload);
+        state.totalItem = totalItem;
+        state.totalPrice = totalPrice;
+        state.discounte = discounte;
+        state.totalDiscountedPrice = totalDiscountedPrice;
+        state.loadingCoupon = false;
+        state.couponDiscount = discountAmount;
+        state.coupon = action.payload;
+        Cookies.set('cpn-cde', action.payload.couponCode, { expires: 1 });
+      })
+      .addCase(applyCoupon.rejected, (state, action) => {
+        state.loadingCoupon = false;
+        state.validateCoupons = action.payload;
+      })
         },
       });
 
-      export const { addItem, removeItem, clearCart, setLoggedIn, syncCart,setsidebarCart } = cartSlice.actions;
+      export const {  clearCart, setLoggedIn,addCoupon,removeCoupon, setsidebarCart } = cartSlice.actions;
 
 export default cartSlice.reducer;

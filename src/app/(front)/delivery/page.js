@@ -13,7 +13,7 @@ export default function AddressPage() {
       <NavBar/>
       <main className="">
 
-      {user && <div className="flex flex-col md:grid grid-cols-2">
+      { <div className="flex flex-col md:grid grid-cols-2">
           <div className="order-2 md:order-1 p-4 relative">
             <DeliveryForm />
           </div>
