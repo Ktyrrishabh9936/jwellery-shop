@@ -1,5 +1,15 @@
 import mongoose from 'mongoose'
-
+const location = {
+    label: {
+      type: String,
+      required: true,
+      minlength: 1,
+      maxlength: 50,
+    },
+    value: {
+      type: String,
+      required: true,
+}}
 const addressSchema = mongoose.Schema({
     userId:{
         type:mongoose.Schema.Types.ObjectId,
@@ -19,23 +29,28 @@ const addressSchema = mongoose.Schema({
       length: 10,
       required: true,
     },
-    street: {
+    addressline1: {
         type: String,
         required: true,
         minlength: 5,
         maxlength: 100,
       },
-      city: {
+      addressline2: {
         type: String,
+        minlength: 5,
+        maxlength: 100,
+      },
+      city: {
+        type: location,
         required: true,
-        minlength: 2,
-        maxlength: 50,
       },
       state: {
-        type: String,
+        type: location,
         required: true,
-        minlength: 2,
-        maxlength: 50,
+      },
+      country: {
+        type: location,
+        required: true,
       },
       postalCode: {
         type: Number,

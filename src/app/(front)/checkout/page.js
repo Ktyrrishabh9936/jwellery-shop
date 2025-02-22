@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import Link from 'next/link';
 import { ShoppingBagIcon } from "@heroicons/react/24/solid";
 import { useDispatch, useSelector } from "react-redux";
-import { addCoupon, addToCart, applyCoupon, removeCoupon, removefromCart } from '@/lib/reducers/cartReducer'
+import { addToCart, applyCoupon, removeCoupon, removefromCart } from '@/lib/reducers/cartReducer'
 import { AddwishList } from "@/lib/reducers/productbyIdReducer";
 import { CheckCircle, LoaderPinwheel, X } from "lucide-react";
 import Cookies from "js-cookie";
@@ -21,16 +21,22 @@ export default function ShoppingCart() {
   const { user } = useSelector((store) => store.user);
 
   const [couponCode,setCouponCode]=useState("");
-  const [success,setSuccess]=useState(false);
-  const [error,setError]=useState(false);
-  const handleCheckout = () => {
-    if (user) {
-      navigate.push('/delivery')
+  // const [success,setSuccess]=useState(false);
+  // const [error,setError]=useState(false);
+  // const handleCheckout = () => {
+  //   if (user) {
+  //     navigate.push('/delivery')
+  //   }
+  //   else {
+  //     navigate.push('/login')
+  //   }
+  // }
+  useEffect(() => {
+    if(!coupon){
+    const couponCode = Cookies.get("cpn-cde");
+    if (couponCode) { dispatch(applyCoupon({couponCode})) }
     }
-    else {
-      navigate.push('/login')
-    }
-  }
+  }, [])
   const formatPrice = (price) => {
     return price ? ` ₹ ${parseFloat(price).toFixed(2)}` : "N/A";
   };
@@ -133,7 +139,7 @@ export default function ShoppingCart() {
         </div>:""} */}
           </div>
 <div className="p-6  ">
-<h2 className="text-xl font-semibold mb-4">Apply Coupons</h2>
+<h2 className="text-xl font-semibold mb-4 ">Apply Coupons</h2>
           <div className="space-y-2 mb-4">
              { loadingCoupon ?  <div className=" inset-0 backdrop-blur-sm bg-opacity-50 flex items-center justify-center z-10">
           <div className="animate-spin">
@@ -150,24 +156,20 @@ export default function ShoppingCart() {
       <button onClick={()=>dispatch(removeCoupon())}  className="text-pink-500 font-semibold hover:underline">
         Remove
       </button>
-    </div>: <div className="block md:flex items-center"> 
-                <div className="mr-2"> 
+    </div>: <div className=" flex justify-between "> 
                   <input
                     type="text"
                     placeholder="Coupon Code"
                     value={couponCode}
                     onChange={(e) => setCouponCode(e.target.value)}
-                    className="border border-pink-300  bg-blue-gray-100 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-200"
+                    className="border border-pink-300  bg-gray-50 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-200"
                   />
-                </div>
-                <div>
                   <button
-                    className="bg-pink-500 hover:bg-pink-300 text-yellow-50 font-bold p-2 rounded-md transition duration-300 mt-3 md:mt-0 text-sm"
+                    className="bg-pink-500 hover:bg-pink-300 text-yellow-50 font-bold p-2 rounded-md transition duration-300 mt-3 md:mt-0 text-sm px-3 py-2"
                     onClick={()=>dispatch(applyCoupon({  couponCode, totalDiscountedPrice }))}
                   >
                     Apply Coupon
                   </button>
-                </div>
               </div>}
 
               
@@ -196,7 +198,7 @@ export default function ShoppingCart() {
          
             {totalItem !== 0 ? <div className="mt-8">
               <button className="w-full py-3 bg-pink-500 text-white font-semibold rounded-lg hover:bg-pink-600"
-                onClick={handleCheckout}>
+                onClick={()=> navigate.push('/delivery')}>
                 Checkout Securely
               </button>
             </div> : ""}

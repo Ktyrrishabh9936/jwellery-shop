@@ -7,6 +7,7 @@ export async function POST(request) {
   await connect();
   try {
     const { email, otp } = await request.json();
+    console.log(email, otp)
 
     // Find user by email and OTP, and check if OTP has not expired
     const user = await User.findOne({

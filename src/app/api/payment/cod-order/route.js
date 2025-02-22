@@ -7,6 +7,7 @@ import User from '@/models/userModel';
 import { UserAuth } from '@/utils/userAuth';
 import { createShiprocketOrder } from '@/utils/shipRocket';
 import moment from 'moment';
+import couponModel from '@/models/couponModel';
 
 
 export const generateOrderId = (length = 10) => {
@@ -19,15 +20,20 @@ export const generateOrderId = (length = 10) => {
 export async function POST(req) {
   await connect();
   try {
-    const {Items,addressId } = await req.json();
-    const userId = await UserAuth(); // Assume userId is set in middleware
-    const user = await User.findById(userId);
+    const {Items,address,userId,couponCode } = await req.json();
+    console.log(address)
+    let Id;
+    if(!userId) {
+     Id = await UserAuth();
+  }else{
+    Id = userId;
+  }
+    const user = await User.findById(Id);
     if (!user) {
-      return NextResponse.json({ message: 'User not found' }, { status: 404 });
+      return NextResponse.json({ message: 'Invaild user' }, { status: 404 });
     }
- 
     let order_items = [];
-    const total = Items.reduce((acc, item) => {
+    let total = Items.reduce((acc, item) => {
         const price = item.discountedPrice; // Optional chaining
         const quantity = item.quantity || 1; // Default to 1 if quantity is not defined
         order_items.push(  {
@@ -43,28 +49,37 @@ export async function POST(req) {
   
         return acc + price * quantity; // Calculate total
       }, 0);
-      console.log(total)
-      // Set up Razorpay order details
-      let address;
-      
-         address = await Address.findById(addressId);
-        if (!address) {
-            return NextResponse.json({
-                message: " Address Not Found"
-            }, { status: 404 });
+      let coupon;
+      if(couponCode){
+         coupon = await couponModel.findOne({ code: couponCode });
+        if (coupon) {
+            if (coupon.minimumOrderValue > total) {
+              return NextResponse.json({ message: `Minimum order amount is ${coupon.minOrderAmount}` }, { status: 403 });
+            }
+            if (coupon.discountType === 'percentage') {
+              total -= (total * coupon.discountValue) / 100;
+            } else if (coupon.discountType === 'fixed') {
+              total -= coupon.discountValue;
+            }
+            coupon.usedCount++;
+          }
         }
+            console.log(total)
+      
       
       const JENII_ORDERID = generateOrderId()
       const shiprocket = await createShiprocketOrder({
         order_id: JENII_ORDERID,
         order_date: moment().format("YYYY-MM-DD HH:mm"),
         pickup_location: "Primary",
-        billing_address: `${address.landmark} , ${address.street}`,
+        billing_address: address.addressline1,
+        billing_address_2:address.addressline2,
         billing_pincode: address.postalCode,
-        billing_city: address.city,
-        billing_state: address.state,
-        billing_country: "India",
-        billing_email: user.email,
+        billing_isd_code:address.countryCode,
+        billing_city: address.city.label,
+        billing_state: address.state.label,
+        billing_country:address.country.value,
+        billing_email:user.email,
         billing_phone: `91${address.contact}`,
         billing_customer_name: address.firstName,
         billing_last_name: address.lastName,
@@ -84,9 +99,9 @@ export async function POST(req) {
       }, { status: 403 });
       }
 
-    let order = await Order.findOne({ userId });
+    let order = await Order.findOne({ userId:Id });
     if (!order) {
-      order = new Order({ userId, orders: [] });
+      order = new Order({ userId:Id, orders: [] });
     }
     order.orders.push({
       items: Items.map((item) => 
@@ -103,8 +118,12 @@ export async function POST(req) {
       customer:{
         name:`${address.firstName} ${address.lastName}`,
         email:user.email,
-        contact:address.contact,
-        address:`${address.landmark} ${address.street} ${address.city} ${address.state}`
+        contact:address.countryCode+address.contact,
+        address:`${address.addressline1} ${address.addressline1} `,
+        city:address.city.label,
+        state:address.state.label,
+        country:address.country.label,
+        pincode:address.postalCode
       },
       orderStatus: "CONFIRMED",
       amount:total,
@@ -114,10 +133,10 @@ export async function POST(req) {
         shippingOrderId:shiprocket.order_id,
       }
     });
+    if(couponCode) await coupon.save();
     await order.save();
-    await Cart.findOneAndDelete({ userId }); // Clear the cart after placing the order
-     user.cart = null;
-     await user.save();
+    
+    // await Cart.findOneAndDelete({ userId }); // Clear the cart after placing the order
     return NextResponse.json({order,shiprocket}, { status: 201 });
 
 } catch (error) {

@@ -35,8 +35,8 @@ import ImageZoom from "react-image-zooom";
 import Accordian, { AccordianItem } from "./Accordian";
 import { formatPrice } from "@/utils/productDiscount";
 import { Star } from "../HomePage/HotPicks";
-import { useMediaQuery } from 'react-responsive';
-import Zoomable from "react-instagram-zoom";
+// import { useMediaQuery } from 'react-responsive';
+// import Zoomable from "react-instagram-zoom";
 const schema = yup.object().shape({
   pincode: yup
     .string()
@@ -46,16 +46,16 @@ const schema = yup.object().shape({
 export default function Product({ id }) {
     const [product, setProduct] = useState(null);
     const [relatedProducts, setRelatedProducts] = useState([]);
-    const [error, setError] = useState(null);
-    const [open, setOpen] =useState(false);
-  const [isFavorite, setIsFavorite] = useState(false);
-  const [loading, setloading] = useState(false);
-const router = useRouter();
+//     const [error, setError] = useState(null);
+//     const [open, setOpen] =useState(false);
+//   const [isFavorite, setIsFavorite] = useState(false);
+//   const [loading, setloading] = useState(false);
+// const router = useRouter();
  
-  const handleOpen = () => setOpen((cur) => !cur);
-  const handleIsFavorite = () => setIsFavorite((cur) => !cur);
+//   const handleOpen = () => setOpen((cur) => !cur);
+//   const handleIsFavorite = () => setIsFavorite((cur) => !cur);
 
-  const isSmallScreen = useMediaQuery({ maxWidth: 768 });
+  // const isSmallScreen = useMediaQuery({ maxWidth: 768 });
 
     useEffect(() => {
         if (id) {
@@ -135,13 +135,7 @@ const router = useRouter();
             )}
            >
                 {product?.images?.map((img,ind)=>
-            isSmallScreen ? <Zoomable>
-              <Image key={ind}
-             src={img}
-             alt={`zm${ind}`}      width={300}
-             height={300}
-             loading="lazy"/>
-            </Zoomable> :<ImageZoom 
+            <ImageZoom 
              key={ind}
              src={img}
              alt={`zm${ind}`} 

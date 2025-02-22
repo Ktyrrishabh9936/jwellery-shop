@@ -7,7 +7,6 @@ import Footer from "@/components/HomePage/Footer";
 import { useSelector } from "react-redux";
 
 export default function AddressPage() {
-  const {user} = useSelector((store)=>store.user);
   return (
     <div className="">
       <NavBar/>

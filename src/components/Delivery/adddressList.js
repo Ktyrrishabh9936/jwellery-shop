@@ -18,14 +18,18 @@ const AddressList = ({ addresses,selectedAddress,setSelectedAddress }) => {
             const stat = watch("state");
             const cityval = watch("city");
             const openUpdateModal = (address) =>{
-              setValue("id", address._id);
+              // setValue("id", address._id);
               setValue("firstName", address.firstName);
               setValue("lastName", address.lastName);
+
               setValue("contact", address.contact);
-              setValue("landmark", address.landmark);
-              setValue("street", address.street);
-              setValue("city", address.city);
-              setValue("state", address.state);
+              setValue("countryCode", address.countryCode);
+              // setValue("landmark", address.landmark);
+              setValue("addressline1", address.addressline1);
+              setValue("addressline2", address.addressline2);
+              setValue("city", address.city.value);
+              setValue("state", address.state.value);
+              setValue("country", address.country.value);
               setValue("postalCode", address.postalCode);
               setIsModalOpen(true);
             }
@@ -52,9 +56,10 @@ const AddressList = ({ addresses,selectedAddress,setSelectedAddress }) => {
             <div className="flex-1 py-5 pl-5 overflow-hidden">
               <ul>
                 <li className=" text-black-600  font-semibold capitalize ">{address.firstName} {address.lastName}</li>
-                <li className="text-sm  ">{address.contact}</li>
-                <li className="text-sm ">{address.landmark} {address.street}</li>
-                <li className="text-sm ">{address.city}, {address.state} - {address.postalCode}</li>
+                <li className="text-sm  ">{address.countryCode}{address.contact}</li>
+                <li className="text-sm ">{address.addressline1}, {address.addressline2}</li>
+                <li className="text-sm ">{address.city.label}, {address.state.label} {address.country.label} - {address.postalCode}</li>
+                {/* <li className="text-sm ">Near {address.landmark}</li> */}
               </ul>
             </div>
             <div className="flex-none pt-2.5 pr-2.5 pl-1">
@@ -79,7 +84,7 @@ const AddressList = ({ addresses,selectedAddress,setSelectedAddress }) => {
                   <div className="fixed inset-0 flex items-center justify-center p-4">
                     <DialogPanel className="w-full max-w-md bg-white rounded-lg p-6">
                       <DialogTitle className="text-lg font-medium text-gray-900">Update Address</DialogTitle>
-                     <Addressform register={register} errors={errors} setValue={setValue} stat={stat} cityval={cityval}/>
+                     <Addressform register={register} errors={errors} setValue={setValue} stat={stat} cityval={cityval} watch={watch} control={control}/>
                    <div className="flex flex-row-reverse p-3">
                          <div className="flex-initial pl-3">
                             <button type="button" onClick={handleSubmit(handleUpdateAddress)} className="flex items-center px-5 py-2.5 font-medium tracking-wide text-white capitalize   bg-pink-600 rounded-md hover:bg-pink-700  focus:outline-none focus:bg-pink-900  transition duration-300 transform active:scale-95 ease-in-out">

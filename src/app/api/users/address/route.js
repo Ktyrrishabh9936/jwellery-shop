@@ -6,15 +6,17 @@ import { NextResponse } from "next/server";
 export async function POST(req) {
     await connect();
     try {
-        const {firstName, lastName, contact,street, city, state, postalCode, landmark } = await req.json(); 
+        const {firstName, lastName, contact,addressline1,addressline2, city, state,country, postalCode, landmark, countryCode } = await req.json(); 
         console.log(landmark)
         const userId = await UserAuth();
         const address = await Address.create({
             userId, 
-            firstName, lastName, contact,
-            street,
-            city,
-            state,
+            firstName, lastName, countryCode, contact,
+            addressline1,
+            addressline2,
+            city:city,
+            state:state,
+            country:country,
             postalCode,
             landmark,
         });

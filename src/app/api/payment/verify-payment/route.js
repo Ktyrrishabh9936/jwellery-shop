@@ -7,6 +7,7 @@ import { connect } from '@/dbConfig/dbConfig';
 import User from '@/models/userModel';
 import { createShiprocketOrder } from '@/utils/shipRocket';
 import moment from 'moment';
+import couponModel from '@/models/couponModel';
 export const generateOrderId = (length = 10) => {
   const timestamp = Date.now().toString(); // Current timestamp
   const randomDigits = Math.floor(Math.random() * Math.pow(10, length - timestamp.length))
@@ -17,20 +18,25 @@ export const generateOrderId = (length = 10) => {
 export async function POST(req) {
   await connect();
   try {
-    const { paymentId, address, amount, orderId, signature,Items } = await req.json();
+    const {userId,paymentId, address, amount, orderId, signature,Items, couponCode} = await req.json();
+    
     const secret = process.env.RAZORPAY_SECRET; // Use environment variables for sensitive data
     const shasum = crypto.createHmac('sha256', secret);
     shasum.update(`${orderId}|${paymentId}`);
     const digest = shasum.digest('hex');
     if (digest === signature) {
-    const userId = await UserAuth(); // Assume userId is set in middleware
-    const user = await User.findById(userId);
-    if (!user) {
-      return NextResponse.json({ message: 'User not found' }, { status: 404 });
+      let Id;
+      if(!userId) {
+       Id = await UserAuth();
+    }else{
+      Id = userId;
     }
-  
-
-    let order = await Order.findOne({ userId });
+      const user = await User.findById(Id);
+      if (!user) {
+        return NextResponse.json({ message: 'Invaild user' }, { status: 404 });
+      }
+     
+    let order = await Order.findOne({ userId:Id });
     if (!order) {
       order = new Order({ userId, orders: [] });
     }
@@ -54,13 +60,15 @@ export async function POST(req) {
               order_id: JENII_ORDERID,
               order_date: moment().format("YYYY-MM-DD HH:mm"),
               pickup_location: "Primary",
-              billing_address: `${address.landmark} , ${address.street}`,
+              billing_address: address.addressline1,
+              billing_address_2:address.addressline2,
               billing_pincode: address.postalCode,
-              billing_city: address.city,
-              billing_state: address.state,
-              billing_country: "India",
+              billing_isd_code:address.countryCode,
+              billing_city: address.city.label,
+              billing_state: address.state.label,
+              billing_country:address.country.value,
               billing_email: user.email,
-              billing_phone: `91${address.contact}`,
+              billing_phone: address.contact,
               billing_customer_name: address.firstName,
               billing_last_name: address.lastName,
               shipping_is_billing: true,
@@ -91,8 +99,12 @@ export async function POST(req) {
       customer:{
         name:`${address.firstName} ${address.lastName}`,
         email:user.email,
-        contact:address.contact,
-        address:`${address.landmark} ${address.street} ${address.city} ${address.state}`
+        contact:address.countryCode+address.contact,
+        address:`${address.addressline1} ${address.addressline1} `,
+        city:address.city.label,
+        state:address.state.label,
+        country:address.country.label,
+        pincode:address.postalCode
       },
       orderStatus: "CONFIRMED",
       amount,
@@ -102,9 +114,14 @@ export async function POST(req) {
         shippingOrderId:shiprocket.order_id
       }
     });
+    if(couponCode){
+      const coupon = await couponModel.findOne({ code: couponCode });
+      if(coupon){
+        coupon.usedCount++;
+        await coupon.save()
+      }
+    }
     await order.save();
-    
-     await user.save();
     return NextResponse.json(order, { status: 201 });
     } else {
       return NextResponse.json({ message: 'Payment verification failed' }, { status: 400 });

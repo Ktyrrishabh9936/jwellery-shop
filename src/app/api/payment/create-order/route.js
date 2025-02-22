@@ -1,6 +1,7 @@
 import { connect } from '@/dbConfig/dbConfig';
 import Address from '@/models/addressModel';
 import Cart from '@/models/cartModel';
+import couponModel from '@/models/couponModel';
 import User from '@/models/userModel';
 import { UserAuth } from '@/utils/userAuth';
 import { NextResponse } from 'next/server';
@@ -14,54 +15,49 @@ const razorpayInstance = new Razorpay({
 export async function POST(req) {
   await connect();
   try {
-    const {Items,addressId} = await req.json();
-    const userId = await UserAuth();
-    
-    // Validate fields manually if Yup is not used
- 
-    // Find cart and ensure it exists
-    const user = await User.findById(userId);
+    const {userId,Items,couponCode} = await req.json();
+    let Id;
+    if(!userId) {
+     Id = await UserAuth();
+  }else{
+    Id = userId;
+  }
+    const user = await User.findById(Id);
     if (!user) {
-      return NextResponse.json({ message: 'User Exist' }, { status: 404 });
+      return NextResponse.json({ message: 'Invaild user' }, { status: 404 });
     }
-    // const cart = await Cart.findOne({ userId });
-    // if (!cart) {
-    //   return NextResponse.json({ message: 'Cart does not exist' }, { status: 404 });
-    // }
-    const total = Items.reduce((acc, item) => {
+   
+    let total = 0;
+     total = Items.reduce((acc, item) => {
       const price = item.discountedPrice; // Optional chaining
       const quantity = item.quantity || 1; // Default to 1 if quantity is not defined
-
-      // Log for debugging
-      console.log(`Item ID: ${item._id}, Price: ${price}, Quantity: ${quantity}`);
 
       if (typeof price !== 'number' || isNaN(price)) {
         return NextResponse.json({ message: 'Price is not a valid type' }, { status: 403 });
       }
-
       return acc + price * quantity; // Calculate total
     }, 0);
-    console.log(total)
-    // Set up Razorpay order details
+    if(couponCode){
+    const coupon = await couponModel.findOne({ code: couponCode });
+    if (coupon) {
+      if (coupon.minimumOrderValue > total) {
+        return NextResponse.json({ message: `Minimum order amount is ${coupon.minOrderAmount}` }, { status: 403 });
+      }
+      if (coupon.discountType === 'percentage') {
+        total -= (total * coupon.discountValue) / 100;
+      } else if (coupon.discountType === 'fixed') {
+        total -= coupon.discountValue;
+      }
+    }
+  }
     const amountInPaise = Math.round(total * 100);
     const options = {
       amount: amountInPaise,
       currency: 'INR',
       receipt: `receipt#${Date.now()}`,
     };
-
-    // Create Razorpay order
-
     const order = await razorpayInstance.orders.create(options);
-   
-      const address = await Address.findById(addressId);
-      if (!address) {
-          return NextResponse.json({
-              message: " Address Not Found"
-          }, { status: 404 });
-      }
-      // Confirm successful order creation
-      return NextResponse.json({ message: 'Order created successfully', order:order,address,amount:total}, { status: 200 });
+      return NextResponse.json({ message: 'Order created successfully', order:order,amount:total}, { status: 200 });
    
   } catch (error) {
     console.error('Error creating order:', error);
