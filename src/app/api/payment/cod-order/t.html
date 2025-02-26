@@ -1,181 +1,3 @@
-import { NextResponse } from 'next/server';
-import Order from '@/models/orderModel';
-import { connect } from '@/dbConfig/dbConfig';
-import Address from '@/models/addressModel';
-import Cart from '@/models/cartModel';
-import User from '@/models/userModel';
-import { UserAuth } from '@/utils/userAuth';
-import { createShiprocketOrder } from '@/utils/shipRocket';
-import moment from 'moment';
-import couponModel from '@/models/couponModel';
-import { sendEmail } from '@/utils/sendMail';
-
-
-export const generateOrderId = (length = 10) => {
-  const timestamp = Date.now().toString(); // Current timestamp
-  const randomDigits = Math.floor(Math.random() * Math.pow(10, length - timestamp.length))
-    .toString()
-    .padStart(length - timestamp.length, "0"); // Generate random digits to fill length
-  return `${timestamp}${randomDigits}`.slice(0, length );
-};
-
-
-function generateEmailContent(orders) {
-  let orderDetails = '';
-
-  orders.forEach(order => {
-      orderDetails += `
-          <h2>Order Details</h2>
-          <p><strong>Product Name:</strong> ${order.product_name}</p>
-          <p><strong>Quantity:</strong> ${order.quantity}</p>
-          <p><strong>Order Number:</strong> ${order.order_number}</p>
-          <p><strong>Tracking Number:</strong> ${order.tracking_number}</p>
-          <p><strong>Delivery Address:</strong> ${order.delivery_address}</p>
-          <hr />
-      `;
-  });
-
-  return `
-      <html>
-      <body>
-          <h1>Thank you for your order!</h1>
-          <p>Your order is being processed and will be shipped soon.</p>
-          ${orderDetails}
-          <a href="https://yourtrackinglink.com" style="display: inline-block; background-color: #181818; color: #F8F8F8; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Track Your Order</a>
-      </body>
-      </html>
-  `;
-}
-export async function POST(req) {
-  await connect();
-  try {
-    const {Items,address,userId,couponCode } = await req.json();
-    console.log(address,address.country.label)
-    let Id;
-    if(!userId) {
-     Id = await UserAuth();
-  }else{
-    Id = userId;
-  }
-    const user = await User.findById(Id);
-    if (!user) {
-      return NextResponse.json({ message: 'Invaild user' }, { status: 404 });
-    }
-    let order_items = [];
-    let orderTemplate = '';
-    let total = Items.reduce((acc, item) => {
-        const price = item.discountedPrice; // Optional chaining
-        const quantity = item.quantity || 1; // Default to 1 if quantity is not defined
-        orderTemplate += `<table class="t79" role="presentation" cellpadding="0" cellspacing="0" align="left" valign="middle">
-<tr class="t78"><td></td><td class="t64" width="99.09324" valign="middle">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="t63" style="width:100%;"><tr><td class="t60" style="width:10px;" width="10"></td><td class="t61"><div style="font-size:0px;"><img class="t59" style="display:block;border:0;height:auto;width:100%;Margin:0;max-width:100%;" width="105" height="105" alt="" src="${item.img_src}"/></div></td><td class="t62" style="width:10px;" width="10"></td></tr></table>
-</td><td class="t70" width="256.09923" valign="middle">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="t69" style="width:100%;"><tr><td class="t66" style="width:10px;" width="10"></td><td class="t67" style="padding:0 0 0 24px;"><h1 class="t65" style="font-family:Albert Sans,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif;line-height:16px;font-weight:700;font-style:normal;font-size:14px;text-decoration:none;text-transform:uppercase;direction:ltr;color:#1A1A1A;text-align:left;mso-text-raise:1px;">${item.name}</h1></td><td class="t68" style="width:10px;" width="10"></td></tr></table>
-</td><td class="t77" width="164.80753" valign="middle">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="t76" style="width:100%;"><tr><td class="t73" style="width:10px;" width="10"></td><td class="t74"><p class="t72" style="font-family:Albert Sans,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif;line-height:22px;font-weight:500;font-style:normal;font-size:14px;text-decoration:none;text-transform:uppercase;letter-spacing:-0.56px;direction:ltr;color:#333333;text-align:right;">Quantity:<span class="t71" style="font-weight:bold;">${item.quantity}</span></p></td><td class="t75" style="width:10px;" width="10"></td></tr></table>
-</td>
-<td></td></tr>
-</table>`
-        order_items.push(  {
-          name: item.name,
-          sku:  item.SKU,
-          units: item.quantity || 1,
-          selling_price: item.discountedPrice,
-        })
-  
-        if (typeof price !== 'number' || isNaN(price)) {
-          return NextResponse.json({ message: 'Price is not a valid type' }, { status: 403 });
-        }
-  
-        return acc + price * quantity; // Calculate total
-      }, 0);
-      let coupon;
-      if(couponCode){
-         coupon = await couponModel.findOne({ code: couponCode });
-        if (coupon) {
-            if (coupon.minimumOrderValue > total) {
-              return NextResponse.json({ message: `Minimum order amount is ${coupon.minOrderAmount}` }, { status: 403 });
-            }
-            if (coupon.discountType === 'percentage') {
-              total -= (total * coupon.discountValue) / 100;
-            } else if (coupon.discountType === 'fixed') {
-              total -= coupon.discountValue;
-            }
-            coupon.usedCount++;
-          }
-        }
-            console.log(total)
-      
-      
-      const JENII_ORDERID = generateOrderId()
-      const shiprocket = await createShiprocketOrder({
-        order_id: JENII_ORDERID,
-        order_date: moment().format("YYYY-MM-DD HH:mm"),
-        pickup_location: "Primary",
-        billing_address: address.addressline1,
-        billing_address_2:address.addressline2,
-        billing_pincode: address.postalCode,
-        billing_isd_code:address.countryCode,
-        billing_city: address.city.label,
-        billing_state: address.state.label,
-        billing_country:address.country.value,
-        billing_email:user.email,
-        billing_phone: `91${address.contact}`,
-        billing_customer_name: address.firstName,
-        billing_last_name: address.lastName,
-        shipping_is_billing: true,
-        order_items,
-        payment_method: "COD",
-        sub_total: total,
-        length: 10,
-        breadth: 10,
-        height: 10,
-        weight: 0.5,
-      });
-
-      if(!shiprocket.shipment_id || !shiprocket.order_id){
-        return NextResponse.json({
-          message: "Something went wrong with shiprocket "
-      }, { status: 403 });
-      }
-
-    let order = await Order.findOne({ userId:Id });
-    if (!order) {
-      order = new Order({ userId:Id, orders: [] });
-    }
-    order.orders.push({
-      items: Items.map((item) => 
-      {
-        return {
-        productId: item.productId,
-        quantity: item.quantity,
-        price:item.discountedPrice
-      }}),
-
-      payment:{
-        mode:"COD",
-      },
-      customer:{
-        name:`${address.firstName} ${address.lastName}`,
-        email:user.email,
-        contact:address.countryCode+address.contact,
-        address:`${address.addressline1} ${address.addressline2} `,
-        city:address.city.label,
-        state:address.state.label,
-        country:address.country.label,
-        pincode:address.postalCode
-      },
-      orderStatus: "CONFIRMED",
-      amount:total,
-      orderID:JENII_ORDERID,
-      shipping:{
-        shipmentID:shiprocket.shipment_id,
-        shippingOrderId:shiprocket.order_id,
-      }
-    });
-    if(couponCode) await coupon.save();
-    console.log(process.env.BREVO_API_KEY)
-    const mail = await sendEmail(user.email, `JENII- Your Order is Successful - ${JENII_ORDERID}`, `
 <html >
 <head>
 
@@ -289,8 +111,10 @@ text-decoration: none
 <td class="t101" style="background-color:#F8F8F8;width:600px;">
 <table class="t100" role="presentation" cellpadding="0" cellspacing="0" width="100%" style="width:100%;"><tr><td class="t99" style="padding:0 50px 60px 50px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100% !important;"><tr><td align="left">
 <table class="t4" role="presentation" cellpadding="0" cellspacing="0" style="Margin-right:auto;"><tr>
-<img src="https://img.mailinblue.com/8812198/images/content_library/original/67bb45f0b92c6ab342489ca4.png" width="324" border="0" style="display: block; width: 50%; margin-left: auto;margin-right: auto;">
-</tr></table>
+
+<td class="t3" style="width:130px;">
+<table class="t2" role="presentation" cellpadding="0" cellspacing="0" width="100%" style="width:100%;"><tr><td class="t1" style="padding:0 0 60px 0;"><div style="font-size:0px;"><img class="t0" style="display:block;border:0;height:auto;width:100%;Margin:0;max-width:100%;" width="130" height="130" alt="" src="data:image/png;base64,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"/></div></td></tr></table>
+</td></tr></table>
 </td></tr><tr><td align="center">
 <table class="t9" role="presentation" cellpadding="0" cellspacing="0" style="Margin-left:auto;Margin-right:auto;"><tr>
 
@@ -301,7 +125,7 @@ text-decoration: none
 <table class="t14" role="presentation" cellpadding="0" cellspacing="0" style="Margin-left:auto;Margin-right:auto; margin-bottom: 10px;"><tr>
 
 <td class="t13" style="width:500px;">
-<table class="t12" role="presentation" cellpadding="0" cellspacing="0" width="100%" style="width:100%;"><tr><td class="t11 smlr1" >Your order is being processed by Jenii Team. You will receive an update from us regarding the status of your order and the delivery of the parcel.</p></td></tr></table>
+<table class="t12" role="presentation" cellpadding="0" cellspacing="0" width="100%" style="width:100%;"><tr><td class="t11 smlr1" >Your order is being processed by UPS and is on its way to Amsterdam. You will receive an update from us regarding the status of your order and the delivery of the parcel.</p></td></tr></table>
 </td></tr></table>
 </td></tr><tr><td align="center">
 <table class="t20" role="presentation" cellpadding="0" cellspacing="0" style="Margin-left:auto;Margin-right:auto;"><tr>
@@ -321,22 +145,31 @@ text-decoration: none
 </td></tr><tr><td align="center">
 <table class="t47" role="presentation" cellpadding="0" cellspacing="0" style="Margin-left:auto;Margin-right:auto;"><tr>
 <td class="t46" style="width:500px;">
-<table class="t45" role="presentation" cellpadding="0" cellspacing="0" width="100%" style="width:100%;"><tr><td class="t44"><p class="t43 smlr1" >${address.addressline1} ${address.addressline2}  </p></td></tr></table>
+<table class="t45" role="presentation" cellpadding="0" cellspacing="0" width="100%" style="width:100%;"><tr><td class="t44"><p class="t43 smlr1" >${address.addressline1} ${address.addressline1}  </p></td></tr></table>
 </td></tr></table>
 </td></tr><tr><td align="center">
 <table class="t52" role="presentation" cellpadding="0" cellspacing="0" style="Margin-left:auto;Margin-right:auto;"><tr>
 <td class="t51" style="width:500px;">
-<table class="t50 smlr1" role="presentation" cellpadding="0" cellspacing="0" width="100%" >${address.city['label']} ${address.state['label']} ${address.postalCode}</p></td></tr></table>
+<table class="t50 smlr1" role="presentation" cellpadding="0" cellspacing="0" width="100%" >${address.city.label} ${address.state.label} ${address.postalCode}</p></td></tr></table>
 </td></tr></table>
 </td></tr><tr><td align="center">
 <table class="t57" role="presentation" cellpadding="0" cellspacing="0" style="Margin-left:auto;Margin-right:auto;"><tr>
 <td class="t56" style="width:500px;">
-<table class="t55 smlr1" role="presentation" cellpadding="0" cellspacing="0" width="100%" >${address.country['label']}</p></td></tr></table>
+<table class="t55 smlr1" role="presentation" cellpadding="0" cellspacing="0" width="100%" >${address.country.label}</p></td></tr></table>
 </td></tr></table>
 </td></tr><tr><td><div class="t58" style="line-height:30px;font-size:1px;display:block;">&nbsp;&nbsp;</div></td></tr><tr><td align="center">
 <table class="t85" role="presentation" cellpadding="0" cellspacing="0" style="Margin-left:auto;Margin-right:auto;"><tr>
 <td class="t84" style="background-color:#FFFFFF;width:500px;">
-<table class="t83" role="presentation" cellpadding="0" cellspacing="0" width="100%" style="width:100%;"><tr><td class="t82" style="padding:20px 20px 20px 20px;"><div class="t81" style="width:100%;text-align:left;"><div class="t80" style="display:inline-block;">${orderTemplate}</div></div></td></tr></table>
+<table class="t83" role="presentation" cellpadding="0" cellspacing="0" width="100%" style="width:100%;"><tr><td class="t82" style="padding:20px 20px 20px 20px;"><div class="t81" style="width:100%;text-align:left;"><div class="t80" style="display:inline-block;"><table class="t79" role="presentation" cellpadding="0" cellspacing="0" align="left" valign="middle">
+<tr class="t78"><td></td><td class="t64" width="99.09324" valign="middle">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="t63" style="width:100%;"><tr><td class="t60" style="width:10px;" width="10"></td><td class="t61"><div style="font-size:0px;"><img class="t59" style="display:block;border:0;height:auto;width:100%;Margin:0;max-width:100%;" width="79.09324208725407" height="105.859375" alt="" src="https://76cbf3d4-4d58-499c-a26d-ea2052d0fda0.b-cdn.net/e/cb870b1c-84e0-4d09-9943-9b2ad9d1487c/9eff005f-9f38-45df-82d3-ba4d7c5bcb6a.png"/></div></td><td class="t62" style="width:10px;" width="10"></td></tr></table>
+</td><td class="t70" width="256.09923" valign="middle">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="t69" style="width:100%;"><tr><td class="t66" style="width:10px;" width="10"></td><td class="t67" style="padding:0 0 0 24px;"><h1 class="t65" style="font-family:Albert Sans,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif;line-height:16px;font-weight:700;font-style:normal;font-size:14px;text-decoration:none;text-transform:uppercase;direction:ltr;color:#1A1A1A;text-align:left;mso-text-raise:1px;">Flash Smart Watch - Series 2</h1></td><td class="t68" style="width:10px;" width="10"></td></tr></table>
+</td><td class="t77" width="164.80753" valign="middle">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="t76" style="width:100%;"><tr><td class="t73" style="width:10px;" width="10"></td><td class="t74"><p class="t72" style="font-family:Albert Sans,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif;line-height:22px;font-weight:500;font-style:normal;font-size:14px;text-decoration:none;text-transform:uppercase;letter-spacing:-0.56px;direction:ltr;color:#333333;text-align:right;">Quantity: <span class="t71" style="font-weight:bold;">1</span></p></td><td class="t75" style="width:10px;" width="10"></td></tr></table>
+</td>
+<td></td></tr>
+</table></div></div></td></tr></table>
 </td></tr></table>
 </td></tr><tr><td><div class="t86" style="line-height:30px;font-size:1px;display:block;">&nbsp;&nbsp;</div></td></tr><tr><td align="center">
 
@@ -374,8 +207,8 @@ text-decoration: none
 <table class="t150" role="presentation" cellpadding="0" cellspacing="0" style="Margin-left:auto;Margin-right:auto;"><tr>
 <td class="t149" style="width:500px;">
 <table class="t148" role="presentation" cellpadding="0" cellspacing="0" width="100%" style="width:100%;"><tr><td class="t147"><p class="t146" style="font-family:Albert Sans,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif;line-height:22px;font-weight:500;font-style:normal;font-size:12px;text-decoration:none;text-transform:none;direction:ltr;color:#424242;text-align:center;mso-text-raise:3px;">Broadway Empire, Nilamber Circle, Near Akshar
-Pavilion, Vasna Bhayli Main Road, Vadodara, Gujarat,
-391410</p></td></tr></table>
+        Pavilion, Vasna Bhayli Main Road, Vadodara, Gujarat,
+        391410</p></td></tr></table>
 </td></tr></table>
 </td></tr><tr><td align="center">
 <table class="t158" role="presentation" cellpadding="0" cellspacing="0" style="Margin-left:auto;Margin-right:auto;"><tr>
@@ -386,15 +219,3 @@ Pavilion, Vasna Bhayli Main Road, Vadodara, Gujarat,
 </td></tr></table>
 </td></tr></table></td></tr></table></div><div class="gmail-fix" style="display: none; white-space: nowrap; font: 15px courier; line-height: 0;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</div></body>
 </html>
-`,process.env.BREVO_API_KEY);
-    console.log(mail)
-    await order.save();
-    
-    // await Cart.findOneAndDelete({ userId }); // Clear the cart after placing the order
-    return NextResponse.json({order,shiprocket}, { status: 201 });
-
-} catch (error) {
-    console.error('Error verifying payment:', error);
-    return NextResponse.json({ message: 'Error verifying payment',error:error }, { status: 500 });
-  }
-}

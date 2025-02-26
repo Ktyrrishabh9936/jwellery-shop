@@ -38,7 +38,7 @@ export default function profile({children}) {
   return (
     <div className="flex  min-h-screen  max-w-7xl mx-auto">
     
-      <aside className="w-1/4 bg-pink-50 mt-3 md:mt-6 p-3 md:p-6 rounded-lg max-w-7xl">
+      <aside className="w-1/4 bg-pink-50  p-3 md:p-6 rounded-lg max-w-7xl">
         <div className="text-center mb-5">
           <div className="w-[clamp(10rem,12vw,14rem)] mx-auto overflow-hidden rounded-xl">
             <Image

@@ -46,10 +46,10 @@ const schema = yup.object().shape({
 export default function Product({ id }) {
     const [product, setProduct] = useState(null);
     const [relatedProducts, setRelatedProducts] = useState([]);
-//     const [error, setError] = useState(null);
+    const [error, setError] = useState(null);
 //     const [open, setOpen] =useState(false);
 //   const [isFavorite, setIsFavorite] = useState(false);
-//   const [loading, setloading] = useState(false);
+  const [loading, setloading] = useState(false);
 // const router = useRouter();
  
 //   const handleOpen = () => setOpen((cur) => !cur);
@@ -69,7 +69,7 @@ export default function Product({ id }) {
                     setloading(false)
                 } catch (error) {
                   setError("Error fetching product or related products");
-                  console.error(error);
+                  console.log(error);
                   setloading(false)
                 }
             };
