@@ -71,8 +71,8 @@ export default function DesktopMenu({ menu }) {
                       {menu?.subMenuHeading?.[i]}
                     </p>
                   )} */}
-                  <Link href={submenu?.link || "/"} className="flex-center gap-x-4 p-2 rounded-lg group/menubox hover:bg-pink-500 hover:text-white">
-                    <div className="bg-white/5 w-fit p-2 rounded-md group-hover/menubox:bg-white group-hover/menubox:text-gray-900 duration-300">
+                  <Link href={submenu?.link || "/"} className="flex-center gap-x-4 p-2 rounded-lg group/menubox hover:bg-[#fe6161] hover:text-white">
+                    <div className="bg-white/5 w-fit p-2 rounded-md group-hover/menubox:bg-white group-hover/menubox:text-[#fe6161] duration-300 ">
                       {submenu.icon && <submenu.icon />}
                     </div>
                     <div>

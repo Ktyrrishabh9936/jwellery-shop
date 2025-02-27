@@ -4,7 +4,7 @@ import { formatPrice } from '@/utils/productDiscount';
 import axios from 'axios';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 function formatDate(timestamp) {
     const date = new Date(timestamp);
@@ -47,7 +47,7 @@ export default function Page() {
       ];
     
       const [currentStep, setCurrentStep] = useState(0);
-    
+    const navigate = useRouter();
       const incrementStep = () => {
         if (currentStep < steps.length - 1) {
           setCurrentStep(currentStep + 1);
@@ -127,7 +127,7 @@ export default function Page() {
         <div className='p-7'><p className='px-2 flex'>Payment Status </p> <p className=' border-2 border-pink-500 text-pink-500 bg-pink-100 py-1 px-4 rounded-full'>{order?.payment?.mode}</p></div>
         </div>
         <p className="text-lg md:text-xl dark:text-white font-semibold leading-6 xl:leading-5 text-gray-800">Customer’s Cart</p>
-       { order?.items?.map((item,index) =><div key={index} className="mt-4 md:mt-6 flex flex-col md:flex-row justify-start items-start md:items-center md:space-x-6 xl:space-x-8 w-full">
+       { order?.items?.map((item,index) =><div key={index} onClick={()=>navigate.push(`/product/${item?.productId._id}`)} className="mt-4 md:mt-6 flex flex-col md:flex-row justify-start items-start md:items-center md:space-x-6 xl:space-x-8 w-full hover:cursor-pointer">
           <div className="pb-4 md:pb-8 w-full md:w-40">
             <Image className="w-full hidden md:block" src={item?.productId?.images[0]} width={100} height={100} alt="dress" />
           </div>
@@ -279,11 +279,16 @@ export default function Page() {
           <div className="flex justify-center md:justify-start xl:flex-col flex-col md:space-x-6 lg:space-x-8 xl:space-x-0 space-y-4 xl:space-y-12 md:space-y-0 md:flex-row items-center md:items-start">
             <div className="flex justify-center md:justify-start items-center md:items-start flex-col space-y-4 xl:mt-8">
               <p className="text-base dark:text-white font-semibold leading-4 text-center md:text-left text-gray-800">Shipping Address</p>
+              <p className="w-48 lg:w-full dark:text-gray-300 xl:w-48 text-center md:text-left text-sm leading-5 text-gray-600">{order?.customer?.name}</p>
               <p className="w-48 lg:w-full dark:text-gray-300 xl:w-48 text-center md:text-left text-sm leading-5 text-gray-600">{order?.customer?.address}</p>
+              <p className="w-48 lg:w-full dark:text-gray-300 xl:w-48 text-center md:text-left text-sm leading-5 text-gray-600">{order?.customer?.city}, {order?.customer?.state} {order?.customer?.country} - {order?.customer?.pincode}</p>
+             
             </div>
-            <div className="flex justify-center md:justify-start items-center md:items-start flex-col space-y-4">
+            <div className="flex justify-center md:justify-start items-center md:items-start flex-col space-y-2">
               <p className="text-base dark:text-white font-semibold leading-4 text-center md:text-left text-gray-800">Billing Address</p>
+              <p className="w-48 lg:w-full dark:text-gray-300 xl:w-48 text-center md:text-left text-sm leading-5 text-gray-600">{order?.customer?.name}</p>
               <p className="w-48 lg:w-full dark:text-gray-300 xl:w-48 text-center md:text-left text-sm leading-5 text-gray-600">{order?.customer?.address}</p>
+              <p className="w-48 lg:w-full dark:text-gray-300 xl:w-48 text-center md:text-left text-sm leading-5 text-gray-600">{order?.customer?.city}, {order?.customer?.state} {order?.customer?.country} - {order?.customer?.pincode}</p>
             </div>
           </div>
           <div className="flex w-full justify-center items-center md:justify-start md:items-start">

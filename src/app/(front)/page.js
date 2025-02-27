@@ -74,7 +74,7 @@ export default function HomePage() {
         <Image
           width={900}
           height={400}
-          src="/images/Flower.png"
+          src="/Lower-Banner-Desktop.png"
           className="object-cover w-full"
           alt="flower"
         />

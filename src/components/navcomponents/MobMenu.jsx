@@ -15,7 +15,7 @@ export default function MobMenu({ Menus }) {
     setIsOpen(!isOpen);
     setClicked(null);
   };
-  const genericHamburgerLine = `h-1 w-8 my-1 rounded-full bg-white transition ease transform duration-300`;
+  const genericHamburgerLine = `h-1 w-6 my-1 rounded-full bg-black transition ease transform duration-300 `;
 
   const subMenuDrawer = {
     enter: {
@@ -32,22 +32,22 @@ export default function MobMenu({ Menus }) {
     <div>
      
       <IconButton
-        className="flex flex-col h-12 w-12  rounded justify-center items-center group  lg:hidden z-[100] relative bg-transparent text-pink-500 border-2 border-pink-300 "
+        className="flex flex-col h-12 w-12  rounded justify-center items-center group  lg:hidden z-[100] relative bg-transparent  border-2 border-gray-200"
         onClick={toggleDrawer}
     >
         <div
             className={`${genericHamburgerLine} ${
                 isOpen
-                    ? "rotate-45 translate-y-3 opacity-50 group-hover:opacity-100"
-                    : "opacity-50 group-hover:opacity-100"
+                    ? "rotate-45 translate-y-2 opacity-80 group-hover:opacity-100"
+                    : "opacity-50 group-hover:opacity-100 "
             }`}
         />
         <div className={`${genericHamburgerLine} ${isOpen ? "opacity-0" : "opacity-50 group-hover:opacity-100"}`} />
         <div
             className={`${genericHamburgerLine} ${
                 isOpen
-                    ? "-rotate-45 -translate-y-3 opacity-50 group-hover:opacity-100"
-                    : "opacity-50 group-hover:opacity-100"
+                    ? "-rotate-45 -translate-y-2 opacity-80 group-hover:opacity-100"
+                    : "opacity-50 group-hover:opacity-100 "
             }`}
         />
     </IconButton>

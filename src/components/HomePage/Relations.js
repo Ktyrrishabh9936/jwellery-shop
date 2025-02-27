@@ -1,5 +1,5 @@
+import Image from "next/image";
 import Link from "next/link";
-
 export default function GiftingGuide() {
         const categories = [
           { name: "Mother", image: "https://www.giva.co/cdn/shop/files/MOTHER-min_48be248f-4d31-4c60-9344-9bfc1318f0cf.jpg?v=1740308659&width=300", link: "/collections/for-mother" },
@@ -17,7 +17,7 @@ export default function GiftingGuide() {
               {categories.map((category, index) => (
                 <Link key={index} href={category.link} className="group flex flex-col items-center">
                   <div className="relative w-40   overflow-hidden transition-transform group-hover:scale-105">
-                    <img src={category.image} alt={category.name} className="w-full h-full object-cover" />
+                    <Image  src={category.image} alt={category.name} height={70} width={50} className="w-full h-full object-cover" />
                   </div>
                   {/* <span className="mt-2 px-4 py-2 bg-red-500 text-white text-lg font-medium rounded-b-lg">
                     {category.name}

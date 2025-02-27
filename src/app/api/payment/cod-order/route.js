@@ -174,7 +174,6 @@ export async function POST(req) {
       }
     });
     if(couponCode) await coupon.save();
-    console.log(process.env.BREVO_API_KEY)
     const mail = await sendEmail(user.email, `JENII- Your Order is Successful - ${JENII_ORDERID}`, `
 <html >
 <head>
@@ -387,7 +386,7 @@ Pavilion, Vasna Bhayli Main Road, Vadodara, Gujarat,
 </td></tr></table></td></tr></table></div><div class="gmail-fix" style="display: none; white-space: nowrap; font: 15px courier; line-height: 0;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</div></body>
 </html>
 `,process.env.BREVO_API_KEY);
-    console.log(mail)
+    // console.log(mail)
     await order.save();
     
     // await Cart.findOneAndDelete({ userId }); // Clear the cart after placing the order

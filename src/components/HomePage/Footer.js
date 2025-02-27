@@ -41,7 +41,7 @@ const Footer = () => {
     }
   };
   return (
-    <footer className="bg-[#EFEFEF] p-6">
+    <footer className="bg-gray-100 p-6">
       <div className="container mx-auto flex justify-center">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 w-full max-w-6xl">
 
@@ -89,18 +89,18 @@ const Footer = () => {
           {/* Right Section */}
           <div className="flex flex-col justify-between mx-9 md:mx-16">
             {/* Newsletter Section */}
-            <div className="mb-8">
+            <div className="my-8 ">
       <h2 className="text-2xl font-semibold mb-4 text-center md:text-left">
         Subscribe to Our Newsletter
       </h2>
-      <form onSubmit={handleSubmit} className="flex flex-col items-center md:items-start">
+      <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-3 items-center md:items-start">
         <input
           type="email"
           placeholder="Enter your Email ID"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="w-full md:w-2/3 p-2 border text-black rounded-md bg-[#D8D8D8] mb-4"
+          className="w-full md:w-2/3 p-2 border-[1px] border-red-200 text-black rounded-md bg-[#f4f7ff]   mb-4"
         />
         <button
           type="submit"
@@ -110,7 +110,7 @@ const Footer = () => {
           }`}
         >
           
-          {isLoading ? <div className="flex"> <div className="h-5 w-5 border-t-transparent border-solid animate-spin rounded-full border-white border-4"></div>Submitting...</div> : 'Subscribe'}
+          {isLoading ? <div className="flex"> <div className="h-5 w-5 border-t-transparent border-solid animate-spin rounded-full border-white border-4 mr-2"></div> Submitting...</div> : 'Subscribe'}
         </button>
       </form>
       {message && <p className="mt-4 text-center md:text-left">{message}</p>}

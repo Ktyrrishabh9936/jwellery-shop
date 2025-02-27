@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import User from '@/models/userModel';
 import { connect } from '@/dbConfig/dbConfig';
-import { sendEmail } from '@/helper/sendEmail';
+import { sendEmail } from '@/utils/sendMail';
 
 function generateOTP() {
 
@@ -26,7 +26,7 @@ export async function POST(request) {
     await user.save();
 
     // Send OTP to user's email
-    await sendEmail(email, 'Your OTP Code', `Your OTP is ${otp}`);
+    await sendEmail(email, 'Your OTP Code', `Your OTP is ${otp}`,process.env.BREVO_API_KEY);
 
     return NextResponse.json({ message: 'OTP sent to your email' });
   } catch (error) {

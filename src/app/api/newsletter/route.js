@@ -1,13 +1,13 @@
 import { NextResponse } from 'next/server';
 import { connect } from '@/dbConfig/dbConfig';
-import { sendEmail } from '@/helper/sendEmail';
+import { sendEmail } from '@/utils/sendMail';
 
 export async function POST(request) {
   await connect();
   try {
     const { email } = await request.json();
 
-    await sendEmail(email, 'New Newsletter Subscription', `You have a new subscriber: ${email}`);
+    await sendEmail(email, 'New Newsletter Subscription', `You have a new subscriber: ${email}`,process.env.BREVO_API_KEY);
 
     return NextResponse.json({ message: 'Subscription successful!' });
   } catch (error) {
