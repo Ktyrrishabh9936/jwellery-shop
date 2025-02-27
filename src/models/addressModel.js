@@ -33,12 +33,11 @@ const addressSchema = mongoose.Schema({
         type: String,
         required: true,
         minlength: 5,
-        maxlength: 100,
+        maxlength: 300,
       },
       addressline2: {
         type: String,
-        minlength: 5,
-        maxlength: 100,
+        maxlength: 300,
       },
       city: {
         type: location,

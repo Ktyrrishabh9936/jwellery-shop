@@ -8,6 +8,7 @@ import User from '@/models/userModel';
 import { createShiprocketOrder } from '@/utils/shipRocket';
 import moment from 'moment';
 import couponModel from '@/models/couponModel';
+import { sendEmail } from '@/utils/sendMail';
 export const generateOrderId = (length = 10) => {
   const timestamp = Date.now().toString(); // Current timestamp
   const randomDigits = Math.floor(Math.random() * Math.pow(10, length - timestamp.length))
@@ -38,11 +39,22 @@ export async function POST(req) {
      
     let order = await Order.findOne({ userId:Id });
     if (!order) {
-      order = new Order({ userId, orders: [] });
+      order = new Order({ userId:Id, orders: [] });
     }
     let order_items = [];
+    let orderTemplate = '';
     const items = Items.map((item) => 
       {
+        orderTemplate += `<table class="t79" role="presentation" cellpadding="0" cellspacing="0" align="left" valign="middle">
+        <tr class="t78"><td></td><td class="t64" width="99.09324" valign="middle">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="t63" style="width:100%;"><tr><td class="t60" style="width:10px;" width="10"></td><td class="t61"><div style="font-size:0px;"><img class="t59" style="display:block;border:0;height:auto;width:100%;Margin:0;max-width:100%;" width="105" height="105" alt="" src="${item.img_src}"/></div></td><td class="t62" style="width:10px;" width="10"></td></tr></table>
+        </td><td class="t70" width="256.09923" valign="middle">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="t69" style="width:100%;"><tr><td class="t66" style="width:10px;" width="10"></td><td class="t67" style="padding:0 0 0 24px;"><h1 class="t65" style="font-family:Albert Sans,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif;line-height:16px;font-weight:700;font-style:normal;font-size:14px;text-decoration:none;text-transform:uppercase;direction:ltr;color:#1A1A1A;text-align:left;mso-text-raise:1px;">${item.name}</h1></td><td class="t68" style="width:10px;" width="10"></td></tr></table>
+        </td><td class="t77" width="164.80753" valign="middle">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="t76" style="width:100%;"><tr><td class="t73" style="width:10px;" width="10"></td><td class="t74"><p class="t72" style="font-family:Albert Sans,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Arial,sans-serif;line-height:22px;font-weight:500;font-style:normal;font-size:14px;text-decoration:none;text-transform:uppercase;letter-spacing:-0.56px;direction:ltr;color:#333333;text-align:right;">Quantity:<span class="t71" style="font-weight:bold;">${item.quantity}</span></p></td><td class="t75" style="width:10px;" width="10"></td></tr></table>
+        </td>
+        <td></td></tr>
+        </table>`
         order_items.push(  {
           name: item.name,
           sku:  item.SKU,
