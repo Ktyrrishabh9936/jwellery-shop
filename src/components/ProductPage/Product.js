@@ -111,7 +111,7 @@ export default function Product({ id }) {
                     <Image
                     width={1000}
                     height={1000}
-                    src={img}
+                    src={process.env.NEXT_PUBLIC_IMAGE_URL +img}
                     key={`productDetails ${i}`}
                     alt={`productDetails ${i}`}
                     className={`block my-auto cursor-pointer rounded-2xl transition-all content-[''] border-2 ${
@@ -137,7 +137,7 @@ export default function Product({ id }) {
                 {product?.images?.map((img,ind)=>
             <ImageZoom 
              key={ind}
-             src={img}
+             src={process.env.NEXT_PUBLIC_IMAGE_URL +img}
              alt={`zm${ind}`} 
              fullWidth={true} 
            /> 
@@ -145,7 +145,7 @@ export default function Product({ id }) {
                
               {  product?.video &&   <video
             controls
-            src={product?.video}
+            src={process.env.NEXT_PUBLIC_IMAGE_URL+"video/upload/"+product?.video}
             style={{ maxWidth: '100%'}}
           />}
  

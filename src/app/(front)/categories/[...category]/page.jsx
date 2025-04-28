@@ -527,7 +527,7 @@ const {loadingProductId} = useSelector((state)=>state.cart)
           width={300}
           height={300}
           loading="lazy"
-          src={product.images[0]}
+          src={process.env.NEXT_PUBLIC_IMAGE_URL +product.images[0]}
           alt={`product${ind}`}
           className="w-full h-[clamp(14rem,21vw,23rem)] md:h-[clamp(11rem,18vw,20rem)] object-cover rounded-lg "
         />

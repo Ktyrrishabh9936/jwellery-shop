@@ -40,7 +40,7 @@ export default function ProductCard({ product }) {
               width={300}
               height={300}
               loading="lazy"
-              src={product.images[0]}
+              src={process.env.NEXT_PUBLIC_IMAGE_URL +product.images[0]}
               alt={product.name}
               className="w-full h-[clamp(11rem,18vw,20rem)] object-cover rounded-lg "
             />
@@ -53,12 +53,11 @@ export default function ProductCard({ product }) {
               loop={true}
               slidesPerView={1}
               className="w-full h-[clamp(11rem,18vw,20rem)] rounded-lg overflow-hidden"
-
             >
               {product.images.map((image, index) => (
                 index && <SwiperSlide key={index}>
                   <Image
-                    src={image}
+                    src={process.env.NEXT_PUBLIC_IMAGE_URL +image}
                     alt={`Image ${index + 1}`}
                     width={300}
                     height={300}

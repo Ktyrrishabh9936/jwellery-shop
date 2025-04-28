@@ -106,7 +106,7 @@ export default function HeroSlider() {
           <SwiperSlide key={index} className="select-none">
         
            <Link href={item?.links}>  <Image width={2000} height={800} 
-          src={isSmallScreen ? item?.mobileBannerImage :item?.desktopBannerImage}
+          src={isSmallScreen ? process.env.NEXT_PUBLIC_IMAGE_URL + item?.mobileBannerImage :process.env.NEXT_PUBLIC_IMAGE_URL +item?.desktopBannerImage}
           alt={`Hero ${index}`}
           className="h-full w-full object-cover"
         /></Link>

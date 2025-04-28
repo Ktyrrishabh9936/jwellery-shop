@@ -20,7 +20,7 @@ const OrderCart = () => {
            <div className="flex items-start p-2 my-2 mb-2" key={ind}>
            <div>
              <Image
-               src={item.img_src}
+              src={process.env.NEXT_PUBLIC_IMAGE_URL +item.img_src}
                width={78}
                height={78}
                className="rounded-lg mr-2"

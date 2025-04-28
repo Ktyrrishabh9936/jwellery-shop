@@ -62,7 +62,7 @@ export default function ProductList({ products }) {
                     <Image
                         width={133}
                         height={150}
-                        src={product.images[0]}
+                        src={process.env.NEXT_PUBLIC_IMAGE_URL +product.images[0]}
                         alt={product.name}
                         className="w-full h-52 object-cover rounded-lg mb-4"
                     />

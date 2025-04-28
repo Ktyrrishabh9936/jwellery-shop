@@ -11,30 +11,7 @@ import Arrow from '@/assets/Arrow.svg'
 import { useRouter } from 'next/navigation'
 import { formatPrice } from '@/utils/productDiscount'
 import { Button } from '@material-tailwind/react'
-const products = [
-  {
-    id: 1,
-    name: 'Throwback Hip Bag',
-    href: '#',
-    color: 'Salmon',
-    price: '$90.00',
-    quantity: 1,
-    imageSrc: 'https://tailwindui.com/plus/img/ecommerce-images/shopping-cart-page-04-product-01.jpg',
-    imageAlt: 'Salmon orange fabric pouch with match zipper, gray zipper pull, and adjustable hip belt.',
-  },
-  {
-    id: 2,
-    name: 'Medium Stuff Satchel',
-    href: '#',
-    color: 'Blue',
-    price: '$32.00',
-    quantity: 1,
-    imageSrc: 'https://tailwindui.com/plus/img/ecommerce-images/shopping-cart-page-04-product-02.jpg',
-    imageAlt:
-      'Front of satchel with blue canvas body, black straps and handle, drawstring top, and front zipper pouch.',
-  },
-  // More products...
-]
+import Image from 'next/image'
 
 export default function CartSidebar() {
   const {openSideCart,totalItem,loading,Items,loadingRemoveProduct,totalDiscountedPrice} = useSelector((state)=>state.cart);
@@ -119,7 +96,7 @@ export default function CartSidebar() {
                        : Items?.map((item,ind) => (
                           <li key={ind} className={`flex py-6 relative box ${loadingRemoveProduct === item.productId ? 'blur' : ''}`}>
                             <div className="size-24 shrink-0 overflow-hidden rounded-md border border-gray-200">
-                              <img alt={`cartitems${ind}`} src={item.img_src} className="size-full object-cover" />
+                              <Image alt={`cartitems${ind}`} src={process.env.NEXT_PUBLIC_IMAGE_URL +item.img_src} className="size-full object-cover" width={100} height={100} />
                             </div>
 
                             <div className="ml-4 flex flex-1 flex-col">

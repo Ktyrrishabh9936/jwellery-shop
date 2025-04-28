@@ -39,7 +39,7 @@ export default function Banner() {
        {return <Link href={item?.links} key={index}>  <Image width={900} height={400} 
         loading="lazy"
        key={index}
-         src={isSmallScreen ? item?.mobileBannerImage :item?.desktopBannerImage}
+         src={isSmallScreen ? process.env.NEXT_PUBLIC_IMAGE_URL +item?.mobileBannerImage :process.env.NEXT_PUBLIC_IMAGE_URL +item?.desktopBannerImage}
          alt={`Banner ${index}`}
          className="h-full w-full object-cover"
        /> </Link>

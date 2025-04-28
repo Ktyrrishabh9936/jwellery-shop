@@ -75,7 +75,7 @@ export default function ShoppingCart() {
                       <Image
                         height={96}
                         width={96}
-                        src={item.img_src}
+                        src={process.env.NEXT_PUBLIC_IMAGE_URL +item.img_src}
                         alt={item.name}
                         className="w-24 h-24 object-cover mr-4"
                       />

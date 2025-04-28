@@ -54,7 +54,7 @@ export default function ProductCategories() {
                     width={100}
                     height={100}
                     loading="lazy"
-                    src={category?.image}
+                    src={process.env.NEXT_PUBLIC_IMAGE_URL + category?.image}
                     alt={category.name}
                     className="w-[clamp(4rem,6vw,7rem)] h-[clamp(4rem,6vw,7rem)] mx-auto mb-2 rounded-full border-2 border-pink-300"
                   />
