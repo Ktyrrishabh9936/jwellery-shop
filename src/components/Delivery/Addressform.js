@@ -57,7 +57,7 @@ export default function Addressform({register,errors,setValue,cityval="",stat=""
                   label: city.name,
                 }));
   return (
-        <div >
+        <div className=' overflow-y-scroll h-[80vh] py-6 pr-6'>
         <div className="">
         <div className="mb-1">Name</div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">

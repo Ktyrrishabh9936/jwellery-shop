@@ -82,7 +82,7 @@ const AddressList = ({ addresses,selectedAddress,setSelectedAddress }) => {
            <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)} className="relative z-50">
                   <DialogBackdrop className="fixed inset-0 bg-black opacity-30" />
                   <div className="fixed inset-0 flex items-center justify-center p-4">
-                    <DialogPanel className="w-full max-w-md bg-white rounded-lg p-6">
+                    <DialogPanel className="w-full  bg-white rounded-lg pt-8 pl-8 max-w-2xl">
                       <DialogTitle className="text-lg font-medium text-gray-900">Update Address</DialogTitle>
                      <Addressform register={register} errors={errors} setValue={setValue} stat={stat} cityval={cityval} watch={watch} control={control}/>
                    <div className="flex flex-row-reverse p-3">

@@ -409,8 +409,8 @@ const DeliveryForm = () => {
       <Dialog open={isModalOpen} onClose={closeModal} className="relative z-50">
         <DialogBackdrop className="fixed inset-0 bg-black opacity-30" />
         <div className="fixed inset-0 flex items-center justify-center p-4">
-          <DialogPanel className="w-full max-w-md bg-white rounded-lg p-6">
-            <DialogTitle className="text-lg font-medium text-gray-900">Add New Address</DialogTitle>
+          <DialogPanel className="w-full max-w-2xl  bg-white rounded-lg pt-8 pl-8 ">
+            <DialogTitle className="text-lg font-medium text-gray-900 ">Add New Address</DialogTitle>
            <Addressform register={register} errors={errors} setValue={setValue} watch={watch} control={control}/>
          <div className="flex flex-row-reverse p-3">
                <div className="flex-initial pl-3">
