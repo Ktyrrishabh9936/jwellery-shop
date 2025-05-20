@@ -53,69 +53,64 @@ export default function NavBar() {
     link:"/categories/rings",
    list:[
     {name:"Rings Under 500",minPrice:"NaN",maxPrice:"500"},
-    {name:" 500 to 1000",minPrice:"",maxPrice:"1000"},
-    {name:" 1000 to 5000",minPrice:"1000",maxPrice:"5000"},
-    {name:"Above 5000",minPrice:"5000",maxPrice:"NaN"},
+    {name:" 500 to 1000",minPrice:"500",maxPrice:"1000"},
+    {name:" 1000 to 2000",minPrice:"1000",maxPrice:"2000"},
+    {name:" 2000 to 3000",minPrice:"2000",maxPrice:"3000"},
+      {name:" 3000 to 5000",minPrice:"3000",maxPrice:"5000"},
    ]
   },
   {
     name:"Pendant Sets",
     link:"/categories/pendant-sets",
     list:[
-      {name:"Sets Under 500",minPrice:"NaN",maxPrice:"500"},
-      {name:" 500 to 1000",minPrice:"",maxPrice:"1000"},
+      {name:"Sets Under 1000",minPrice:"NaN",maxPrice:"1000"},
+      {name:" 500 to 1000",minPrice:"500",maxPrice:"1000"},
       {name:" 1000 to 5000",minPrice:"1000",maxPrice:"5000"},
-      {name:"Above 5000",minPrice:"5000",maxPrice:"NaN"},
      ]
   },
   {
     name:"Earrings",
     link:"/categories/earrings",
     list:[
-      {name:"Earrings Under 500",minPrice:"NaN",maxPrice:"500"},
-      {name:" 500 to 1000",minPrice:"",maxPrice:"1000"},
-      {name:" 1000 to 5000",minPrice:"1000",maxPrice:"5000"},
-      {name:"Above 5000",minPrice:"5000",maxPrice:"NaN"},
+      {name:"Earrings Under 1000",minPrice:"NaN",maxPrice:"1000"},
+      {name:" 1000 to 2000",minPrice:"1000",maxPrice:"2000"},
+      {name:" 2000 to 3000",minPrice:"2000",maxPrice:"3000"},
+        {name:" 3000 to 5000",minPrice:"3000",maxPrice:"5000"},
      ]
   },
   {
     name:"Pendant Chain",
-    link:"/categories/pendant-chain",
+    link:"/categories/chain",
     list:[
-      {name:"Chain Under 500",minPrice:"NaN",maxPrice:"500"},
-      {name:" 500 to 1000",minPrice:"",maxPrice:"1000"},
-      {name:" 1000 to 5000",minPrice:"1000",maxPrice:"5000"},
-      {name:"Above 5000",minPrice:"5000",maxPrice:"NaN"},
+      {name:"Chain 1000 to 2000",minPrice:"1000",maxPrice:"2000"},
+      {name:" 2000 to 3000",minPrice:"2000",maxPrice:"3000"},
+      {name:" 3000 to 5000",minPrice:"3000",maxPrice:"5000"},
      ]
   },
   {
-    name:"Anklet",
-    link:"/categories/anklet",
+    name:"Payal",
+    link:"/categories/payal",
     list:[
-      {name:"Anklet Under 500",minPrice:"NaN",maxPrice:"500"},
-      {name:" 500 to 1000",minPrice:"",maxPrice:"1000"},
+      {name:"Payal Under 500",minPrice:"NaN",maxPrice:"500"},
+      {name:" 500 to 1000",minPrice:"500",maxPrice:"1000"},
       {name:" 1000 to 5000",minPrice:"1000",maxPrice:"5000"},
-      {name:"Above 5000",minPrice:"5000",maxPrice:"NaN"},
      ]
   },
   {
-    name:"Bracelet",
-    link:"/categories/bracelet",
+    name:"Bracelets",
+    link:"/categories/bracelets",
     list:[
-      {name:"Bracelet Under 500",minPrice:"NaN",maxPrice:"500"},
-      {name:" 500 to 1000",minPrice:"",maxPrice:"1000"},
-      {name:" 1000 to 5000",minPrice:"1000",maxPrice:"5000"},
-      {name:"Above 5000",minPrice:"5000",maxPrice:"NaN"},
+      {name:"Bracelet from 1000 to 2000",minPrice:"1000",maxPrice:"2000"},
+      {name:" 2000 to 5000",minPrice:"2000",maxPrice:"5000"},
      ]
   },
   {
     name:"Mangalsutra",
-    link:"/categories/mangalsutra",
+    link:"/categories/mangal-sutra",
     list:[
-      {name:"Mangalsutra Under 500",minPrice:"NaN",maxPrice:"500"},
-      {name:" 500 to 1000",minPrice:"",maxPrice:"1000"},
-      {name:" 1000 to 5000",minPrice:"1000",maxPrice:"5000"},
-      {name:"Above 5000",minPrice:"5000",maxPrice:"NaN"},
+      {name:"Mangalsutra from 1000 to 2000",minPrice:"1000",maxPrice:"2000"},
+      // {name:" 2000 to 5000",minPrice:"1000",maxPrice:"5000"},
+      // {name:"Above 5000",minPrice:"5000",maxPrice:"NaN"},
      ]
   },
 ]
@@ -144,7 +139,7 @@ export default function NavBar() {
             </MenuHandler>
             <MenuList className="w-48">
               {category.list.map((sub) => (
-                <Link key={sub.name} href={`${category.link}?${sub.minPrice!=="NaN"?`minPrice=${sub.minPrice}&`:""}${sub.maxPrice!=="NaN"?`maxPrice=${sub.maxPrice}`:""}`}>
+                <Link key={sub.name} href={`${category.link}?${sub.minPrice!=="NaN"?`minPrice=${sub.minPrice}`:"minPrice=0"}${sub.maxPrice!=="NaN"?`&maxPrice=${sub.maxPrice}`:""}`}>
                   <MenuItem>{sub.name}</MenuItem>
                 </Link>
               ))}

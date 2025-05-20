@@ -8,7 +8,6 @@ export  const UserAuth = async()=>{
     if (!session) {
       throw new ForbiddenError('Invalid Token');
     }
-    console.log(session.user.id)
     return session.user.id;
 }catch(error){
   throw new Error(error)

@@ -113,7 +113,7 @@ export default function CartSidebar() {
                                 <p className="text-gray-500">Qty {item.quantity}</p>
 
                                 <div className="flex">
-                                  <button type="button" className="font-medium text-indigo-600 hover:text-indigo-500" onClick={()=>dispatch(removefromCart(item.productId))}>
+                                  <button type="button" className="font-medium text-pink-600 hover:text-pink-500" onClick={()=>dispatch(removefromCart(item.productId))}>
                                     Remove
                                   </button>
                                 </div>

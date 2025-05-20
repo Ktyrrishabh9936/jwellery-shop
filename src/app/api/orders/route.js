@@ -1,77 +1,81 @@
-
-import { NextResponse } from 'next/server';
-import Order from '@/models/orderModel';
-import Cart from '@/models/cartModel';
-import { UserAuth } from '@/utils/userAuth';
-import { connect } from '@/dbConfig/dbConfig';
-
-export async function POST(request) {
-  await connect();
-  try {
-    const { paymentId, address, amount, orderId, signature } = await request.json();
-    const userId = await UserAuth(); // Assume userId is set in middleware
-
-    const cart = await Cart.findOne({ userId }).populate('items.productId');
-    if (!cart) {
-      return NextResponse.json({ message: 'Cart not found' }, { status: 404 });
-    }
-
-    let order = await Order.findOne({ userId });
-    if (!order) {
-      order = new Order({ userId, orders: [] });
-    }
-
-    order.orders.push({
-      items: cart.items.map(item => ({
-        productId: item.productId._id,
-        quantity: item.quantity,
-      })),
-      paymentStatus: 'confirmed',
-      paymentId,
-      address,
-      orderStatus: 'confirmed',
-      amount,
-      signature,
-      orderId,
-    });
-
-    await order.save();
-    await Cart.findOneAndDelete({ userId }); // Clear the cart after placing the order
-
-    return NextResponse.json(order, { status: 201 });
-  } catch (error) {
-    console.error('Error creating order:', error);
-    return NextResponse.json({ message: 'Server error' }, { status: 500 });
-  }
-}
-
+import { NextResponse } from "next/server"
+import Order from "@/models/orderModel"
+import { connect } from "@/dbConfig/dbConfig"
+import { UserAuth } from "@/utils/userAuth"
+import OrderItem from "@/models/orderItemModel"
+import Payment from "@/models/paymentModel"
+import Product from "@/models/productModel"
 export async function GET(request) {
-  await connect();
+  await connect()
   try {
-    const userId = await UserAuth(); // Assume userId is set in middleware
+    const userId = await UserAuth()
 
-    const url = new URL(request.url);
-    const page = parseInt(url.searchParams.get('page')) || 1;
-    const limit = parseInt(url.searchParams.get('limit')) || 10;
-    const skip = (page - 1) * limit;
-
-    const orders = await Order.findOne({ userId });
-
-    if (!orders) {
-      return NextResponse.json({ message: 'No orders found' }, { status: 404 });
-    }
-    const totalOrders = orders.orders.length;
-
-    if (!totalOrders || totalOrders.length === 0) {
-      return NextResponse.json({ message: 'No orders found' }, { status: 404 });
+    if (!userId) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 })
     }
 
-    const orderPage = orders.orders.slice(skip, skip + limit);
-    const totalPages = Math.ceil(totalOrders / limit);
+    // Get query parameters
+    const url = new URL(request.url)
+    const page = Number.parseInt(url.searchParams.get("page")) || 1
+    const limit = Number.parseInt(url.searchParams.get("limit")) || 10
+    const status = url.searchParams.get("status")
 
-    return NextResponse.json({ orders:orderPage, currentPage: page, totalPages }, { status: 200 });
+    // Calculate skip for pagination
+    const skip = (page - 1) * limit
+
+    // Build query
+    const query = { userId }
+    if (status && status !== "all") {
+      query.orderStatus = status.toUpperCase()
+    }
+
+    // Get total count for pagination
+    const totalOrders = await Order.countDocuments(query)
+
+    // Get orders with pagination
+    const orders = await Order.find(query)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .populate({
+        path: "items",
+        populate: {
+          path: "productId",
+          select: "name images category price",
+        },
+      })
+      .populate("payment.paymentId")
+
+    // Format orders for response
+    const formattedOrders = orders.map((order) => ({
+      _id: order._id,
+      orderID: order.orderNumber,
+      orderStatus: order.orderStatus,
+      createdAt: order.createdAt,
+      amount: order.totalAmount,
+      paymentMode: order.payment.mode,
+      items: order.items,
+      shipping: {
+        courier: order.shipping.courier,
+        trackingUrl: order.shipping.trackingUrl,
+        estimatedDelivery: order.shipping.estimatedDelivery,
+      },
+    }))
+
+    return NextResponse.json(
+      {
+        orders: formattedOrders,
+        pagination: {
+          total: totalOrders,
+          page,
+          limit,
+          pages: Math.ceil(totalOrders / limit),
+        },
+      },
+      { status: 200 },
+    )
   } catch (error) {
-    console.error('Error fetching orders:', error);
-    return NextResponse.json({ message: 'Server error' }, { status: 500 });
+    console.error("Error fetching orders:", error)
+    return NextResponse.json({ message: "Server error", error: error.message }, { status: 500 })
   }
 }

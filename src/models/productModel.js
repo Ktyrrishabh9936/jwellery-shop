@@ -35,6 +35,11 @@ const productSchema = new mongoose.Schema({
     max:100,
     required:true
   },
+  specifications:{
+    type:Array,
+    required:true,
+    default:[]
+  },
   category: {
     name:{
     type: String,
@@ -53,7 +58,11 @@ const productSchema = new mongoose.Schema({
     enum: ['silver', 'gold', 'platinum', 'rose gold'],
     default: 'silver',
   },
-  images: [String],
+  images: [{
+    type:String,
+    required:true,
+  }],
+  video: String,
   stock: {
     type: Number,
     default: 0,
@@ -70,6 +79,10 @@ const productSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  isActive:{
+    type:Boolean,
+    default:true
+  }
 }, {
   timestamps: true,
 });

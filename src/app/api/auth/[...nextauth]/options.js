@@ -63,7 +63,6 @@ const authOptions = {
           user.id = existingUser._id;
         }
       }
-      console.log(user,account,profile)
       return true;
     },
     async jwt({ token, user}) {

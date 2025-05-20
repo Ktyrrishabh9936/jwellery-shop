@@ -19,7 +19,7 @@ const ProfileMenu = dynamic(() => import('./ProfileMenu'));
 const NavList = dynamic(() => import('./Navlist'));
 const Search = dynamic(() => import('./Search'));
 
-import { useRouter } from 'next/navigation.js';
+import { usePathname, useRouter } from 'next/navigation.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { setsidebarCart } from '@/lib/reducers/cartReducer';
 import { FaHeart, FaStore } from 'react-icons/fa';
@@ -39,6 +39,7 @@ export default function Header() {
   const {wishListByID} = useSelector((store)=>store.wishlist);
   const navigate = useRouter();
   const dispatch = useDispatch();
+  const pathname = usePathname()
 
   const toggleIsNavOpen = () => setIsNavOpen((cur) => !cur);
  
@@ -91,13 +92,13 @@ export default function Header() {
           <p className='hidden md:block'>Wishlist</p>
           </div>
           :""}
-          <div className='mx-0 md:mx-2'>
+        { pathname === "/delivery" ? "": <div className='mx-0 md:mx-2'>
             <button onClick={()=>{dispatch(setsidebarCart(true)); }} className=' relative cursor-pointer  pr-2  pl-1 pt-2 h-max inline-flex items-center shadow-none  text-sm font-medium text-center bg-transparent text-black rounded-full     dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800  hover:text-red-400' >
                 <FiShoppingCart fontSize={25}/>
                 <div className="absolute inline-flex  items-center justify-center w-6 h-6 text-xs font-bold   rounded-full -top-2 -end-2 dark:border-gray-900">{totalItem}</div>
                 </button>
                 <p className='hidden md:block text-center'>Cart</p>
-                </div>
+                </div>}
 
 
                 <Link  href="/store" className="text-[#C41E56]  font-medium cursor-pointer mx-0 md:mx-2">

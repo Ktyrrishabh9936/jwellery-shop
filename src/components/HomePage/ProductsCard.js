@@ -85,14 +85,14 @@ export default function ProductCard({ product }) {
         <div className="text-gray-600 line-clamp-1">{product.name}</div>
       </Link>
       <Button
-        className="mt-4 bg-[#F8C0BF] hover:bg-[#fe6161] transition-colors py-2 duration-300 px-4 rounded-md w-full capitalize text-sm"
+        className="mt-4 bg-[#edb3b2] hover:bg-[#fe6161] transition-colors py-2 duration-300 px-4 rounded-md w-full capitalize text-sm"
         onClick={() => handleAddToCart(product)}
         disabled={loadingProductId === product._id}
       >
         {loadingProductId === product._id ? "Adding..." : "Add to Cart"}
       </Button>
       <Button
-        className="mt-4 bg-[#F8C0BF] hover:bg-[#fe6161] transition-colors py-2 duration-300 px-4 rounded-md w-full capitalize text-sm"
+        className="mt-4 bg-[#edb3b2] hover:bg-[#fe6161] transition-colors py-2 duration-300 px-4 rounded-md w-full capitalize text-sm"
         onClick={() => handleBuyNow(product)}
 
       >

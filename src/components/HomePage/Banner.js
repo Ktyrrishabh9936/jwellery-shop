@@ -32,10 +32,10 @@ export default function Banner() {
    }
         return (
 
-     <Carousel  className="rounded-xl h-[clamp(18remrem,36vw,40rem)] md:h-[clamp(10rem,21vw,26rem)] w-[96%] mx-auto max-w-7xl mt-7 md:mt-12" 
+  aboutSlides.length ? <Carousel  className="rounded-xl h-[clamp(18remrem,36vw,40rem)] md:h-[clamp(10rem,21vw,26rem)] w-[96%] mx-auto max-w-7xl mt-7 md:mt-12" 
      autoplay autoplayDelay={10000} loop
      >
-      {aboutSlides?.map((item,index)=>  
+      { aboutSlides?.map((item,index)=>  
        {return <Link href={item?.links} key={index}>  <Image width={900} height={400} 
         loading="lazy"
        key={index}
@@ -45,7 +45,7 @@ export default function Banner() {
        /> </Link>
        })}
        
-     </Carousel>
-        );
+     </Carousel>:""
+        ) ;
       }
       

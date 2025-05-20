@@ -4,13 +4,6 @@ const userSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
-        validate: {
-            validator: (name) => {
-                const nameRegex = /^[a-zA-Z ]{2,}$/;
-                return nameRegex.test(name);
-            },
-            message: 'Invalid name format',
-        },
     },
     email: {
         type: String,
@@ -32,6 +25,9 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Product',
     }],
+    isEmailVerified:{
+        type:Boolean
+    },
     image:{
         type:String,
     },
@@ -41,14 +37,7 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
     },
-    addresses:[{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"Address"
-}],
- couponUsed:[{
-    type:mongoose.Schema.Types.ObjectId,
-    ref:"Coupon"
-}],
+   
     otp: {
         type: String
     },

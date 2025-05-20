@@ -94,56 +94,9 @@ const SupportPage = () => {
         </p>
       </section>
 
-      {/* Live Chat Support */}
-      <section>
-        <h2 className="text-2xl font-bold text-gray-800">Live Chat Support</h2>
-        <p className="text-gray-600 mt-2">
-          Have an urgent query? Start a live chat with us for immediate assistance.
-        </p>
-        <button className="mt-4 bg-pink-500 text-white px-6 py-2 rounded-lg shadow-md hover:bg-pink-600">
-          Start Live Chat
-        </button>
-      </section>
+     
 
-      {/* Feedback Form */}
-      <section>
-        <h2 className="text-2xl font-bold text-gray-800">Feedback Form</h2>
-        <p className="text-gray-600 mt-2">
-          We value your feedback. Share your thoughts and help us improve!
-        </p>
-        <form className="space-y-4 mt-4">
-          <div>
-            <label htmlFor="name" className="block text-gray-700 font-medium">Your Name</label>
-            <input
-              id="name"
-              type="text"
-              className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
-            />
-          </div>
-          <div>
-            <label htmlFor="email" className="block text-gray-700 font-medium">Your Email</label>
-            <input
-              id="email"
-              type="email"
-              className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
-            />
-          </div>
-          <div>
-            <label htmlFor="message" className="block text-gray-700 font-medium">Your Message</label>
-            <textarea
-              id="message"
-              rows="4"
-              className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
-            ></textarea>
-          </div>
-          <button
-            type="submit"
-            className="bg-pink-500 text-white px-6 py-2 rounded-lg shadow-md hover:bg-pink-600"
-          >
-            Submit Feedback
-          </button>
-        </form>
-      </section>
+     
     </div>
     </div>
     </>

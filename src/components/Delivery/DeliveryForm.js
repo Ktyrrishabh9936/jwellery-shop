@@ -1,538 +1,1475 @@
-"use client";
-import Script from "next/script";
-import axios from "axios";
-import {  Controller, useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
+"use client"
+import { useState, useEffect, useCallback, useRef } from "react"
+import { useForm, Controller } from "react-hook-form"
+import { yupResolver } from "@hookform/resolvers/yup"
+import * as Yup from "yup"
+import axios from "axios"
+import Script from "next/script"
+import { useRouter } from "next/navigation"
+import { useDispatch, useSelector } from "react-redux"
+import { useSession } from "next-auth/react"
+import { applyCoupon, clearCart } from "@/lib/reducers/cartReducer"
+import { motion, AnimatePresence } from "framer-motion"
+import Image from "next/image"
+import toast from "react-hot-toast"
+import Cookies from "js-cookie"
+import PhoneInput from "react-phone-input-2"
+import "react-phone-input-2/lib/style.css"
+import debounce from "lodash/debounce"
 
-import {  useEffect, useState } from "react";
-import { Select, Option } from "@/MaterialTailwindNext";
-import { useRouter } from "next/navigation";
-import { useDispatch, useSelector } from "react-redux";
-import { addAddress, fetchAddresses, getAddress } from "@/lib/reducers/addressReducer";
+// Icons
+import {
+  CheckCircle,
+  Truck,
+  MapPin,
+  CreditCard,
+  AlertCircle,
+  Loader2,
+  Building,
+  Mail,
+  ShieldCheck,
+  Clock,
+  ChevronRight,
+  ArrowLeft,
+  LockKeyhole,
+  CreditCardIcon,
+  BanknoteIcon,
+  BadgeCheck,
+  Info,
+  Tag,
+  Zap,
+} from "lucide-react"
 
-import { useSession } from "next-auth/react";
-import { applyCoupon, clearCart } from "@/lib/reducers/cartReducer";
-import AddressList from "./adddressList";
-import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react';
-import Addressform from "./Addressform";
+// Custom components
+import Addressform from "./Addressform"
+import PaymentProcessingOverlay from "./PaymentProcessingOverlay"
+import PaymentSuccessAnimation from "./PaymentSuccessAnimation"
 
-import { motion } from "framer-motion";
-import Image from "next/image";
-import { LoaderPinwheel } from "lucide-react";
-import toast from "react-hot-toast";
-import Cookies from "js-cookie";
-import { BiLoaderCircle } from "react-icons/bi";
-import * as Yup from "yup";
 const DeliveryForm = () => {
-  const navigate  = useRouter();
-  const dispatch  = useDispatch();
-  const {Items,coupon ,couponDiscount,loadingCoupon } = useSelector((state)=>state.cart);
-  
-  const [selectedAddress, setSelectedAddress] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useRouter()
+  const dispatch = useDispatch()
+  const { Items, coupon, couponDiscount, loadingCoupon, totalDiscountedPrice, totalPrice, discounte } = useSelector(
+    (state) => state.cart,
+  )
 
-  const [paymentMethod, setPaymentMethod] = useState("Prepaid");
-  const { addresses, loading, error } = useSelector((state) => state.address);
-  const {user} = useSelector((state)=>state.user);
-  const [showThankYou, setShowThankYou] = useState(false);
-  const session = useSession();
+  const { user } = useSelector((state) => state.user)
+  const session = useSession()
+  const razorpayRef = useRef(null)
 
- const AddressSchema = Yup.object().shape({
-    email:user ? Yup.string().email("Invalid Email") :Yup.string().email("Invalid Email").required("Email is not verified"),
-    firstName:Yup.string().required("First Name is required"),
-    lastName:Yup.string().required("Last Name is required"),
-    contact:Yup
-    .string()
-    .matches(/^\d{7,15}$/, "Phone number must be between 7-15 digits")
-    .required("Phone number is required"),
-    addressline1:  Yup.string().required("Address Line 1 is required"),
-    addressline2:  Yup.string(),
-    city:  Yup.object().required("City is required"),
-    state:Yup.object().required("State is required"),
-    country: Yup.object().required("Country is required"),
-    postalCode: Yup.string().required("postalCode is required").matches(/^[0-9]{6}$/, "Must be a valid 6-digit postalCode"),
-    landmark: Yup.string(),
+  // State management
+  const [activeStep, setActiveStep] = useState(1) // 1: Shipping, 2: Payment
+  const [paymentMethod, setPaymentMethod] = useState("Prepaid")
+  const [showThankYou, setShowThankYou] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [sameBillingAddress, setSameBillingAddress] = useState(true)
+  const [pincodeServiceable, setPincodeServiceable] = useState(null)
+  const [checkingPincode, setCheckingPincode] = useState(false)
+  const [deliveryOption, setDeliveryOption] = useState("standard")
+  const [deliveryCharge, setDeliveryCharge] = useState(0)
+  const [email, setEmail] = useState("")
+  const [verifyOtp, setverifyOtp] = useState("")
+  const [hashedOTP, setHashedOTP] = useState(null)
+  const [showotp, setshowotp] = useState(false)
+  const [userId, setUserId] = useState("")
+  const [timer, setTimer] = useState(30)
+  const [isResendDisabled, setIsResendDisabled] = useState(false)
+  const [getotperror, setgetotpError] = useState("")
+  const [getotpLoading, setgetotpLoading] = useState(false)
+  const [verifyOtperror, setverifyOtpError] = useState("")
+  const [verifyOtpLoading, setverifyOtpLoading] = useState(false)
+  const [deliveryEstimate, setDeliveryEstimate] = useState(null)
+  const [orderSummaryExpanded, setOrderSummaryExpanded] = useState(false)
+  const [shippingOptions, setShippingOptions] = useState({
+    standard: null,
+    express: null,
+  })
+  const [showProcessingOverlay, setShowProcessingOverlay] = useState(false)
+  const [paymentSuccess, setPaymentSuccess] = useState(false)
+  const [orderDetails, setOrderDetails] = useState(null)
+  const [processingMessage, setProcessingMessage] = useState("Processing your payment...")
+
+  // Form validation schema
+  const AddressSchema = Yup.object().shape({
+    sameBillingAddress: Yup.boolean().required().default(true),
+    email: user
+      ? Yup.string().email("Invalid Email")
+      : Yup.string().email("Invalid Email").required("Email is required"),
+    firstName: Yup.string().required("First Name is required"),
+    lastName: Yup.string().required("Last Name is required"),
+    contact: Yup.string()
+      .matches(/^\d{7,15}$/, "Phone number must be between 7-15 digits")
+      .required("Phone number is required"),
+    addressline1: Yup.string().required("Address Line 1 is required"),
+    addressline2: Yup.string(),
+    city: Yup.string().required("City is required"),
+    state: Yup.string().required("State is required"),
+    country: Yup.string().required("Country is required"),
+    postalCode: Yup.string()
+      .required("Postal code is required")
+      .matches(/^[0-9]{6}$/, "Must be a valid 6-digit postal code"),
     countryCode: Yup.string().required("Country code is required"),
- } );
+    // Billing address fields (conditional)
+    billingFirstName: Yup.string().when("sameBillingAddress", {
+      is: false,
+      then: () => Yup.string().required("Billing First Name is required"),
+      otherwise: () => Yup.string(),
+    }),
+    billingLastName: Yup.string().when("sameBillingAddress", {
+      is: false,
+      then: () => Yup.string().required("Billing Last Name is required"),
+      otherwise: () => Yup.string(),
+    }),
+    billingContact: Yup.string().when("sameBillingAddress", {
+      is: false,
+      then: () =>
+        Yup.string()
+          .matches(/^\d{7,15}$/, "Phone number must be between 7-15 digits")
+          .required("Billing Phone number is required"),
+      otherwise: () => Yup.string(),
+    }),
+    billingAddressline1: Yup.string().when("sameBillingAddress", {
+      is: false,
+      then: () => Yup.string().required("Billing Address Line 1 is required"),
+      otherwise: () => Yup.string(),
+    }),
+    billingCity: Yup.string().when("sameBillingAddress", {
+      is: false,
+      then: () => Yup.string().required("Billing City is required"),
+      otherwise: () => Yup.string(),
+    }),
+    billingState: Yup.string().when("sameBillingAddress", {
+      is: false,
+      then: () => Yup.string().required("Billing State is required"),
+      otherwise: () => Yup.string(),
+    }),
+    billingCountry: Yup.string().when("sameBillingAddress", {
+      is: false,
+      then: () => Yup.string().required("Billing Country is required"),
+      otherwise: () => Yup.string(),
+    }).default("India"),
+    billingPostalCode: Yup.string().when("sameBillingAddress", {
+      is: false,
+      then: () =>
+        Yup.string()
+          .required("Billing Postal code is required")
+          .matches(/^[0-9]{6}$/, "Must be a valid 6-digit postal code"),
+      otherwise: () => Yup.string(),
+    }),
+  })
 
+  const {
+    register,
+    handleSubmit,
+    control,
+    setValue,
+    formState: { errors, isValid },
+    reset,
+    watch,
+    trigger,
+  } = useForm({
+    resolver: yupResolver(AddressSchema),
+    defaultValues: {
+      countryCode: "+91",
+      email: user ? user?.email : "",
+      sameBillingAddress: true,
+      billingCountry:"India"
+    },
+    mode: "onChange",
+  })
+
+  const watchPostalCode = watch("postalCode")
+  const verifiedEmail = watch("email")
+
+  // Debounced pincode check
+  const debouncedCheckPincode = useCallback(
+    debounce((pincode) => {
+      checkPincodeServiceability(pincode)
+    }, 500),
+    [paymentMethod, totalDiscountedPrice],
+  )
+
+  // Effects
   useEffect(() => {
-    if(session.status === "authenticated" && addresses.length === 0){
-    dispatch(fetchAddresses())
-    }
-    if(!coupon){
-      const couponCode = Cookies.get("cpn-cde");
-      if (couponCode) { dispatch(applyCoupon({couponCode})) }
+    if (!coupon) {
+      const couponCode = Cookies.get("cpn-cde")
+      if (couponCode) {
+        dispatch(applyCoupon({ couponCode, totalDiscountedPrice }))
       }
-  }, []);
+    }
+
+    // Set user email if available
+    if (user && user.email) {
+      setValue("email", user.email)
+      setEmail(user.email)
+    }
+  }, [])
 
   useEffect(() => {
-    if(addresses.length){
-    setSelectedAddress(addresses[0])
+    if (timer > 0) {
+      const interval = setInterval(() => {
+        setTimer((prev) => prev - 1)
+      }, 1000)
+      return () => clearInterval(interval)
+    } else {
+      setIsResendDisabled(false)
     }
-  }, [addresses]);
-  
-  const { register, handleSubmit,control,setValue, formState: { errors },reset,watch  } = useForm({
-    resolver: yupResolver(AddressSchema) , defaultValues:{countryCode:"+91",email:user ? user?.email : ""}
-  });
+  }, [timer])
 
-  const [isLoading, setIsLoading] = useState(false);
-  const verifiedEmail = watch("email");
+  // Check pincode serviceability when postal code or payment method changes
+  useEffect(() => {
+    if (watchPostalCode && watchPostalCode.length === 6) {
+      debouncedCheckPincode(watchPostalCode)
+    } else {
+      setPincodeServiceable(null)
+      setDeliveryEstimate(null)
+      setShippingOptions({ standard: null, express: null })
+    }
+  }, [watchPostalCode, paymentMethod, debouncedCheckPincode])
 
-  const handleAddAddress = (address) => {
-      dispatch(addAddress(address));
-    setIsModalOpen(false);
-  };
+  // Update delivery charge when delivery option or payment method changes
+  useEffect(() => {
+    if (shippingOptions) {
+      const selectedOption = deliveryOption === "express" ? shippingOptions.express : shippingOptions.standard
 
+      if (selectedOption) {
+        // Base shipping rate
+        const rate = selectedOption.rate || 0
 
-  const handleCreateNewAddress = () => {
-    setIsModalOpen(true);
-  };
-  const closeModal = () => {
-    setIsModalOpen(false);
-    reset();
-     }
-     const [timer, setTimer] = useState(30);
-     const [isResendDisabled, setIsResendDisabled] = useState(false);
-   
-     useEffect(() => {
-       if (timer > 0) {
-         const interval = setInterval(() => {
-           setTimer((prev) => prev - 1);
-         }, 1000);
-         return () => clearInterval(interval);
-       } else {
-         setIsResendDisabled(false);
-       }
-     }, [timer]);
-     const [email, setEmail] = useState('');
-  const [getotperror, setgetotpError] = useState('');
-  const [getotpLoading, setgetotpLoading] = useState(false);
-  const [hashedOTP, setHashedOTP] = useState(null);
+        // Add COD fee if applicable
+        setDeliveryCharge(rate)
+
+        // Set delivery estimate
+        setDeliveryEstimate(selectedOption.etd || (deliveryOption === "express" ? 2 : 5))
+      } else {
+        setDeliveryCharge(0)
+        setDeliveryEstimate(null)
+      }
+    }
+  }, [shippingOptions, deliveryOption, paymentMethod])
+
+  // Cleanup Razorpay instance on unmount
+  useEffect(() => {
+    return () => {
+      if (razorpayRef.current) {
+        razorpayRef.current.close()
+      }
+    }
+  }, [])
+
+  // Handlers
+  const checkPincodeServiceability = async (pincode) => {
+    if (!pincode || pincode.length !== 6) return
+
+    setCheckingPincode(true)
+    setPincodeServiceable(null)
+    setShippingOptions({ standard: null, express: null })
+
+    try {
+      const response = await axios.get(
+        `/api/shipping/check-pincode?pincode=${pincode}&ordervalue=${totalDiscountedPrice}&cod=${paymentMethod === "COD" ? 1 : 0}`,
+      )
+
+      if (response.data.success && response.data.serviceability) {
+        setPincodeServiceable(true)
+        setShippingOptions(response.data.shipping_options)
+
+        // Set city and state from pincode data if available
+        if (response.data.shipping_options.standard) {
+          if (activeStep === 1) {
+            setValue("state", response.data.shipping_options.standard.state);
+            setValue("city", response.data.shipping_options.standard.city)
+          }
+          setValue("state", response.data.shipping_options.standard.state)
+          setDeliveryOption("standard")
+          setDeliveryEstimate(response.data.shipping_options.standard.etd || 5)
+        } else if (response.data.shipping_options.express) {
+          setDeliveryOption("express")
+          setDeliveryEstimate(response.data.shipping_options.express.etd || 2)
+        }
+
+      } else {
+        setPincodeServiceable(false)
+        setDeliveryEstimate(null)
+        toast.error(response.data.message || "Delivery not available to this pincode")
+      }
+    } catch (error) {
+      setPincodeServiceable(false)
+      setDeliveryEstimate(null)
+      toast.error(error.response?.data?.message || "Unable to check pincode serviceability")
+    } finally {
+      setCheckingPincode(false)
+    }
+  }
 
   const getOtpverifyEmail = async (e) => {
-    setgetotpError("");
-    e.preventDefault();
-    if (!email) {
-      setgetotpError('Email is required.');
-    } else {
-      setgetotpLoading(true);
-      setgetotpError('');
-      try {
-        const response = await axios.post('/api/users/send-email-otp', { email });
-        if (response.data.hashedOTP) {
-          setHashedOTP(response.data.hashedOTP); // Store hashed OTP in state
-          setgetotpLoading(false);
-          setTimer(30);
-    setIsResendDisabled(true);
-    setshowotp(true)
+    e.preventDefault()
+    setgetotpError("")
 
-        }
-        if (response.data.message) {
-          toast.success(response.data.message); 
-        }
-      } catch (error) {
-        console.error('Error sending OTP:', error);
-        setgetotpError('Failed to send OTP.');
-        setgetotpLoading(false);
-        toast.error('Failed to send OTP. Please try again.'); 
-      }
+    if (!email) {
+      setgetotpError("Email is required.")
+      return
     }
-  };
-  const [showotp, setshowotp] = useState('');
-  const [userId, setUserId] = useState('');
-  const [verifyOtp, setverifyOtp] = useState('');
-  const [verifyOtperror, setverifyOtpError] = useState('');
-  const [verifyOtpLoading, setverifyOtpLoading] = useState(false);
-  const handleVerifyOtp = async (e) => {
-    e.preventDefault();
-    if (!verifyOtp) {
-      setverifyOtpError('OTP is required.');
-    } else {
-      setverifyOtpLoading(true);
-      setverifyOtpError('');
-      try {
-        const response = await axios.post('/api/users/mail-verify-otp', {email, otp:verifyOtp , hashedOTP });
-        toast.success(response.data.message); 
-        console.log(response.data)
-        setValue("email",email)
-        setUserId(response.data.userId);
-        setverifyOtpLoading(false);
-      } catch (error) {
-        console.log(error)
-        setverifyOtpError('Failed to verify OTP.');
-        toast.error('Failed to verify OTP. Please try again.'); 
-        setverifyOtpLoading(false);
-      }
-    }
-  };
-  const onSubmitPrepaid = async (formdata) => {
+
+    setgetotpLoading(true)
     try {
-      setIsLoading(true);
-    
-      const {data} = await axios.post("/api/payment/create-order" ,{Items,couponCode:coupon?.couponCode,userId});
-      const {order,amount} = data;
-      console.log(data)
-      console.log("Order placed successfully");
-      const { key, ...restProps } = {
-        key:process.env.RAZORPAY_KEY_ID, // Razorpay Key ID
+      const response = await axios.post("/api/users/send-email-otp", { email })
+      if (response.data.hashedOTP) {
+        setHashedOTP(response.data.hashedOTP)
+        setgetotpLoading(false)
+        setTimer(30)
+        setIsResendDisabled(true)
+        setshowotp(true)
+        toast.success(response.data.message || "OTP sent successfully")
+      }
+    } catch (error) {
+      console.error("Error sending OTP:", error)
+      setgetotpError("Failed to send OTP.")
+      setgetotpLoading(false)
+      toast.error("Failed to send OTP. Please try again.")
+    }
+  }
+
+  const handleVerifyOtp = async (e) => {
+    e.preventDefault()
+    if (!verifyOtp) {
+      setverifyOtpError("OTP is required.")
+      return
+    }
+
+    setverifyOtpLoading(true)
+    try {
+      const response = await axios.post("/api/users/mail-verify-otp", {
+        email,
+        otp: verifyOtp,
+        hashedOTP,
+        isDeliveryPage:true
+      })
+      toast.success(response.data.message)
+      setValue("email", email)
+      setUserId(response.data.userId)
+      setverifyOtpLoading(false)
+    } catch (error) {
+      setverifyOtpError("Failed to verify OTP.")
+      toast.error("Failed to verify OTP. Please try again.")
+      setverifyOtpLoading(false)
+    }
+  }
+
+  const handleContinueToPayment = async () => {
+    // Validate the form
+    const isFormValid = await trigger()
+    if (isFormValid && (user || userId)) {
+      if (!pincodeServiceable) {
+        toast.error("Delivery is not available to this pincode")
+        return
+      }
+      setActiveStep(2)
+      scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      })
+      
+    } else {
+      toast.error("Please complete all required fields and verify your email")
+    }
+  }
+
+  const handleBackToShipping = () => {
+    setActiveStep(1)
+    scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    })
+  }
+
+  const onSubmitPrepaid = async (formdata) => {
+    if (!pincodeServiceable) {
+      toast.error("Delivery is not available to this pincode")
+      return
+    }
+
+    try {
+      setIsLoading(true)
+      setShowProcessingOverlay(true)
+      setProcessingMessage("Creating your order...")
+
+      // Format shipping address
+      const shippingAddress = {
+        name: formdata.firstName,
+        lastname: formdata.lastName,
+        email: formdata.email || user?.email,
+        contact: formdata.contact,
+        address: formdata.addressline1,
+        addressline2: formdata.addressline2,
+        city: formdata.city,
+        state: formdata.state,
+        country: formdata.country,
+        pincode: formdata.postalCode,
+      }
+
+      // Format billing address if different
+      let billingAddress = null
+      if (!sameBillingAddress) {
+        billingAddress = {
+          name: formdata.billingFirstName,
+          lastname: formdata.billingLastName,
+          contact: formdata.billingContact,
+          address: formdata.billingAddressline1,
+          addressline2: formdata.billingAddressline2,
+          city: formdata.billingCity,
+          state: formdata.billingState,
+          country: formdata.billingCountry,
+          pincode: formdata.billingPostalCode,
+        }
+      }
+
+      // Get selected shipping option
+      const selectedShippingOption = deliveryOption === "express" ? shippingOptions.express : shippingOptions.standard
+
+      // Add delivery option and charge to the order data
+      const orderData = {
+        Items,
+        couponCode: coupon?.couponCode,
+        userId: user?._id || userId,
+        deliveryOption,
+        deliveryCharge,
+        selectedCourier: selectedShippingOption,
+        shippingAddress,
+        billingAddress,
+        useSameForBilling: sameBillingAddress,
+      }
+
+      setProcessingMessage("Connecting to payment gateway...")
+      const { data } = await axios.post("/api/payment/create-order", orderData)
+      const { order, amount, orderID, orderNumber } = data
+
+      setProcessingMessage("Initializing payment...")
+      const razorpayOptions = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
         amount: order.amount,
         currency: order.currency,
         name: "Jenii JP Sterling Silver",
         description: "Purchase Product",
-        image: "https://cdn.bio.link/uploads/profile_pictures/2024-10-07/WpsNql0qow0baLnfnBowFm8v5fK9twVm.png", // Optional
-        order_id: order.id, // Backend Order ID
-        handler: async function (response) {
-          // Payment successful, send data to backend
-          console.log(response)
-          const orderData = {
-            paymentId: response.razorpay_payment_id,
-            orderId: response.razorpay_order_id,
-            signature: response.razorpay_signature,
-            amount,
-            address:formdata,
-            Items,userId,couponCode:coupon?.couponCode
-          };
-
-          const result = await axios.post(
-            `/api/payment/verify-payment/`,
-            orderData
-          );
-
-          setShowThankYou(true);
-
-          // Clear the cart and navigate after animation
-          setTimeout(() => {
-            dispatch(clearCart());
-            if(user){
-            navigate.push("/orders");
-            }else{
-              navigate.push("/");
+        image: "https://cdn.bio.link/uploads/profile_pictures/2024-10-07/WpsNql0qow0baLnfnBowFm8v5fK9twVm.png",
+        order_id: order.id,
+        handler: async (response) => {
+          try {
+            setProcessingMessage("Verifying payment...")
+            // Payment successful, send data to backend
+            const paymentData = {
+              paymentId: response.razorpay_payment_id,
+              orderId: response.razorpay_order_id,
+              signature: response.razorpay_signature,
+              amount,
+              shippingAddress,
+              Items,
+              userId: user?._id || userId,
+              couponCode: coupon?.couponCode,
+              deliveryOption,
+              deliveryCharge,
+              selectedCourier: selectedShippingOption,
+              orderID,
+              billingAddress,
+              orderNumber,
+              useSameForBilling: sameBillingAddress,
             }
-          }, 5000); // 5 seconds delay for animation
+
+            const verifyResponse = await axios.post(`/api/payment/verify-payment/`, paymentData)
+
+            if (verifyResponse.data.success) {
+              setProcessingMessage("Payment successful!")
+              
+              setOrderDetails({
+                orderNumber: orderNumber,
+                amount: amount,
+                orderID: orderID,
+                items: Items.length,
+                date: new Date().toISOString(),
+              })
+
+              // Show success animation
+              
+              // Clear the cart
+              setPaymentSuccess(true)
+              
+              dispatch(clearCart())
+              setIsLoading(false)
+              // navigate.push(`/order-confirmation/${orderNumber}`)
+            } else {
+              setShowProcessingOverlay(false)
+              toast.error("Payment verification failed. Please contact support.")
+              setIsLoading(false)
+            }
+          } catch (error) {
+            setShowProcessingOverlay(false)
+            toast.error("Payment verification failed. Please contact support.")
+            setIsLoading(false)
+          }
         },
         prefill: {
-          name: formdata.name,
-          email: user ? user?.email : verifiedEmail, // Optional
-          contact: formdata.contact,
+          name: `${formdata.firstName} ${formdata.lastName}`,
+          email: formdata.email || user?.email,
+          contact: formdata.countryCode + formdata.contact,
         },
         theme: {
-          color: "#F37254",
+          color: "#BC264B",
         },
-      };
-      const razorpay = new window.Razorpay({ key, ...restProps });
-      razorpay.open();
-      razorpay.on("payment.failed", function (response) {
-        alert("Payment failed. Please try again. Contact support for help");
-      });
+        modal: {
+          ondismiss: () => {
+            // setShowProcessingOverlay(false)
+            setIsLoading(false)
+          },
+        },
+      }
+
+      const razorpay = new window.Razorpay(razorpayOptions)
+      razorpayRef.current = razorpay
+      razorpay.open()
+
+      razorpay.on("payment.failed", (response) => {
+        // setShowProcessingOverlay(false)
+        toast.error("Payment failed: " + response.error.description)
+        setIsLoading(false)
+      })
     } catch (error) {
-      console.log("Error in submitting form:", error);
-    } finally {
-      setIsLoading(false);
+      setShowProcessingOverlay(false)
+      console.error("Error in submitting form:", error)
+      toast.error(error.response?.data?.message || "Something went wrong. Please try again.")
+      setIsLoading(false)
     }
-  };
-  const handleCODPayment = async (formdata) => {
-    try {
-      // Process the order without payment
-      setIsLoading(true);
-      console.log("COD",{Items,couponCode:coupon?.couponCode,userId,address:formdata})
-      console.log("COD selected, order will be processed without payment.");
-      const {data} = await axios.post("/api/payment/cod-order" ,{Items,couponCode:coupon?.couponCode,userId,address:formdata});
-      console.log(data);
-      setIsLoading(false);
-      dispatch(clearCart());
-      setShowThankYou(true);
-
-          // Clear the cart and navigate after animation
-          setTimeout(() => {
-            dispatch(clearCart());
-            if(user){
-              navigate.push("/orders");
-              }else{
-                navigate.push("/");
-              }
-          }, 5000); // 5 seconds delay for animation
-    } catch (error) {
-      console.error("COD payment processing failed:", error);
-      setIsLoading(false);
-    }
-  };
-
-
-
-
-  
-
-  return (
-    <> 
-    <Script
-    id="razorpay-checkout-js"
-    src="https://checkout.razorpay.com/v1/checkout.js"
-  />
-  {showThankYou ? (<motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.8 }}
-          transition={{ duration: 0.5 }}
-          className="fixed inset-0 flex items-center justify-center bg-white z-50"
-        >
-          <div className="text-center">
-            <Image
-            width={40}
-            height={40}
-              src="/thank-you-animation.gif" // Replace with your animation/gif
-              alt="Thank You"
-              className="w-40 h-40 mx-auto"
-            />
-            <h2 className="text-xl font-bold mt-4">Thank You for Your Order!</h2>
-            <p className="text-gray-600 mt-2">Your order was placed successfully.</p>
-          </div>
-        </motion.div>):""}
-    <form  className="max-w-lg mx-auto p-4 text-black space-y-4">
-      {/* Delivery Section */}
-      
-      {loadingCoupon ?  <div className=" flex justify-center items-center text-teal-500"> <BiLoaderCircle /> </div> : coupon && <div class="bg-green-100 border-t-4 border-teal-500 rounded-b text-teal-900 px-4 py-3 shadow-md" role="alert">
-  <div class="flex">
-    <div class="py-1"><svg class="fill-current h-6 w-6 text-teal-500 mr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z"/></svg></div>
-    <div>
-      <p class="font-bold">{coupon?.couponCode} applied</p>
-      <p class="text-sm">You saved {couponDiscount.toFixed(2)} on this order</p>
-    </div>
-  </div> 
-</div>
   }
 
-      {!user && <><h2 className="text-xl font-bold mb-4">Contact</h2>
+  const handleCODPayment = async (formdata) => {
+    if (!pincodeServiceable) {
+      toast.error("Delivery is not available to this pincode")
+      return
+    }
 
-     {userId ?<div className=" flex flex-wrap justify-between" > <p className=" text-gray-700 " ><strong>Account:</strong><span>{verifiedEmail}</span></p> <span className=" text-green-700">Verified</span> </div>: verifyOtpLoading ?  <div className=" inset-0 backdrop-blur-sm bg-opacity-50 flex items-center justify-center z-10">
-          <div className="animate-spin">
-            <LoaderPinwheel size={50} className="text-pink-400" />
-          </div>
-        </div>:<div> <div className="relative flex h-10 w-full min-w-[200px] max-w-lg">
- <button type="submit"
-    className="absolute bg-gray-800 right-0  h-[95%]  select-none rounded text-white py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase  shadow-md shadow-pink-500/20 transition-all hover:shadow-lg hover:shadow-pink-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none peer-placeholder-shown:pointer-events-none peer-placeholder-shown:bg-blue-gray-500 peer-placeholder-shown:opacity-50 peer-placeholder-shown:shadow-none"
-    data-ripple-light="true"
-    onClick={getOtpverifyEmail}
-    disabled={getotpLoading || isResendDisabled}
-  >
-    {getotpLoading ? (
-          <div className="h-5 w-5  border-t-transparent border-solid animate-spin rounded-full border-white-500 border-4 mx-3"></div>
-        ) : "Verify"}
-      
-  </button>
-  <input
-    className={`peer h-full w-full rounded-[7px] border-l-[1px] border-b-[1px] border-r-[1px] border-blue-gray-200 bg-transparent px-3 py-2.5 pr-20 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200  focus:border-2 focus:border-gray-500 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50 ${
-      errors.email  ? "border-red-500" : "border-blue-gray-100"
-    }`}
-    value={email}
-    onChange={(e) => setEmail(e.target.value)}
-    type="email"
-  />
-  
-  
-  <label className="before:content[' '] after:content[' '] pointer-events-none absolute left-0 -top-1.5 flex h-full w-full select-none text-[11px] font-normal leading-tight text-blue-gray-400 transition-all before:pointer-events-none before:mt-[6.5px] before:mr-1 before:box-border before:block before:h-1.5 before:w-2.5 before:rounded-tl-md before:border-t before:border-l before:border-blue-gray-200 before:transition-all after:pointer-events-none after:mt-[6.5px] after:ml-1 after:box-border after:block after:h-1.5 after:w-2.5 after:flex-grow after:rounded-tr-md after:border-t after:border-r after:border-blue-gray-200 after:transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[3.75] peer-placeholder-shown:text-blue-gray-500 peer-placeholder-shown:before:border-transparent peer-placeholder-shown:after:border-transparent peer-focus:text-[11px] peer-focus:leading-tight peer-focus:text-gray-500 peer-focus:before:border-t-2 peer-focus:before:border-l-2 peer-focus:before:!border-gray-500 peer-focus:after:border-t-2 peer-focus:after:border-r-2 peer-focus:after:!border-gray-500 peer-disabled:text-transparent peer-disabled:before:border-transparent peer-disabled:after:border-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500">
-    Email
-  </label>
-</div>
+    try {
+      setIsLoading(true)
+      setShowProcessingOverlay(true)
+      setProcessingMessage("Processing your COD order...")
 
+      // Format shipping address
+      const shippingAddress = {
+        name: formdata.firstName,
+        lastname: formdata.lastName,
+        email: formdata.email || user?.email,
+        contact: formdata.contact,
+        address: formdata.addressline1,
+        addressline2: formdata.addressline2 ? formdata.addressline2 : undefined,
+        city: formdata.city,
+        state: formdata.state,
+        country: formdata.country,
+        pincode: formdata.postalCode,
+      }
 
-{getotperror && <p className="text-red-500 text-sm">{ getotperror}</p>}
-{showotp && <div className="transition-all">
- <div >
-          <div className="mb-4">
-            <label htmlFor="otp" className="block text-sm font-medium text-gray-700">OTP</label>
-           <div className=" flex ">
-            <input
-              type="text"
-              id="otp"
-              className="mt-1 block w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
-              value={verifyOtp}
-              maxLength={6}
-              onChange={(e) => setverifyOtp(e.target.value)}
-            />
-               <button
-                type="button"
-                className="px-4 py-2 bg-[#BC264B] text-white rounded-md hover:bg-red-700 transition-colors whitespace-nowrap"
-                onClick={handleVerifyOtp}
+      // Format billing address if different
+      let billingAddress = null
+      if (!sameBillingAddress) {
+        billingAddress = {
+          name: formdata.billingFirstName,
+          lastname: formdata.billingLastName,
+          contact: formdata.billingContact,
+          address: formdata.billingAddressline1,
+          addressline2: formdata.billingAddressline2,
+          city: formdata.billingCity,
+          state: formdata.billingState,
+          country: formdata.billingCountry,
+          pincode: formdata.billingPostalCode,
+        }
+      }
+
+      // Get selected shipping option
+      const selectedShippingOption = deliveryOption === "express" ? shippingOptions.express : shippingOptions.standard
+
+      const orderData = {
+        Items,
+        couponCode: coupon?.couponCode,
+        userId: user?._id || userId,
+        shippingAddress,
+        deliveryOption,
+        deliveryCharge,
+        selectedCourier: selectedShippingOption,
+        amount: calculateTotal(),
+        billingAddress,
+      }
+
+      setProcessingMessage("Creating your order...")
+      const { data } = await axios.post("/api/payment/cod-order", orderData)
+
+      if (data.success) {
+        setProcessingMessage("Order placed successfully!")
+        setOrderDetails({
+          orderNumber: data.order.orderNumber,
+          amount: calculateTotal(),
+          orderID: data.order.orderID,
+          items: Items.length,
+          date: new Date().toISOString(),
+        })
+
+        // Show success animation
+        setPaymentSuccess(true)
+
+        // Clear the cart
+        dispatch(clearCart())
+        
+        // Wait for animation to complete before redirecting
+        // setTimeout(() => {
+        //   navigate.push(`/order-confirmation/${data.order.orderNumber}`)
+        // }, 3000)
+        setIsLoading(false)
+      } else {
+        setShowProcessingOverlay(false)
+        toast.error(data.message || "Failed to place order")
+        setIsLoading(false)
+      }
+    } catch (error) {
+      setShowProcessingOverlay(false)
+      console.error("COD payment processing failed:", error)
+      toast.error(error.response?.data?.message || "Failed to place order. Please try again.")
+      setIsLoading(false)
+    }
+  }
+
+  // Calculate total with all charges
+  const calculateTotal = () => {
+    const subtotal = totalDiscountedPrice || 0
+    const shipping = deliveryCharge || 0
+
+    return (subtotal + shipping ).toFixed(2)
+  }
+
+  return (
+    <>
+      <Script id="razorpay-checkout-js" src="https://checkout.razorpay.com/v1/checkout.js" />
+
+      {/* Payment Processing Overlay */}
+      {showProcessingOverlay && (
+        <PaymentProcessingOverlay message={processingMessage} success={paymentSuccess} orderDetails={orderDetails} />
+      )}
+
+      {/* Payment Success Animation */}
+      {paymentSuccess && orderDetails && (
+        <PaymentSuccessAnimation
+          orderDetails={orderDetails}
+          onComplete={() => {
+            setShowProcessingOverlay(false)
+            setPaymentSuccess(false)
+          }}
+        />
+      )}
+
+      <div className="max-w-6xl mx-auto">
+        {/* Checkout Progress */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between max-w-3xl mx-auto">
+            <div className="flex flex-col items-center">
+              <div
+                className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                  activeStep >= 1 ? "bg-pink-600 text-white" : "bg-gray-200 text-gray-500"
+                }`}
               >
-               Verify OTP
-              </button>
-            </div> 
-            {verifyOtperror && <p className="text-red-500 text-sm mt-2">{verifyOtperror}</p>}
+                <MapPin className="h-5 w-5" />
+              </div>
+              <span className={`text-sm mt-2 ${activeStep >= 1 ? "text-pink-600 font-medium" : "text-gray-500"}`}>
+                Shipping
+              </span>
+            </div>
+
+            <div className={`h-1 flex-1 mx-2 ${activeStep >= 2 ? "bg-pink-600" : "bg-gray-200"}`}></div>
+
+            <div className="flex flex-col items-center">
+              <div
+                className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                  activeStep >= 2 ? "bg-pink-600 text-white" : "bg-gray-200 text-gray-500"
+                }`}
+              >
+                <CreditCard className="h-5 w-5" />
+              </div>
+              <span className={`text-sm mt-2 ${activeStep >= 2 ? "text-pink-600 font-medium" : "text-gray-500"}`}>
+                Payment
+              </span>
+            </div>
+
+            <div className={`h-1 flex-1 mx-2 ${activeStep >= 3 ? "bg-pink-600" : "bg-gray-200"}`}></div>
+
+            <div className="flex flex-col items-center">
+              <div
+                className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                  activeStep >= 3 ? "bg-pink-600 text-white" : "bg-gray-200 text-gray-500"
+                }`}
+              >
+                <CheckCircle className="h-5 w-5" />
+              </div>
+              <span className={`text-sm mt-2 ${activeStep >= 3 ? "text-pink-600 font-medium" : "text-gray-500"}`}>
+                Confirmation
+              </span>
+            </div>
           </div>
-        </div></div>}
-        {isResendDisabled && <p className="text-gray-600">Resend in 00:{timer}s</p>}
-        { errors.email && <p className="text-red-500 text-sm">{ errors.email.message }</p> } </div> }</>}
+        </div>
 
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2">
+            <AnimatePresence mode="wait">
+              {activeStep === 1 && (
+                <motion.div
+                  key="shipping"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.3 }}
+                  className="bg-white rounded-lg shadow-md p-6"
+                >
+                  <h2 className="text-2xl font-bold text-gray-800 mb-6">Shipping Information</h2>
 
-      <h2 className="text-xl font-bold mb-4">Delivery</h2>
-      
-  {/* {address.length ?   <div>
+                  {/* Email Verification for Guest Users */}
+                  {!user && (
+                    <div className="mb-8 bg-gray-50 p-6 rounded-lg">
+                      <h3 className="text-lg font-semibold mb-4 flex items-center text-gray-800">
+                        <Mail className="mr-2 h-5 w-5 text-pink-600" /> Contact Information
+                      </h3>
 
-        
-      <Controller
-                name="selectedDetails"
-                control={control}
-                render={({ field }) => (      
-                  <Select label="Select Delivery Details" selected={() =>  <div className=" line-clamp-1">{selectedAdress}</div>
-                }  onChange={handleAddress} >
-              {address?.map((item,index) => (
-                  <Option key={index} value={index}>
-                    <div>
-                  <p >Name :{`${item.firstName} ${item.lastName} `}</p>
-                  <p >Phone :{`${item.contact}  `}</p>
-                  <p >Address :{` ${item.landmark} ${item.street} ${item.city} ${item.state} - ${item.postalCode} `}</p>
+                      {userId ? (
+                        <div className="flex justify-between items-center p-4 bg-green-50 border border-green-200 rounded-md">
+                          <div className="flex items-center">
+                            <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
+                            <p className="text-gray-700">
+                              <span className="font-medium">{verifiedEmail}</span>
+                            </p>
+                          </div>
+                          <span className="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded">
+                            Verified
+                          </span>
+                        </div>
+                      ) : (
+                        <div className="space-y-4">
+                          <div className="flex flex-col sm:flex-row gap-2">
+                            <div className="flex-grow">
+                              <div className="relative">
+                                <input
+                                  type="email"
+                                  placeholder="Email address"
+                                  value={email}
+                                  onChange={(e) => setEmail(e.target.value)}
+                                  className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                                />
+                                <Mail className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                              </div>
+                              {getotperror && <p className="text-red-500 text-sm mt-1">{getotperror}</p>}
+                            </div>
+                            <button
+                              onClick={getOtpverifyEmail}
+                              disabled={getotpLoading || isResendDisabled}
+                              className={`px-4 py-3 rounded-md font-medium transition-colors ${
+                                getotpLoading || isResendDisabled
+                                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                                  : "bg-pink-600 text-white hover:bg-pink-700"
+                              }`}
+                            >
+                              {getotpLoading ? (
+                                <Loader2 className="h-4 w-4 animate-spin mr-2 inline" />
+                              ) : isResendDisabled ? (
+                                `Resend in ${timer}s`
+                              ) : (
+                                "Verify Email"
+                              )}
+                            </button>
+                          </div>
+
+                          {showotp && (
+                            <div className="p-5 border border-gray-200 rounded-md bg-gray-50">
+                              <h4 className="font-medium mb-3 text-gray-700">Enter Verification Code</h4>
+                              <div className="flex gap-2">
+                                <div className="relative flex-grow">
+                                  <input
+                                    type="text"
+                                    maxLength={6}
+                                    value={verifyOtp}
+                                    onChange={(e) => setverifyOtp(e.target.value)}
+                                    placeholder="6-digit code"
+                                    className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                                  />
+                                  <LockKeyhole className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                                </div>
+                                <button
+                                  onClick={handleVerifyOtp}
+                                  disabled={verifyOtpLoading}
+                                  className={`px-4 py-3 rounded-md font-medium transition-colors ${
+                                    verifyOtpLoading
+                                      ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                                      : "bg-pink-600 text-white hover:bg-pink-700"
+                                  }`}
+                                >
+                                  {verifyOtpLoading ? (
+                                    <Loader2 className="h-4 w-4 animate-spin mr-2 inline" />
+                                  ) : (
+                                    "Verify"
+                                  )}
+                                </button>
+                              </div>
+                              {verifyOtperror && <p className="text-red-500 text-sm mt-1">{verifyOtperror}</p>}
+                              {isResendDisabled && (
+                                <p className="text-gray-500 text-sm mt-3 flex items-center">
+                                  <Clock className="h-4 w-4 mr-1" />
+                                  Didn't receive the code? You can resend in {timer}s
+                                </p>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Shipping Address Section */}
+                  <div className="mb-8">
+                    <h3 className="text-lg font-semibold mb-4 flex items-center text-gray-800">
+                      <MapPin className="mr-2 h-5 w-5 text-pink-600" /> Shipping Address
+                    </h3>
+
+                    <div className="bg-gray-50 p-6 rounded-lg">
+                      <Addressform
+                        register={register}
+                        errors={errors}
+                        setValue={setValue}
+                        watch={watch}
+                        control={control}
+                      />
+                    </div>
                   </div>
-                  </Option>
-                ))}
-        </Select>)}/>
-      {errors.addressSelect && <p className="text-red-500 text-sm">{errors.addressSelect.message}</p>}
-        </div>:""} */}
 
-{user ?<div>
-      {loading && <p>Loading...</p>}
-      {error && <p>Error: {error}</p>}
-      <AddressList addresses={addresses} selectedAddress={selectedAddress} setSelectedAddress={setSelectedAddress} />
-      <button type="button" className="relative w-full flex justify-center items-center px-5 py-2.5 font-medium tracking-wide text-white capitalize bg-pink-600 rounded-md hover:bg-pink-700 focus:outline-none transition duration-300 transform active:scale-95 ease-in-out mt-3" onClick={handleCreateNewAddress}>
-        <svg xmlns="http://www.w3.org/2000/svg" enableBackground="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#FFFFFF">
-          <g>
-            <rect fill="none" height="24" width="24"></rect>
-          </g>
-          <g>
-            <g>
-              <path d="M19,13h-6v6h-2v-6H5v-2h6V5h2v6h6V13z"></path>
-            </g>
-          </g>
-        </svg>
-        <span className="pl-2 mx-1">Create new shipping label</span>
-      </button>
+                  {/* Pincode Serviceability Check */}
+                  {watchPostalCode && watchPostalCode.length === 6 && (
+                    <div className="mb-6">
+                      {checkingPincode ? (
+                        <div className="flex items-center p-4 bg-gray-50 border border-gray-200 rounded-md">
+                          <Loader2 className="h-5 w-5 animate-spin mr-3 text-pink-600" />
+                          <p className="text-gray-700">Checking delivery availability...</p>
+                        </div>
+                      ) : pincodeServiceable === true ? (
+                        <div className="p-4 bg-green-50 border border-green-200 rounded-md flex items-start">
+                          <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 mr-3 flex-shrink-0" />
+                          <div>
+                            <h4 className="font-medium text-green-800">Delivery Available</h4>
+                            <p className="text-green-700 text-sm">
+                              We can deliver to this pincode. Please select your preferred delivery option.
+                            </p>
+                            {deliveryEstimate && (
+                              <p className="text-green-700 text-sm mt-1">
+                                Estimated delivery time: {deliveryEstimate} days
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      ) : pincodeServiceable === false ? (
+                        <div className="p-4 bg-red-50 border border-red-200 rounded-md flex items-start">
+                          <AlertCircle className="h-5 w-5 text-red-500 mt-0.5 mr-3 flex-shrink-0" />
+                          <div>
+                            <h4 className="font-medium text-red-800">Delivery Not Available</h4>
+                            <p className="text-red-700 text-sm">
+                              Sorry, we currently don't deliver to this pincode. Please try a different address.
+                            </p>
+                          </div>
+                        </div>
+                      ) : null}
+                    </div>
+                  )}
 
-      <Dialog open={isModalOpen} onClose={closeModal} className="relative z-50">
-        <DialogBackdrop className="fixed inset-0 bg-black opacity-30" />
-        <div className="fixed inset-0 flex items-center justify-center p-4">
-          <DialogPanel className="w-full max-w-2xl  bg-white rounded-lg pt-8 pl-8 ">
-            <DialogTitle className="text-lg font-medium text-gray-900 ">Add New Address</DialogTitle>
-           <Addressform register={register} errors={errors} setValue={setValue} watch={watch} control={control}/>
-         <div className="flex flex-row-reverse p-3">
-               <div className="flex-initial pl-3">
-                  <button type="button" onClick={handleSubmit(handleAddAddress)} className="flex items-center px-5 py-2.5 font-medium tracking-wide text-white capitalize   bg-pink-400 rounded-md  focus:outline-none hover:bg-pink-600   transition duration-300 transform active:scale-95 ease-in-out">
-                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#FFFFFF">
-                        <path d="M0 0h24v24H0V0z" fill="none"></path>2468
-                        <path d="M5 5v14h14V7.83L16.17 5H5zm7 13c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-8H6V6h9v4z" opacity=".3"></path>
-                        <path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm2 16H5V5h11.17L19 7.83V19zm-7-7c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3zM6 6h9v4H6z"></path>
-                     </svg>
-                     <span className="pl-2 mx-1">Save</span>
-                  </button>
-               </div>
-               <div className="flex-initial">
-                  <button type="button" className="flex items-center px-5 py-2.5 font-medium tracking-wide text-black capitalize rounded-md  hover:bg-red-200 hover:fill-current hover:text-red-600  focus:outline-none  transition duration-300 transform active:scale-95 ease-in-out" onClick={closeModal}>
-             
-                     <span className="pl-2 mx-1">Cancel</span>
-                  </button>
-               </div>
+                  {/* Simplified Delivery Options */}
+                  {pincodeServiceable && (shippingOptions.standard || shippingOptions.express) && (
+                    <div className="mb-8">
+                      <h3 className="text-lg font-semibold mb-4 flex items-center text-gray-800">
+                        <Truck className="mr-2 h-5 w-5 text-pink-600" /> Delivery Options
+                      </h3>
+
+                      <div className="space-y-3">
+                        {/* Standard Delivery Option */}
+                        {shippingOptions.standard && (
+                          <label
+                            className={`flex items-center p-4 border rounded-md cursor-pointer transition-colors ${
+                              deliveryOption === "standard" ? "border-pink-500 bg-pink-50" : "hover:bg-gray-50"
+                            }`}
+                          >
+                            <input
+                              type="radio"
+                              name="deliveryOption"
+                              value="standard"
+                              checked={deliveryOption === "standard"}
+                              onChange={() => setDeliveryOption("standard")}
+                              className="h-4 w-4 text-pink-600 focus:ring-pink-500 border-gray-300"
+                            />
+                            <div className="ml-3 flex-1">
+                              <div className="flex justify-between items-center">
+                                <div>
+                                  <div className="flex items-center">
+                                    <p className="font-medium text-gray-800">Standard Delivery</p>
+                                  </div>
+                                  <p className="text-sm text-gray-500">
+                                    Delivery in {shippingOptions.standard.etd || 5}-
+                                    {(shippingOptions.standard.etd || 5) + 2} business days
+                                  </p>
+                                </div>
+                                <p className="font-semibold text-gray-800">
+                                  ₹{shippingOptions.standard.rate.toFixed(2)}
+                                </p>
+                              </div>
+                            </div>
+                          </label>
+                        )}
+
+                        {/* Express Delivery Option */}
+                        {shippingOptions.express && (
+                          <label
+                            className={`flex items-center p-4 border rounded-md cursor-pointer transition-colors ${
+                              deliveryOption === "express" ? "border-pink-500 bg-pink-50" : "hover:bg-gray-50"
+                            }`}
+                          >
+                            <input
+                              type="radio"
+                              name="deliveryOption"
+                              value="express"
+                              checked={deliveryOption === "express"}
+                              onChange={() => setDeliveryOption("express")}
+                              className="h-4 w-4 text-pink-600 focus:ring-pink-500 border-gray-300"
+                            />
+                            <div className="ml-3 flex-1">
+                              <div className="flex justify-between items-center">
+                                <div>
+                                  <div className="flex items-center">
+                                    <p className="font-medium text-gray-800">Express Delivery</p>
+                                    <span className="ml-2 px-2 py-0.5 bg-pink-100 text-pink-800 text-xs font-medium rounded flex items-center">
+                                      <Zap className="h-3 w-3 mr-1" /> Fast
+                                    </span>
+                                  </div>
+                                  <p className="text-sm text-gray-500">
+                                    Delivery in {shippingOptions.express.etd || 2}-
+                                    {(shippingOptions.express.etd || 2) + 1} business days
+                                  </p>
+                                </div>
+                                <p className="font-semibold text-gray-800">
+                                  ₹{shippingOptions.express.rate.toFixed(2)}
+                                </p>
+                              </div>
+                            </div>
+                          </label>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Billing Address Section */}
+                  <div className="mb-8">
+                    <div className="flex items-center mb-4">
+                      <input
+                        id="sameBillingAddress"
+                        type="checkbox"
+                        checked={sameBillingAddress}
+                        onChange={(e) =>{ 
+                          setSameBillingAddress(e.target.checked);
+                           setValue("sameBillingAddress",e.target.checked)
+                          } }
+                        className="h-4 w-4 text-pink-600 focus:ring-pink-500 border-gray-300 rounded"
+                      />
+                      <label htmlFor="sameBillingAddress" className="ml-2 text-gray-700">
+                        Billing address same as shipping address
+                      </label>
+                    </div>
+
+                    {!sameBillingAddress && (
+                      <div className="p-6 border border-gray-200 rounded-md mt-4 bg-gray-50">
+                        <h3 className="text-lg font-semibold mb-4 flex items-center text-gray-800">
+                          <Building className="mr-2 h-5 w-5 text-pink-600" /> Billing Address
+                        </h3>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                          <div>
+                            <label htmlFor="billingFirstName" className="block text-sm font-medium text-gray-700 mb-1">
+                              First Name
+                            </label>
+                            <input
+                              id="billingFirstName"
+                              {...register("billingFirstName")}
+                              placeholder="First Name"
+                              className={`w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent ${
+                                errors.billingFirstName ? "border-red-500" : "border-gray-300"
+                              }`}
+                            />
+                            {errors.billingFirstName && (
+                              <p className="text-red-500 text-sm mt-1">{errors.billingFirstName.message}</p>
+                            )}
+                          </div>
+
+                          <div>
+                            <label htmlFor="billingLastName" className="block text-sm font-medium text-gray-700 mb-1">
+                              Last Name
+                            </label>
+                            <input
+                              id="billingLastName"
+                              {...register("billingLastName")}
+                              placeholder="Last Name"
+                              className={`w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent ${
+                                errors.billingLastName ? "border-red-500" : "border-gray-300"
+                              }`}
+                            />
+                            {errors.billingLastName && (
+                              <p className="text-red-500 text-sm mt-1">{errors.billingLastName.message}</p>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className=" hidden ">
+                          <label htmlFor="billingCountry" className="block text-sm font-medium text-gray-700 mb-1">
+                            Country
+                          </label>
+                          <Controller
+                          
+                            name="billingCountry"
+                            control={control}
+                            
+                            render={({ field }) => (
+                              <select
+                                className={`w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent ${
+                                  errors.billingCountry ? "border-red-500" : "border-gray-300"
+                                }`}
+                                onChange={(e) => field.onChange({ value: e.target.value, label: e.target.value })}
+                                defaultValue="India"
+                              >
+                                <option value="India">India</option>
+                              </select>
+                            )}
+                          />
+                          {errors.billingCountry && (
+                            <p className="text-red-500 text-sm mt-1">{errors.billingCountry.message}</p>
+                          )}
+                        </div>
+
+                        <div className="mb-4">
+                          <label htmlFor="billingContact" className="block text-sm font-medium text-gray-700 mb-1">
+                            Phone Number
+                          </label>
+                          <Controller
+                            name="billingContact"
+                            control={control}
+                            render={({ field }) => (
+                              <PhoneInput
+                                country={"in"}
+                                onlyCountries={["in"]}
+                  disableDropdown
+                  disableCountryCode
+                  // disableInitialCountryGuess
+                  disableSearchIcon
+                  // countryCodeEditable={false}
+                  placeholder="59684-45943"
+                  buttonStyle={{
+                    border: errors.contact ? "1px solid #f56565" : "1px solid focus:ring-pink-500",
+                    borderRight: "none",
+                    borderTopLeftRadius: "0.375rem",
+                    borderBottomLeftRadius: "0.375rem",
+                  }}
+                  containerStyle={{
+                    color: "#374151",
+                  }}
+                                inputProps={{
+                                  name: "billingPhone",
+                                  id: "billingContact",
+                                  className: `w-full pl-12 py-3 border rounded-md focus:ring-pink-500 ${
+                                    errors.billingContact ? "border-red-500" : "border-gray-300"
+                                  }`,
+                                }}
+                                onChange={(value, data) => {
+                                  const numberWithoutCode = value.replace(`+${data.dialCode}`, "")
+                                  setValue("billingContact", numberWithoutCode, { shouldValidate: true })
+                                }}
+                              />
+                            )}
+                          />
+                          {errors.billingContact && (
+                            <p className="text-red-500 text-sm mt-1">{errors.billingContact.message}</p>
+                          )}
+                        </div>
+
+                        <div className="mb-4">
+                          <label htmlFor="billingAddressline1" className="block text-sm font-medium text-gray-700 mb-1">
+                            Address Line 1
+                          </label>
+                          <input
+                            id="billingAddressline1"
+                            {...register("billingAddressline1")}
+                            placeholder="Street address, apartment, suite, etc."
+                            className={`w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent ${
+                              errors.billingAddressline1 ? "border-red-500" : "border-gray-300"
+                            }`}
+                          />
+                          {errors.billingAddressline1 && (
+                            <p className="text-red-500 text-sm mt-1">{errors.billingAddressline1.message}</p>
+                          )}
+                        </div>
+
+                        <div className="mb-4">
+                          <label htmlFor="billingAddressline2" className="block text-sm font-medium text-gray-700 mb-1">
+                            Address Line 2 (Optional)
+                          </label>
+                          <input
+                            id="billingAddressline2"
+                            {...register("billingAddressline2")}
+                            placeholder="Apartment, suite, unit, building, floor, etc."
+                            className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                          />
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                          <div>
+                            <label htmlFor="billingPostalCode" className="block text-sm font-medium text-gray-700 mb-1">
+                              Postal Code
+                            </label>
+                            <input
+                              id="billingPostalCode"
+                              {...register("billingPostalCode")}
+                              placeholder="Postal Code"
+                              maxLength={6}
+                              className={`w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent ${
+                                errors.billingPostalCode ? "border-red-500" : "border-gray-300"
+                              }`}
+                            />
+                            {errors.billingPostalCode && (
+                              <p className="text-red-500 text-sm mt-1">{errors.billingPostalCode.message}</p>
+                            )}
+                          </div>
+
+                          <div>
+                            <label htmlFor="billingCity" className="block text-sm font-medium text-gray-700 mb-1">
+                              City
+                            </label>
+                            <div className="relative">
+                              <input
+                                id="billingCity"
+                                {...register("billingCity")}
+                                placeholder="City"
+                                className={`w-full p-3 pr-10 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent ${
+                                  errors.city ? "border-red-500" : "border-gray-300"
+                                }`}
+                              />
+                              <MapPin className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                            </div>
+                            {errors.billingCity && (
+                              <p className="text-red-500 text-sm mt-1">{errors.billingCity.message}</p>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                          <div>
+                            <label htmlFor="billingState" className="block text-sm font-medium text-gray-700 mb-1">
+                              State
+                            </label>
+                            <div className="relative">
+                              <input
+                                id="billingState"
+                                {...register("billingState")}
+                                placeholder="State"
+                                className={`w-full p-3 pr-10 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent ${
+                                  errors.city ? "border-red-500" : "border-gray-300"
+                                }`}
+                              />
+                              <MapPin className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                            </div>
+                            {errors.billingState && (
+                              <p className="text-red-500 text-sm mt-1">{errors.billingState.message}</p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex justify-end">
+                    <button
+                      type="button"
+                      onClick={handleContinueToPayment}
+                      disabled={!pincodeServiceable || (!user && !userId)}
+                      className={`px-6 py-3 rounded-md font-medium flex items-center ${
+                        !pincodeServiceable || (!user && !userId)
+                          ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                          : "bg-pink-600 text-white hover:bg-pink-700"
+                      }`}
+                    >
+                      Continue to Payment <ChevronRight className="ml-2 h-4 w-4" />
+                    </button>
+                  </div>
+                </motion.div>
+              )}
+
+              {activeStep === 2 && (
+                <motion.div
+                  key="payment"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  transition={{ duration: 0.3 }}
+                  className="bg-white rounded-lg shadow-md p-6"
+                >
+                  <h2 className="text-2xl font-bold text-gray-800 mb-6">Payment Method</h2>
+
+                  {/* Payment Methods */}
+                  <div className="mb-8">
+                    <div className="space-y-4">
+                      <label
+                        className={`flex items-center p-4 border rounded-md cursor-pointer transition-colors ${
+                          paymentMethod === "Prepaid" ? "border-pink-500 bg-pink-50" : "hover:bg-gray-50"
+                        }`}
+                      >
+                        <input
+                          type="radio"
+                          name="paymentMethod"
+                          value="Prepaid"
+                          checked={paymentMethod === "Prepaid"}
+                          onChange={() => {
+                            setPaymentMethod("Prepaid")
+                            // Re-check pincode serviceability for prepaid
+                            if (watchPostalCode) {
+                              checkPincodeServiceability(watchPostalCode)
+                            }
+                          }}
+                          className="h-4 w-4 text-pink-600 focus:ring-pink-500 border-gray-300"
+                        />
+                        <div className="ml-3 flex-1">
+                          <div className="flex justify-between items-center">
+                            <div>
+                              <p className="font-medium text-gray-800">Pay Online</p>
+                              <p className="text-sm text-gray-500">Credit/Debit Card, UPI, Net Banking</p>
+                            </div>
+                            <div className="flex space-x-2 bg-pink-400 py-2 px-4 rounded-md">
+                              <Image src="/razorpay.png" width={32} height={20} alt="Razorpay" className="h-6 w-auto" />
+                            </div>
+                          </div>
+                        </div>
+                      </label>
+
+                      <label
+                        className={`flex items-center p-4 border rounded-md cursor-pointer transition-colors ${
+                          paymentMethod === "COD" ? "border-pink-500 bg-pink-50" : "hover:bg-gray-50"
+                        }`}
+                      >
+                        <input
+                          type="radio"
+                          name="paymentMethod"
+                          value="COD"
+                          checked={paymentMethod === "COD"}
+                          onChange={() => {
+                            setPaymentMethod("COD")
+                            // Re-check pincode serviceability for COD
+                            if (watchPostalCode) {
+                              checkPincodeServiceability(watchPostalCode)
+                            }
+                          }}
+                          className="h-4 w-4 text-pink-600 focus:ring-pink-500 border-gray-300"
+                        />
+                        <div className="ml-3 flex-1">
+                          <div className="flex justify-between items-center">
+                            <div>
+                              <p className="font-medium text-gray-800">Cash on Delivery</p>
+                              <p className="text-sm text-gray-500">Pay when you receive your order</p>
+                            </div>
+                            <span className="px-2 py-1 bg-orange-100 text-orange-800 text-xs font-medium rounded flex items-center">
+                              <BanknoteIcon className="h-3 w-3 mr-1" /> + Extra Charges
+                            </span>
+                          </div>
+                        </div>
+                      </label>
+                    </div>
+                  </div>
+
+                  {/* Security Note */}
+                  <div className="mb-8 p-4 bg-gray-50 rounded-md border border-gray-200">
+                    <div className="flex items-start">
+                      <ShieldCheck className="h-5 w-5 text-green-600 mt-0.5 mr-3 flex-shrink-0" />
+                      <div>
+                        <h4 className="font-medium text-gray-800">Secure Payment</h4>
+                        <p className="text-sm text-gray-600">
+                          Your payment information is processed securely. We do not store credit card details.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex flex-col sm:flex-row gap-3 justify-between">
+                    <button
+                      onClick={handleBackToShipping}
+                      className="px-4 py-3 border border-gray-300 rounded-md text-gray-700 font-medium hover:bg-gray-50 transition-colors flex items-center justify-center"
+                    >
+                      <ArrowLeft className="mr-2 h-4 w-4" /> Back to Shipping
+                    </button>
+
+                    {paymentMethod === "COD" ? (
+                      <button
+                        onClick={handleSubmit(handleCODPayment)}
+                        disabled={isLoading || !Items.length || !pincodeServiceable || (!user && !userId)}
+                        className={`px-6 py-3 rounded-md font-medium flex items-center justify-center ${
+                          isLoading || !Items.length || !pincodeServiceable || (!user && !userId)
+                            ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                            : "bg-pink-600 text-white hover:bg-pink-700"
+                        }`}
+                      >
+                        {isLoading ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Processing...
+                          </>
+                        ) : (
+                          <>
+                            Place Order <BadgeCheck className="ml-2 h-4 w-4" />
+                          </>
+                        )}
+                      </button>
+                    ) : (
+                      <button
+                        onClick={handleSubmit(onSubmitPrepaid)}
+                        disabled={isLoading || !Items.length || !pincodeServiceable || (!user && !userId)}
+                        className={`px-6 py-3 rounded-md font-medium flex items-center justify-center ${
+                          isLoading || !Items.length || !pincodeServiceable || (!user && !userId)
+                            ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                            : "bg-pink-600 text-white hover:bg-pink-700"
+                        }`}
+                      >
+                        {isLoading ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Processing...
+                          </>
+                        ) : (
+                          <>
+                            Proceed to Payment <CreditCardIcon className="ml-2 h-4 w-4" />
+                          </>
+                        )}
+                      </button>
+                    )}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Order Summary */}
+          <div className="lg:sticky top-24 self-start">
+            <div className="bg-white rounded-lg shadow-md overflow-hidden">
+              <div
+                className="p-4 bg-gray-50 border-b flex justify-between items-center cursor-pointer"
+                onClick={() => setOrderSummaryExpanded(!orderSummaryExpanded)}
+              >
+                <h3 className="text-lg font-bold text-gray-800">Order Summary</h3>
+                <span className="lg:hidden">
+                  {orderSummaryExpanded ? (
+                    <ChevronRight className="h-5 w-5 transform rotate-90" />
+                  ) : (
+                    <ChevronRight className="h-5 w-5 transform -rotate-90" />
+                  )}
+                </span>
+              </div>
+
+              <div
+                className={`p-0 transition-all duration-300 ease-in-out ${
+                  orderSummaryExpanded ? "max-h-[1000px]" : "max-h-0 lg:max-h-[1000px] overflow-hidden"
+                }`}
+              >
+                {Items && Items.length > 0 ? (
+                  <div className="p-4">
+                    <div className="space-y-4 mb-6">
+                      {Items.map((item, index) => (
+                        <div key={index} className="flex items-center space-x-3">
+                          <div className="h-16 w-16 flex-shrink-0 rounded-md overflow-hidden bg-gray-100">
+                            <Image
+                              src={process.env.NEXT_PUBLIC_IMAGE_URL + item.img_src || "/placeholder.svg"}
+                              alt={item.name}
+                              width={64}
+                              height={64}
+                              className="h-full w-full object-cover"
+                            />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-gray-900 truncate">{item.name}</p>
+                            <p className="text-sm text-gray-500">Qty: {item.quantity}</p>
+                          </div>
+                          <div className="text-sm font-medium text-gray-900">₹{item.discountedPrice.toFixed(2)}</div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {coupon && (
+                      <div className="flex justify-between text-sm border border-green-400 bg-green-100 text-green-600 p-3 rounded-md ">
+                        <span className="flex items-center ">
+                          <Tag className="h-3 w-3 mr-1" /> You saved -₹{(couponDiscount + discounte).toFixed(2)}
+                        </span>
+                      </div>
+                    )}
+
+                    <div className="border-t pt-4 space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Amount </span>
+                        <span className="font-medium">₹{totalDiscountedPrice.toFixed(2)}</span>
+                      </div>
+
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Shipping</span>
+                        <span className="font-medium">₹{deliveryCharge.toFixed(2)}</span>
+                      </div>
+
+                    
+
+                      <div className="border-t pt-2 mt-2">
+                        <div className="flex justify-between font-bold">
+                          <span className="text-gray-800">Total</span>
+                          <span className="text-pink-600">₹{calculateTotal()}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {pincodeServiceable && deliveryEstimate && (
+                      <div className="mt-4 p-3 bg-gray-50 rounded-md flex items-start">
+                        <Truck className="h-4 w-4 text-gray-500 mt-0.5 mr-2" />
+                        <p className="text-sm text-gray-600">Estimated delivery: {deliveryEstimate} days</p>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="p-6 text-center">
+                    <p className="text-gray-500">Your cart is empty</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Secure Checkout Badge */}
+              <div className="p-4 bg-gray-50 border-t flex items-center justify-center">
+                <LockKeyhole className="h-4 w-4 text-green-600 mr-2" />
+                <span className="text-sm text-gray-600">Secure Checkout</span>
+              </div>
             </div>
-          </DialogPanel>
+
+            {/* Help Section */}
+            <div className="mt-4 bg-white rounded-lg shadow-md p-4">
+              <div className="flex items-start">
+                <Info className="h-5 w-5 text-pink-600 mt-0.5 mr-3" />
+                <div>
+                  <h4 className="font-medium text-gray-800">Need Help?</h4>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Contact our customer support at{" "}
+                    <a href="mailto:support@jenii.in" className="text-pink-600 hover:underline">
+                      support@jenii.in
+                    </a>{" "}
+                    or call us at{" "}
+                    <a href="tel:+919876543210" className="text-pink-600 hover:underline">
+                      +91 98765 43210
+                    </a>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </Dialog>
-    </div> :   <Addressform register={register} errors={errors} setValue={setValue} watch={watch} control={control}/>}
-        
-       
-
-      {/* <h2 className="text-xl font-bold mb-4">Apply Coupon</h2>
-      <input
-        type="text"
-        placeholder="Search"
-        className="border bg-[#F2F2F2] text-black rounded-lg p-3 w-full md:w-1/2 mb-6"
-      /> */}
-      
-
-<div className="space-y-4">
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Payment</h3>
-
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <label htmlFor="credit-card" className="rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4 dark:border-gray-700 dark:bg-gray-800">
-          <div className="flex items-start">
-            <div className="flex h-5 items-center">
-              <input
-                id="credit-card"
-                aria-describedby="credit-card-text"
-                type="radio"
-                name="payment-method"
-                value="Prepaid"
-                checked={paymentMethod === "Prepaid"}
-                onChange={() => setPaymentMethod("Prepaid")}
-                className="h-4 w-4 border-gray-300 bg-white text-primary-600 focus:ring-2 focus:ring-primary-600 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-primary-600"
-              />
-            </div>
-
-            <div className="ms-4 text-sm">
-              <div className="font-medium leading-none text-gray-900 dark:text-white"> Prepaid </div>
-              <p id="credit-card-text" className="mt-1 text-xs font-normal text-gray-500 dark:text-gray-400">Pay with Razorpay</p>
-            </div>
-          </div>
-        </label>
-
-        <label htmlFor="pay-on-delivery" className="rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4 dark:border-gray-700 dark:bg-gray-800">
-          <div className="flex items-start">
-            <div  className="flex h-5 items-center">
-              <input
-                id="pay-on-delivery"
-                aria-describedby="pay-on-delivery-text"
-                type="radio"
-                name="payment-method"
-                value="COD"
-                checked={paymentMethod === "COD"}
-                onChange={() => setPaymentMethod("COD")}
-                className="h-4 w-4 border-gray-300 bg-white text-primary-600 focus:ring-2 focus:ring-primary-600 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-primary-600"
-              />
-            </div>
-
-            <div className="ms-4 text-sm">
-              <p className="font-medium leading-none text-gray-900 dark:text-white"> Payment on delivery </p>
-              <p id="pay-on-delivery-text" className="mt-1 text-xs font-normal text-gray-500 dark:text-gray-400">+50 Rs payment processing fee</p>
-            </div>
-          </div>
-        </label>
       </div>
-        </div>
-
-
-      { user ?
-       paymentMethod === "COD"? <button
-        type="submit"
-        className={`bg-[#BC264B] hover:bg-pink-700 text-white font-semibold py-3 px-6 rounded-lg w-full ${isLoading ? "opacity-50" : ""}`}
-        disabled={isLoading ||!addresses.length || !Items.length}
-        onClick={()=>handleCODPayment(selectedAddress)}
-      >
-        {isLoading ? "Processing..." : "Place Order"}
-      </button>:
-        <button
-        type="submit"
-        className={`bg-[#BC264B] hover:bg-pink-700 text-white font-semibold py-3 px-6 rounded-lg w-full ${isLoading ? "opacity-50" : ""}`}
-        disabled={isLoading || !addresses.length || !Items.length}
-        onClick={()=>onSubmitPrepaid(selectedAddress)}
-      >
-        {isLoading ? "Processing..." : "Proceed to Payment"}
-      </button> :
-      paymentMethod === "COD"? <button
-      type="submit"
-      className={`bg-[#BC264B] hover:bg-pink-700 text-white font-semibold py-3 px-6 rounded-lg w-full ${isLoading ? "opacity-50" : ""}`}
-      disabled={isLoading || !Items.length}
-      onClick={handleSubmit(handleCODPayment)}
-    >
-      {isLoading ? "Processing..." : "Place Order"}
-    </button>:
-      <button
-      type="submit"
-      className={`bg-[#BC264B] hover:bg-pink-700 text-white font-semibold py-3 px-6 rounded-lg w-full ${isLoading ? "opacity-50" : ""}`}
-      disabled={isLoading || !Items.length}
-      onClick={handleSubmit(onSubmitPrepaid)}
-    >
-      {isLoading ? "Processing..." : "Proceed to Payment"}
-    </button>
-       }
-    </form>
     </>
-  );
-};
+  )
+}
 
-export default DeliveryForm;
+export default DeliveryForm

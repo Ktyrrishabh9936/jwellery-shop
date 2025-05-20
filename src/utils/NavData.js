@@ -11,14 +11,41 @@ export const Menus = [
     name: "Shop By Category",
     subMenuHeading: ["Elegant", "Sylish"],
     subMenu: [
-      { name: "Tops (Earrings)", link: "/categories/tops" ,icon:null},
-      { name: "Rings", link: "/categories/rings",icon:null},
-      { name: "Pendant Sets with Chain", link: "/categories/sets",icon:null },
-      { name: "Mangalsutra", link: "/categories/ring" ,icon:null},
-      { name: "Chain (Small Necklace)", link: "/categories/necklace" ,icon:null},
-      { name: "Bracelet + Ring", link: "/categories/bracelet/rings" ,icon:null},
-      { name: "Pendant Set + Ring", link: "/categories/pendent/rings",icon:null },
-      { name: "Payal", link: "/categories/anklet",icon:null },
+      {
+        name:"Rings",
+        link:"/categories/rings",
+        icon:null
+      },
+      {
+        name:"Pendant Sets",
+        link:"/categories/pendant-sets",icon:null
+        
+      },
+      {
+        name:"Earrings",
+        link:"/categories/earrings",icon:null
+       
+      },
+      {
+        name:"Pendant Chain",
+        link:"/categories/chain",icon:null
+        
+      },
+      {
+        name:"Payal",
+        link:"/categories/payal",icon:null
+        
+      },
+      {
+        name:"Bracelets",
+        link:"/categories/bracelets",icon:null
+        
+      },
+      {
+        name:"Mangalsutra",
+        link:"/categories/mangal-sutra",icon:null
+       
+      }
     ],
     gridCols: 2,
   },
@@ -74,12 +101,6 @@ export const Menus = [
         desc: "love",
         icon: BookHeart,
          link:"/collections/for-girlfriend"
-      },
-      {
-        name: "For Husbands",
-        desc: "Changelog",
-        icon: FaShieldHeart,
-         link:"/collections/for-husbands"
       },
       {
         name: "For Sister",

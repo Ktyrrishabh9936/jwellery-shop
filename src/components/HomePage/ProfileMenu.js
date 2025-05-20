@@ -32,13 +32,6 @@ function ProfileMenu({user}) {
                 closeMenu()},
         },
         {
-            label: "Our Address",
-            icon: FaAddressBook,
-            onClickNavItem:()=>{
-                navigate.push('/address');
-                closeMenu()},
-        },
-        {
             label: "My Orders",
             icon: InboxArrowDownIcon,
             onClickNavItem:()=>{

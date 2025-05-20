@@ -10,7 +10,7 @@ const Footer = () => {
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
-  const catgo = [ {link:"/categories/rings",name:"Ring"},{link:"/categories/necklace",name:"Necklace"}, {link:"/categories/anklet",name:"Anklet"}, {link:"/categories/bangle",name:"Bangle"}]
+  const catgo = [ {link:"/categories/rings",name:"Rings"},{link:"/categories/chain",name:"Chain"}, {link:"/categories/payal",name:"Payal"}, {link:"/categories/bracelets",name:"Baracelets"}]
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -81,7 +81,7 @@ const Footer = () => {
               />
               <FooterCard
                 title={"Shop by Relation"}
-                items={["For Mother", "For Sister", "For Wife", "For Husbands", "For Girlfriend"]}
+                items={["For Mother", "For Sister", "For Wife", "For Girlfriend"]}
               />
             </div>
           </div>

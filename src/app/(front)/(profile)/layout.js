@@ -17,11 +17,6 @@ export default function profile({children}) {
             title: "Profile",
             link: "/profile",
           },
-        
-          {
-            title: "My Address",
-            link: "/address",
-          },
           {
             title: "Orders",
             link: "/orders",
