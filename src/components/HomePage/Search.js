@@ -6,16 +6,19 @@ import { CiSearch } from "react-icons/ci";
 
 import ProductList from "./ProductList"; 
 import { useRouter } from "next/navigation";
+import { useMetaTracking } from "@/hooks/useMetaTracking"
 
 export default function Search() {
     const [query, setQuery] = useState("");
     const [suggestions, setSuggestions] = useState([]);
     const router = useRouter();
-
+    const { trackSearch } = useMetaTracking()
   
-    const handleSearch = (query) => {
-        if (query) {
-            router.push(`/search?q=${encodeURIComponent(query)}`);
+    const handleSearch = async (query) => {
+        const q = query.trim()
+        if (q) {
+            await trackSearch(q, "jewelry")
+            router.push(`/search?q=${encodeURIComponent(q)}`);
         }
     };
 

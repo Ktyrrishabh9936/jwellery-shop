@@ -40,7 +40,7 @@ export async function POST(req) {
     return new Response(JSON.stringify({ success: true, message: "Coupon is valid", discountType: coupon.discountType, discountValue: coupon.discountValue,minvalue:coupon.minimumOrderValue,couponCode:coupon.code }), { status: 200 });
 
   } catch (error) {
-    console.error("Error validating coupon:", error);
+    console.log("Error validating coupon:", error);
     return new Response(JSON.stringify({ success: false, message: "Internal server error" }), { status: 500 });
   }
 }

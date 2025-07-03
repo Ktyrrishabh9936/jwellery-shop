@@ -9,15 +9,18 @@ import { addToCart } from "@/lib/reducers/cartReducer";
 import { useDispatch, useSelector } from 'react-redux';
 import { Button } from '@/MaterialTailwindNext';
 import { useRouter } from "next/navigation";
+import { useMetaTracking } from "@/hooks/useMetaTracking"
 
 export default function ProductCard({ product }) {
   const [isHovered, setIsHovered] = useState(false);
   const dispatch = useDispatch();
   const router = useRouter();
+  const { trackAddToCart, trackProductView } = useMetaTracking()
   const handleAddToCart = async (product) => {
     const data = { productId: product._id, name: product.name, quantity: 1, img_src: product.images[0], price: product.price, discountedPrice: product.discountPrice, category: product.category.name, SKU: product.sku }
 
     dispatch(addToCart(data))
+    await trackAddToCart(product._id, 1)
   };
   const { loadingProductId } = useSelector((state) => state.cart)
 
@@ -25,6 +28,7 @@ export default function ProductCard({ product }) {
       const data = { productId: product._id, name: product.name, quantity: 1, img_src: product.images[0], price: product.price, discountedPrice: product.discountPrice, category: product.category.name, SKU: product.sku };
       dispatch(addToCart(data));
       router.push('/checkout');
+      await trackAddToCart(product._id, 1)
     };
 
   return (

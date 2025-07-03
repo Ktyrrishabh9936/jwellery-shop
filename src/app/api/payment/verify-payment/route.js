@@ -12,6 +12,8 @@ import { createShipment } from "@/utils/shipRocket"
 import moment from "moment"
 import { sendEmail, generateOrderConfirmationEmail } from "@/utils/sendMail"
 import Razorpay from "razorpay"
+// import { trackPurchase } from "@/utils/metaEventHelpers"
+import couponModel from "@/models/couponModel"
 
 // Helper function to extract payment method details
 const getPaymentVia = (method, payload) => {
@@ -45,6 +47,7 @@ export async function POST(req) {
       useSameForBilling,
       orderNumber,
       selectedCourier,
+      couponCode
     } = await req.json()
 
     // Verify Razorpay signature
@@ -52,11 +55,11 @@ export async function POST(req) {
     const shasum = crypto.createHmac("sha256", secret)
     shasum.update(`${orderId}|${paymentId}`)
     const digest = shasum.digest("hex")
-    console.log("okay1")
+    // console.log("okay1")
     if (digest !== signature) {
       return NextResponse.json({ message: "Payment verification failed" }, { status: 400 })
     }
-    console.log("okay2")
+    // console.log("okay2")
 
     // Get user ID either from request or auth token
     let Id
@@ -65,14 +68,14 @@ export async function POST(req) {
     } else {
       Id = userId
     }
-    console.log("okay3",Id)
+    // console.log("okay3",Id)
 
     // Verify user exists
     const user = await User.findById(Id)
     if (!user) {
       return NextResponse.json({ message: "Invalid user" }, { status: 404 })
     }
-    console.log("okay4",orderNumber)
+    // console.log("okay4",orderNumber)
 
     // Find the order
     const order = await Order.findOne({ orderNumber }).populate("items")
@@ -80,7 +83,7 @@ export async function POST(req) {
       return NextResponse.json({ message: "Order not found" }, { status: 404 })
     }
 
-    console.log("okay5")
+    // console.log("okay5")
 
     // Get payment details from Razorpay
     let paymentMethod = "Razorpay"
@@ -119,7 +122,7 @@ export async function POST(req) {
 
     await payment.save()
 
-    console.log("okay7",Object.keys(order.billingAddress ||{}).length)
+    // console.log("okay7",Object.keys(order.billingAddress ||{}).length)
 
     // Create Shiprocket order
     
@@ -162,14 +165,15 @@ export async function POST(req) {
       height: 10,
       weight: 0.5,
     }
-    console.log(shiprocketData)
+    // console.log(shiprocketData)
 
     // Add courier_id if a specific courier is selected
     if (selectedCourier && selectedCourier.courier_id) {
       shiprocketData.courier_id = selectedCourier.courier_id
     }
 
-    console.log("okay8")
+    // console.log("okay8")
+
 
     const shiprocket = await createShipment(shiprocketData)
 
@@ -183,7 +187,7 @@ export async function POST(req) {
         { status: 403 },
       )
     }
-    console.log("okay9")
+    // console.log("okay9")
 
     // Generate tracking URL
     const trackingUrl = generateTrackingUrl(shiprocket.shipment_id, shiprocket.awb)
@@ -201,7 +205,7 @@ export async function POST(req) {
     // Update all order items status
     await OrderItem.updateMany({ orderId: order._id }, { $set: { status: "CONFIRMED" } })
 
-    console.log("okay10")
+    // console.log("okay10")
 
     // Update product stock
     for (const item of order.items) {
@@ -213,7 +217,7 @@ export async function POST(req) {
 
     // Generate enhanced email template
     const emailHtml = generateOrderConfirmationEmail(order, order.items, trackingUrl)
-    console.log("okay11")
+    // console.log("okay11")
 
     // Send confirmation email with tracking information
     const mail = await sendEmail(
@@ -221,7 +225,25 @@ export async function POST(req) {
       `JENII - Your Order #${order.orderNumber} is Confirmed`,
       emailHtml,
     )
-    console.log("okay12")
+    // console.log("okay12")
+    // try {
+    //   await trackPurchase(req, user, order)
+    // } catch (metaError) {
+    //   console.error("Meta tracking error:", metaError)
+    //   // Don't fail the order if Meta tracking fails
+    // }
+
+
+    
+    if (couponCode) {
+      const coupon = await couponModel.findOne({ code: couponCode })
+      if (coupon) {
+        // Update coupon usage
+        coupon.usedCount++
+        await coupon.save()
+      }
+    }
+
 
     return NextResponse.json(
       {

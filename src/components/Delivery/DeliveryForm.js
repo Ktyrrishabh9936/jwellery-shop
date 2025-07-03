@@ -907,7 +907,7 @@ const DeliveryForm = () => {
                                   </div>
                                   <p className="text-sm text-gray-500">
                                     Delivery in {shippingOptions.standard.etd || 5}-
-                                    {(shippingOptions.standard.etd || 5) + 2} business days
+                                    {(parseInt(shippingOptions.standard.etd) || 5) + 2} business days
                                   </p>
                                 </div>
                                 <p className="font-semibold text-gray-800">

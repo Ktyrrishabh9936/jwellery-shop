@@ -11,6 +11,7 @@ import moment from "moment"
 import couponModel from "@/models/couponModel"
 import { sendEmail, generateOrderConfirmationEmail } from "@/utils/sendMail"
 import { getShippingRates } from "@/utils/shipRocket"
+// import { trackPurchase } from "@/utils/metaEventHelpers"
 
 // COD fee constant
 const COD_FEE = 50 // ₹50 COD handling fee
@@ -220,16 +221,12 @@ export async function POST(req) {
           discountAmount = (subtotal * coupon.discountValue) / 100
           appliedCoupon = {
             code: coupon.code,
-            discountType: coupon.discountType,
-            discountValue: coupon.discountValue,
             discountAmount: discountAmount,
           }
         } else if (coupon.discountType === "fixed") {
           discountAmount = coupon.discountValue
           appliedCoupon = {
             code: coupon.code,
-            discountType: coupon.discountType,
-            discountValue: coupon.discountValue,
             discountAmount: discountAmount,
           }
         }
@@ -445,6 +442,13 @@ export async function POST(req) {
     `
 
     await sendEmail(process.env.ADMIN_EMAIL, `[JENII] New COD Order #${orderNumber}`, adminNotificationHtml)
+
+    // try {
+    //   await trackPurchase(req, user, order)
+    // } catch (metaError) {
+    //   console.error("Meta tracking error:", metaError)
+    //   // Don't fail the order if Meta tracking fails
+    // }
 
     return NextResponse.json(
       {

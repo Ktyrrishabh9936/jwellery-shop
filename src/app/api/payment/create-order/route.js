@@ -195,16 +195,12 @@ export async function POST(req) {
           discountAmount = (subtotal * coupon.discountValue) / 100
           appliedCoupon = {
             code: coupon.code,
-            discountType: coupon.discountType,
-            discountValue: coupon.discountValue,
             discountAmount: discountAmount,
           }
         } else if (coupon.discountType === "fixed") {
           discountAmount = coupon.discountValue
           appliedCoupon = {
             code: coupon.code,
-            discountType: coupon.discountType,
-            discountValue: coupon.discountValue,
             discountAmount: discountAmount,
           }
         }
