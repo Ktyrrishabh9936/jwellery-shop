@@ -30,6 +30,7 @@ export default function RootLayout({ children }) {
   return (
           <StoreProvider>
     <html lang="en">
+      <head>
     <Script
         strategy="afterInteractive"
         src="https://www.googletagmanager.com/gtag/js?id=G-2T3HXDM6TT"
@@ -54,6 +55,16 @@ s.parentNode.insertBefore(t,s)}(window,document,'script',
  fbq('init', '487683057550660'); 
 fbq('track', 'PageView');`}
 </Script>
+
+<Script >
+        {`
+          (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-WJHS34MC');
+        `}
+      </Script>
 <noscript>
  <img height="1" width="1" 
 src="https://www.facebook.com/tr?id=487683057550660&ev=PageView
@@ -66,6 +77,8 @@ src="https://www.facebook.com/tr?id=487683057550660&ev=PageView
         y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
     })(window, document, "clarity", "script", "q0c2vfolg9");`}
 </Script> */}
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WJHS34MC"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <Script type="text/javascript">
   {`  (function(c,l,a,r,i,t,y){
@@ -77,7 +90,10 @@ src="https://www.facebook.com/tr?id=487683057550660&ev=PageView
 
 
 
+</head>
+
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      
         <ClientLayout>
       <AuthProvider>
       <SessionManager />
