@@ -79,7 +79,7 @@ export const generateOTPEmail = (email, otp) => {
               <tr>
                 <td style="padding: 30px 40px; background-color: #f8fafc; border-top: 1px solid #e5e7eb; text-align: center;">
                   <p style="margin: 0 0 15px 0; font-size: 16px; color: #4b5563;">Need help?</p>
-                  <a href="mailto:support@jenii.in" style="display: inline-block; padding: 10px 24px; background-color: #BC264B; color: white; text-decoration: none; border-radius: 6px; font-weight: 500; margin-bottom: 20px;">Contact Support</a>
+                  <a href="mailto:jenii.jp.jewellery@gmail.com" style="display: inline-block; padding: 10px 24px; background-color: #BC264B; color: white; text-decoration: none; border-radius: 6px; font-weight: 500; margin-bottom: 20px;">Contact Support</a>
                 </td>
               </tr>
               
@@ -90,10 +90,8 @@ export const generateOTPEmail = (email, otp) => {
                   <p style="margin: 0 0 10px 0; font-size: 14px; color: #e5e7eb;">© 2025 Jenii. All rights reserved.</p>
                   <p style="margin: 0 0 20px 0; font-size: 12px; color: #9ca3af;">Broadway Empire, Nilamber Circle, Near Akshar Pavilion, Vasna Bhayli Main Road, Vadodara, Gujarat, 391410</p>
                   <div>
-                    <a href="https://www.facebook.com/jenii" style="display: inline-block; margin: 0 5px;"><img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook" style="width: 24px; height: 24px;"></a>
-                    <a href="https://www.instagram.com/jenii" style="display: inline-block; margin: 0 5px;"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram" style="width: 24px; height: 24px;"></a>
-                    <a href="https://twitter.com/jenii" style="display: inline-block; margin: 0 5px;"><img src="https://cdn-icons-png.flaticon.com/512/733/733579.png" alt="Twitter" style="width: 24px; height: 24px;"></a>
-                  </div>
+                  <a href="https://m.facebook.com/jenii.jp.jewellery/" style="display: inline-block; margin: 0 5px;"><img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook" style="width: 24px; height: 24px;"></a>
+                    <a href="https://www.instagram.com/jenii.in" style="display: inline-block; margin: 0 5px;"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram" style="width: 24px; height: 24px;"></a>  </div>
                 </td>
               </tr>
             </table>
@@ -208,7 +206,7 @@ export const generateWelcomeEmail = (name, email, password) => {
               <tr>
                 <td style="padding: 30px 40px; background-color: #f8fafc; border-top: 1px solid #e5e7eb; text-align: center;">
                   <p style="margin: 0 0 15px 0; font-size: 16px; color: #4b5563;">Need help getting started?</p>
-                  <a href="mailto:support@jenii.in" style="display: inline-block; padding: 10px 24px; background-color: #BC264B; color: white; text-decoration: none; border-radius: 6px; font-weight: 500; margin-bottom: 20px;">Contact Support</a>
+                  <a href="mailto:jenii.jp.jewellery@gmail.com" style="display: inline-block; padding: 10px 24px; background-color: #BC264B; color: white; text-decoration: none; border-radius: 6px; font-weight: 500; margin-bottom: 20px;">Contact Support</a>
                 </td>
               </tr>
               
@@ -219,10 +217,8 @@ export const generateWelcomeEmail = (name, email, password) => {
                   <p style="margin: 0 0 10px 0; font-size: 14px; color: #e5e7eb;">© 2025 Jenii. All rights reserved.</p>
                   <p style="margin: 0 0 20px 0; font-size: 12px; color: #9ca3af;">Broadway Empire, Nilamber Circle, Near Akshar Pavilion, Vasna Bhayli Main Road, Vadodara, Gujarat, 391410</p>
                   <div>
-                    <a href="https://www.facebook.com/jenii" style="display: inline-block; margin: 0 5px;"><img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook" style="width: 24px; height: 24px;"></a>
-                    <a href="https://www.instagram.com/jenii" style="display: inline-block; margin: 0 5px;"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram" style="width: 24px; height: 24px;"></a>
-                    <a href="https://twitter.com/jenii" style="display: inline-block; margin: 0 5px;"><img src="https://cdn-icons-png.flaticon.com/512/733/733579.png" alt="Twitter" style="width: 24px; height: 24px;"></a>
-                  </div>
+                   <a href="https://m.facebook.com/jenii.jp.jewellery/" style="display: inline-block; margin: 0 5px;"><img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook" style="width: 24px; height: 24px;"></a>
+                    <a href="https://www.instagram.com/jenii.in" style="display: inline-block; margin: 0 5px;"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram" style="width: 24px; height: 24px;"></a> </div>
                 </td>
               </tr>
             </table>
@@ -526,7 +522,7 @@ export const generateOrderConfirmationEmail = (order, items, trackingUrl) => {
               <tr>
                 <td style="padding: 30px 40px; background-color: #f8fafc; border-top: 1px solid #e5e7eb; text-align: center;">
                   <p style="margin: 0 0 15px 0; font-size: 16px; color: #4b5563;">Questions about your order?</p>
-                  <a href="mailto:support@jenii.in" style="display: inline-block; padding: 10px 24px; background-color: #BC264B; color: white; text-decoration: none; border-radius: 6px; font-weight: 500; margin-bottom: 20px;">Contact Support</a>
+                  <a href="mailto:jenii.jp.jewellery@gmail.com" style="display: inline-block; padding: 10px 24px; background-color: #BC264B; color: white; text-decoration: none; border-radius: 6px; font-weight: 500; margin-bottom: 20px;">Contact Support</a>
                   <p style="margin: 0; font-size: 14px; color: #6b7280;">
                     You can also view your order status by visiting your <a href="${process.env.NEXT_PUBLIC_API_BASE_URL}/myitem" style="color: #BC264B; text-decoration: none; font-weight: 500;">account page</a>.
                   </p>
@@ -540,10 +536,8 @@ export const generateOrderConfirmationEmail = (order, items, trackingUrl) => {
                   <p style="margin: 0 0 10px 0; font-size: 14px; color: #e5e7eb;">© 2025 Jenii. All rights reserved.</p>
                   <p style="margin: 0 0 20px 0; font-size: 12px; color: #9ca3af;">Broadway Empire, Nilamber Circle, Near Akshar Pavilion, Vasna Bhayli Main Road, Vadodara, Gujarat, 391410</p>
                   <div>
-                    <a href="https://www.facebook.com/jenii" style="display: inline-block; margin: 0 5px;"><img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook" style="width: 24px; height: 24px;"></a>
-                    <a href="https://www.instagram.com/jenii" style="display: inline-block; margin: 0 5px;"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram" style="width: 24px; height: 24px;"></a>
-                    <a href="https://twitter.com/jenii" style="display: inline-block; margin: 0 5px;"><img src="https://cdn-icons-png.flaticon.com/512/733/733579.png" alt="Twitter" style="width: 24px; height: 24px;"></a>
-                  </div>
+                 <a href="https://m.facebook.com/jenii.jp.jewellery/" style="display: inline-block; margin: 0 5px;"><img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook" style="width: 24px; height: 24px;"></a>
+                    <a href="https://www.instagram.com/jenii.in" style="display: inline-block; margin: 0 5px;"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram" style="width: 24px; height: 24px;"></a> </div>
                 </td>
               </tr>
             </table>
@@ -557,6 +551,112 @@ export const generateOrderConfirmationEmail = (order, items, trackingUrl) => {
                     <a href="#" style="color: #6b7280; text-decoration: underline;">Unsubscribe</a> | 
                     <a href="#" style="color: #6b7280; text-decoration: underline;">Privacy Policy</a> | 
                     <a href="#" style="color: #6b7280; text-decoration: underline;">View in Browser</a>
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </body>
+    </html>
+  `
+}
+
+export const generatePasswordResetEmail = (name, email, resetUrl) => {
+  return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Reset Your Password</title>
+    </head>
+    <body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #374151; margin: 0; padding: 0; background-color: #f9fafb;">
+      <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f9fafb;">
+        <tr>
+          <td align="center" style="padding: 30px 0;">
+            <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);">
+              <!-- Header -->
+              <tr>
+                <td style="padding: 30px 40px; background-color: #BC264B; text-align: center;">
+                  <img src="https://img.mailinblue.com/8812198/images/content_library/original/67bb45f0b92c6ab342489ca4.png" alt="Jenii Logo" style="max-width: 150px; height: auto;">
+                  <h1 style="color: #ffffff; margin: 20px 0 5px 0; font-size: 24px; font-weight: 700;">Reset Your Password</h1>
+                  <p style="color: #ffffff; opacity: 0.9; margin: 0; font-size: 16px;">We received a request to reset your password</p>
+                </td>
+              </tr>
+              
+              <!-- Main Content -->
+              <tr>
+                <td style="padding: 40px 40px 30px 40px;">
+                  <p style="margin: 0 0 20px 0; font-size: 16px;">Hello ${name || "there"},</p>
+                  <p style="margin: 0 0 20px 0; font-size: 16px;">We received a request to reset the password for your Jenii account associated with ${email}.</p>
+                  <p style="margin: 0 0 30px 0; font-size: 16px;">If you made this request, click the button below to reset your password:</p>
+                  
+                  <div style="text-align: center; margin: 30px 0;">
+                    <a href="${resetUrl}" style="display: inline-block; padding: 15px 30px; background-color: #BC264B; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 6px rgba(188, 38, 75, 0.2);">Reset My Password</a>
+                  </div>
+                  
+                  <p style="margin: 30px 0 0 0; font-size: 14px; color: #6b7280;">This link will expire in <strong>1 hour</strong> for security reasons.</p>
+                </td>
+              </tr>
+              
+              <!-- Alternative Link -->
+              <tr>
+                <td style="padding: 0 40px 30px 40px;">
+                  <div style="padding: 20px; background-color: #f8fafc; border-radius: 8px; border: 1px solid #e5e7eb;">
+                    <p style="margin: 0 0 10px 0; font-size: 14px; color: #4b5563; font-weight: 600;">Can't click the button?</p>
+                    <p style="margin: 0 0 10px 0; font-size: 14px; color: #6b7280;">Copy and paste this link into your browser:</p>
+                    <p style="margin: 0; font-size: 12px; color: #BC264B; word-break: break-all;">${resetUrl}</p>
+                  </div>
+                </td>
+              </tr>
+              
+              <!-- Security Notice -->
+              <tr>
+                <td style="padding: 0 40px 40px 40px;">
+                  <div style="padding: 20px; background-color: #fffbeb; border-radius: 8px; border-left: 4px solid #f59e0b;">
+                    <h3 style="margin: 0 0 10px 0; color: #92400e; font-size: 16px;">Security Notice</h3>
+                    <p style="margin: 0 0 10px 0; color: #92400e; font-size: 14px;">
+                      If you didn't request a password reset, please ignore this email. Your password will remain unchanged.
+                    </p>
+                    <p style="margin: 0; color: #92400e; font-size: 14px;">
+                      If you're concerned about your account security, please contact our support team immediately.
+                    </p>
+                  </div>
+                </td>
+              </tr>
+              
+              <!-- Help Section -->
+              <tr>
+                <td style="padding: 30px 40px; background-color: #f8fafc; border-top: 1px solid #e5e7eb; text-align: center;">
+                  <p style="margin: 0 0 15px 0; font-size: 16px; color: #4b5563;">Need help?</p>
+                  <a href="mailto:jenii.jp.jewellery@gmail.com" style="display: inline-block; padding: 10px 24px; background-color: #BC264B; color: white; text-decoration: none; border-radius: 6px; font-weight: 500; margin-bottom: 20px;">Contact Support</a>
+                </td>
+              </tr>
+              
+              <!-- Footer -->
+              <tr>
+                <td style="padding: 30px 40px; background-color: #111827; text-align: center;">
+                  <img src="https://img.mailinblue.com/8812198/images/content_library/original/67bb45f0b92c6ab342489ca4.png" alt="Jenii Logo" style="max-width: 120px; height: auto; margin-bottom: 20px;">
+                  <p style="margin: 0 0 10px 0; font-size: 14px; color: #e5e7eb;">© 2025 Jenii. All rights reserved.</p>
+                  <p style="margin: 0 0 20px 0; font-size: 12px; color: #9ca3af;">Broadway Empire, Nilamber Circle, Near Akshar Pavilion, Vasna Bhayli Main Road, Vadodara, Gujarat, 391410</p>
+                  <div>
+                    <a href="https://m.facebook.com/jenii.jp.jewellery/" style="display: inline-block; margin: 0 5px;"><img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook" style="width: 24px; height: 24px;"></a>
+                    <a href="https://www.instagram.com/jenii.in" style="display: inline-block; margin: 0 5px;"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram" style="width: 24px; height: 24px;"></a>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            
+            <!-- Email Preferences Footer -->
+            <table width="600" cellpadding="0" cellspacing="0">
+              <tr>
+                <td style="padding: 20px 0; text-align: center; color: #6b7280; font-size: 12px;">
+                  <p style="margin: 0 0 10px 0;">This email was sent to ${email}</p>
+                  <p style="margin: 0;">
+                    <a href="#" style="color: #6b7280; text-decoration: underline;">Privacy Policy</a> | 
+                    <a href="#" style="color: #6b7280; text-decoration: underline;">Terms of Service</a>
                   </p>
                 </td>
               </tr>

@@ -35,8 +35,9 @@ import ImageZoom from "react-image-zooom";
 import Accordian, { AccordianItem } from "./Accordian";
 import { formatPrice } from "@/utils/productDiscount";
 import { Star } from "../HomePage/HotPicks";
-// import { useMediaQuery } from 'react-responsive';
-// import Zoomable from "react-instagram-zoom";
+import ProductDetailsLoader from "../Loaders/ProductDetailsLoader";
+import { useMediaQuery } from "react-responsive";
+
 const schema = yup.object().shape({
   pincode: yup
     .string()
@@ -55,7 +56,7 @@ export default function Product({ id }) {
 //   const handleOpen = () => setOpen((cur) => !cur);
 //   const handleIsFavorite = () => setIsFavorite((cur) => !cur);
 
-  // const isSmallScreen = useMediaQuery({ maxWidth: 768 });
+  const isSmallScreen = useMediaQuery({ maxWidth: 768 });
 
     useEffect(() => {
         if (id) {
@@ -64,7 +65,7 @@ export default function Product({ id }) {
                   setloading(true)
                     const response = await axios.get(`/api/products/${id}`);
                     setProduct(response.data.product);
-                    console.log(response.data.product)
+                   
                     setRelatedProducts(response.data.relatedProducts);
                     setloading(false)
                 } catch (error) {
@@ -78,6 +79,9 @@ export default function Product({ id }) {
         }
     }, [id]);
 
+    if (loading) {
+      <ProductDetailsLoader/>
+    }
 
     return (
         <div className="flex flex-col lg:flex-row gap-2 ">
@@ -91,18 +95,18 @@ export default function Product({ id }) {
               <IconButton
                 size="lg"
                 onClick={handlePrev}
-                className="!absolute left-2 top-1/2 z-10 -translate-y-1/2 bg-white shadow-none border-2 border-pink-500 rounded-full hover:bg-pink-200"
+                className="!absolute left-2 top-1/2 z-10 -translate-y-1/2 bg-white shadow-none border-2 border-primary-500 rounded-full hover:bg-primary-200"
               >
-                <NavArrowLeft className="h-7 w-7 stroke-2 text-pink-500" />
+                <NavArrowLeft className="h-7 w-7 stroke-2 text-primary-500" />
               </IconButton>
             )}
             nextArrow={({ handleNext }) => (
               <IconButton
                 size="lg"
                 onClick={handleNext}
-                className="!absolute right-2 top-1/2 z-10 -translate-y-1/2 bg-white shadow-none border-2 border-pink-500 rounded-full hover:bg-pink-200"
+                className="!absolute right-2 top-1/2 z-10 -translate-y-1/2 bg-white shadow-none border-2 border-primary-500 rounded-full hover:bg-primary-200"
               >
-                <NavArrowRight className="h-7 w-7 stroke-2 text-pink-500" />
+                <NavArrowRight className="h-7 w-7 stroke-2 text-primary-500" />
               </IconButton>
             )}
             navigation={({ setActiveIndex, activeIndex }) => (
@@ -115,7 +119,7 @@ export default function Product({ id }) {
                     key={`productDetails ${i}`}
                     alt={`productDetails ${i}`}
                     className={`block my-auto cursor-pointer rounded-2xl transition-all content-[''] border-2 ${
-                        activeIndex === i ? "w-16 h-16  bg-white border-pink-300" : "w-10 h-10 bg-white/50 border-blue-gray-100"
+                        activeIndex === i ? "w-16 h-16  bg-white border-primary-300" : "w-10 h-10 bg-white/50 border-blue-gray-100"
                     }`}
                     onClick={() => setActiveIndex(i)}
                     />
@@ -127,7 +131,7 @@ export default function Product({ id }) {
                     key={`productDetails `}
                     alt={`productDetails vedio`}
                     className={`block my-auto cursor-pointer rounded-2xl transition-all content-[''] border-2  ${
-                        activeIndex === product?.images?.length ? "w-16 h-16  bg-white border-pink-300" : "w-10 h-10 bg-white/50 border-blue-gray-100"
+                        activeIndex === product?.images?.length ? "w-16 h-16  bg-white border-primary-300" : "w-10 h-10 bg-white/50 border-blue-gray-100"
                     }`}
                     onClick={() => setActiveIndex(product?.images?.length)}
                     />}
@@ -135,7 +139,12 @@ export default function Product({ id }) {
             )}
            >
                 {product?.images?.map((img,ind)=>
-            <ImageZoom 
+            isSmallScreen ? <Image
+             key={ind}
+             src={process.env.NEXT_PUBLIC_IMAGE_URL +img}
+             alt={`zm${ind}`} 
+             fullWidth={true} 
+           /> :<ImageZoom 
              key={ind}
              src={process.env.NEXT_PUBLIC_IMAGE_URL +img}
              alt={`zm${ind}`} 
@@ -152,113 +161,7 @@ export default function Product({ id }) {
                 </Carousel>
     
             </div>
-                {/* <Button
-            size="sm"
-            variant="outlined"
-            color="blue-gray"
-            className="mr-5 flex items-center text-center hidden md:block"
-            onClick={handleOpen}
-          >
-           Full View
-          </Button> */}
-            <>
-     
-     
-     
-       {/* <Dialog size="xl" open={open} handler={handleOpen}>
-        <DialogHeader className="justify-between">
-          <div className="flex items-center gap-3">
-          
-            <div className="-mt-px flex flex-col">
-              <Typography
-                variant="small"
-                color="blue-gray"
-                className="font-medium"
-              >
-               {product?.name}
-              </Typography>
-       
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-2">
-            <IconButton
-              variant="text"
-              size="sm"
-              color={isFavorite ? "red" : "blue-gray"}
-              onClick={handleIsFavorite}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                className="h-5 w-5"
-              >
-                <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />
-              </svg>
-            </IconButton>
-            <Button
-            size="sm"
-            variant="outlined"
-            color="blue-gray"
-            className="mr-5 flex items-center"
-          >
-            Share
-          </Button>
-          </div>
-        </DialogHeader>
-        <DialogBody>
-        <Carousel
-            className="h-[70vh] rounded-xl w-[500px]  md:w-full  max-w-[500px] md:max-w-none pb-16"
-            navigation={({ setActiveIndex, activeIndex }) => (
-                <div className="">
-                {
-                product?.images?.map((img, i) => (
-                    <Image
-                    width={1000}
-                    height={1000}
-                    src={img}
-                    key={`productDetails ${i}`}
-                    alt={`product))Details ${i}`}
-                    className={`block my-auto cursor-pointer rounded-2xl transition-all content-[''] border-2  ${
-                        activeIndex === i ? "w-16 h-16  bg-white border-pink-300" : "w-10 h-10 bg-white/50 border-blue-gray-100"
-                    }`}
-                    onClick={() => setActiveIndex(i)}
-                    />
-                )
-              )
-              
-                }
-                <Image
-                    width={1000}
-                    height={1000}
-                    src="Video-icon.png"
-                    key={`productDetails `}
-                    alt={`productDetails vedio`}
-                    className={`block my-auto cursor-pointer rounded-2xl transition-all content-[''] border-2  ${
-                        activeIndex === product?.images?.length-1 ? "w-16 h-16  bg-white border-pink-300" : "w-10 h-10 bg-white/50 border-blue-gray-100"
-                    }`}
-                    onClick={() => setActiveIndex(product?.images?.length-1)}
-                    />
-                </div>
-            )}
-            >
-                {product?.images?.map((img,ind)=><Image
-                width={400}
-                height={400}
-                    src={img}
-                    alt={`Product${ind}`}
-                    key={`Product${ind}`}
-                    className="object-contain w-full h-full "
-                />)}
-                </Carousel>
-        </DialogBody>
-        <DialogFooter className="justify-between">
-       
-          
-        </DialogFooter>
-      </Dialog> */}
-    </>
+      
 
         </div>
             </div>
@@ -308,10 +211,9 @@ function ProductInfo({info,productId}) {
       setLoading(true)
       setError(null);
       const response = await fetch(
-        `/api/products/${productId}/check-pincode?pickup_pincode=390020&delivery_pincode=${code}`
+        `/api/products/${productId}/check-pincode?pickup_pincode=390007&delivery_pincode=${code}`
       );
       const data = await response.json();
-      console.log(data)
       if (response.ok) {
         setServiceable(data.companyLength);
         setError(null);
@@ -343,16 +245,17 @@ function ProductInfo({info,productId}) {
     return (
         <div className="py-4 pr-4 max-w-[800px]">
           <div class="mb-2 flex items-center  gap-4">
-            <p class="text-2xl font-bold leading-tight text-pink-300 dark:text-white">{formatPrice(info?.discountPrice)}</p>
+            <p class="text-2xl font-bold leading-tight text-primary-300 dark:text-white">{formatPrice(info?.discountPrice)}</p>
             <strike class="text-lg font-semibold leading-tight text-gray-500 dark:text-white">{formatPrice(info?.price)}</strike>
           </div>
             <h2 className="text-xl font-semibold">
                 {info?.name}
             </h2>
-            <div className="flex py-2">
-                <p className="text-sm text-gray-600">Made with 925 Silver |</p>
-                {user ? loadWishlist ===productId? <span className="h-5 w-5 border-t-transparent border-solid animate-spin rounded-full border-red-500 border-4 mx-3 "></span>:wishListByID.some((item)=>item===productId) ?<button className="text-[#BC264B] text-sm mx-3 underline" onClick={()=>dispatch(RemovewishList(productId))}><FaHeartCircleCheck  fontSize={20}/></button>
-                :<button className=" text-sm mx-3 underline" onClick={()=>dispatch(AddwishList(productId))}><FaRegHeart  fontSize={20}/></button> : ""}
+            
+            <div className="flex  items-center  py-2 gap-2">
+                <p className="text-sm text-gray-600">Made with 925 Silver | </p>
+                {user ? loadWishlist ===productId? <span className="h-5 w-5 border-t-transparent border-solid animate-spin rounded-full border-red-500 border-4  "></span>:wishListByID.some((item)=>item===productId) ?<button className="text-primary-500 text-sm  underline" onClick={()=>dispatch(RemovewishList(productId))}><FaHeart fontSize={20}/></button>
+                :<button className=" text-sm  underline" onClick={()=>dispatch(AddwishList(productId))}><FaRegHeart  fontSize={20}/></button> : ""}
                 
                 <RWebShare
                 data={{
@@ -361,11 +264,10 @@ function ProductInfo({info,productId}) {
                     title: "Jenii - A JP Sterling Silver Brand | Premium Sterling Silver Jewellery",
                 }}
             >
-               <button className="text-pink-300 text-sm  underline"><FaShare fontSize={20}/></button>
+               <button className="text-primary-500 flex text-sm  underline py-1 px-3.5 border-[1px] rounded-full  border-primary-500 gap-2 "> <span> Share </span> <span> <FaShare fontSize={20}/></span></button>
             </RWebShare>
             </div>
             <div className="mt-2">
-                {/* <span className="p-2 bg-[#D9D9D9] rounded text-sm">★ {info?.averageRating.toFixed(1)}</span> */}
                 
 
 <div className="flex items-center">
@@ -376,12 +278,56 @@ function ProductInfo({info,productId}) {
 </div>
 
             </div>
+
+   <div className="overflow-x-auto mt-3">
+  <table className="min-w-full border border-gray-200 text-sm text-left text-gray-700 dark:text-gray-200 dark:border-gray-700">
+    <thead className="bg-gray-100 dark:bg-gray-800">
+      <tr>
+        <th className="w-1/3 px-4 py-2 border-b border-gray-300 dark:border-gray-600 font-semibold">
+          Specification
+        </th>
+        <th className="px-4 py-2 border-b border-gray-300 dark:border-gray-600 font-semibold">
+          Details
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {info?.specifications.map((spec, index) => (
+        <tr key={index} className="even:bg-gray-50 dark:even:bg-gray-900">
+          <td className="px-4 py-2 border-b border-gray-200 dark:border-gray-700 font-medium">
+            {spec.key}
+          </td>
+          <td className="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
+            {spec.value}
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
        
-            <form onSubmit={handleSubmit(onSubmit)} className="mt-6 ml-2">
+         
+
+        <div className="text-sm ml-2 my-2">
+          {info?.stock > 0 ? (
+            <b className="rounded-sm bg-primary-500 px-1 py-0.5 text-xs font-medium text-white">
+              In Stock
+            </b>
+            
+          ) : (
+            <b className="rounded-sm bg-red-600 px-1 py-0.5 text-xs font-medium text-white">
+              ✗ Out of Stock
+            </b>
+            
+          )}
+        </div>
+       
+                { info?.stock > 0 ?  <form onSubmit={handleSubmit(onSubmit)} className="mt-3 ml-2">
       <p className="mb-2 text-xl font-semibold">Check our Pincode</p>
       <div className="relative flex h-10 w-full min-w-[200px] max-w-lg">
  <button type="submit"
-    className="absolute bg-[#F8C0BF] right-0.5 h-[95%]  select-none rounded text-red-500 py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase  shadow-md shadow-pink-500/20 transition-all hover:shadow-lg hover:shadow-pink-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none peer-placeholder-shown:pointer-events-none peer-placeholder-shown:bg-blue-gray-500 peer-placeholder-shown:opacity-50 peer-placeholder-shown:shadow-none"
+    className="absolute bg-[#F8C0BF] right-0.5 h-[95%]  select-none rounded text-red-500 py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase  shadow-md shadow-primary-500/20 transition-all hover:shadow-lg hover:shadow-primary-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none peer-placeholder-shown:pointer-events-none peer-placeholder-shown:bg-blue-gray-500 peer-placeholder-shown:opacity-50 peer-placeholder-shown:shadow-none"
     data-ripple-light="true"
     disabled={loading}
   >
@@ -390,7 +336,7 @@ function ProductInfo({info,productId}) {
         ) : "Check"}
   </button>
   <input
-    className={`peer h-full w-full rounded-[7px] border border-blue-gray-200 bg-transparent px-3 py-2.5 pr-20 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2 focus:border-pink-500 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50 ${
+    className={`peer h-full w-full rounded-[7px] border border-blue-gray-200 bg-transparent px-3 py-2.5 pr-20 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2 focus:border-primary-500 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50 ${
       errors.pincode ? "border-red-500" : "border-gray-300"
     }`}
     type="text"
@@ -399,12 +345,12 @@ function ProductInfo({info,productId}) {
     placeholder=" "
     required
   />
-  <label className="before:content[' '] after:content[' '] pointer-events-none absolute left-0 -top-1.5 flex h-full w-full select-none text-[11px] font-normal leading-tight text-blue-gray-400 transition-all before:pointer-events-none before:mt-[6.5px] before:mr-1 before:box-border before:block before:h-1.5 before:w-2.5 before:rounded-tl-md before:border-t before:border-l before:border-blue-gray-200 before:transition-all after:pointer-events-none after:mt-[6.5px] after:ml-1 after:box-border after:block after:h-1.5 after:w-2.5 after:flex-grow after:rounded-tr-md after:border-t after:border-r after:border-blue-gray-200 after:transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[3.75] peer-placeholder-shown:text-blue-gray-500 peer-placeholder-shown:before:border-transparent peer-placeholder-shown:after:border-transparent peer-focus:text-[11px] peer-focus:leading-tight peer-focus:text-pink-500 peer-focus:before:border-t-2 peer-focus:before:border-l-2 peer-focus:before:!border-pink-500 peer-focus:after:border-t-2 peer-focus:after:border-r-2 peer-focus:after:!border-pink-500 peer-disabled:text-transparent peer-disabled:before:border-transparent peer-disabled:after:border-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500">
+  <label className="before:content[' '] after:content[' '] pointer-events-none absolute left-0 -top-1.5 flex h-full w-full select-none text-[11px] font-normal leading-tight text-blue-gray-400 transition-all before:pointer-events-none before:mt-[6.5px] before:mr-1 before:box-border before:block before:h-1.5 before:w-2.5 before:rounded-tl-md before:border-t before:border-l before:border-blue-gray-200 before:transition-all after:pointer-events-none after:mt-[6.5px] after:ml-1 after:box-border after:block after:h-1.5 after:w-2.5 after:flex-grow after:rounded-tr-md after:border-t after:border-r after:border-blue-gray-200 after:transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[3.75] peer-placeholder-shown:text-blue-gray-500 peer-placeholder-shown:before:border-transparent peer-placeholder-shown:after:border-transparent peer-focus:text-[11px] peer-focus:leading-tight peer-focus:text-primary-500 peer-focus:before:border-t-2 peer-focus:before:border-l-2 peer-focus:before:!border-primary-500 peer-focus:after:border-t-2 peer-focus:after:border-r-2 peer-focus:after:!border-primary-500 peer-disabled:text-transparent peer-disabled:before:border-transparent peer-disabled:after:border-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500">
     Enter Pincode
   </label>
 </div>
    
-      </form>
+      </form>:""}
 
       {/* Error Message */}
       {errors.pincode ? (
@@ -419,9 +365,8 @@ function ProductInfo({info,productId}) {
             : "Not serviceable for the given pincode."}
         </p>
       )}
-         
-         <ProductFeatures />
-      <div className="flex mt-4">
+      <ProductFeatures />
+      {info?.stock > 0 ?<div className="flex mt-4">
    <button className=" ml-3 border-[1px] border-[#f76664] hover:bg-[#f76664] text-black max-w-2xl  font-semibold p-2 rounded w-full my-2" onClick={()=>handleBuyNow(info)}>
                     Buy Now
                 </button>
@@ -429,9 +374,11 @@ function ProductInfo({info,productId}) {
                     Adding...
                 </button>:
                 <button className=" ml-3 border-[1px] bg-[#F8C0BF] hover:bg-[#f76664] text-black max-w-2xl  font-semibold p-2 rounded w-full my-2" onClick={()=>handleAddToCart(info)}>
-                    Add to Cart
+                    Add To Cart
                 </button>}
-                </div>
+                </div>:""}
+                
+          
     <Details description={info?.description}/>
         </div>
     );

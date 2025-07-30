@@ -60,7 +60,7 @@ export default function SearchPage() {
     return (
         <div className="min-h-screen bg-gray-50">
             <NavBar />
-            <div className=" max-w-6xl mx-auto p-6">
+            <div className=" max-w-7xl mx-auto p-6">
                 <h1 className="text-3xl font-bold text-center mb-6 text-gray-800">Search Results for "{query}"</h1>
                 {loading ? (
                     <div className="flex justify-center items-center h-48">

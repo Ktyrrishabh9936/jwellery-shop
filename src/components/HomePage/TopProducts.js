@@ -51,8 +51,8 @@ const TopProducts = () => {
         <div
           className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-1 sm:gap-2 md:gap-3 mt-4"
         >
-          {topPicks.map((product) => (
-             <ProductCard product={product}/>
+          {topPicks.map((product,ind) => (
+             <ProductCard product={product} key={ind}/>
           ))}
         </div>
         {topPicksNextload && <ProductGridLoader />}

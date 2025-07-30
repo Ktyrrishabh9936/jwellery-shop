@@ -121,8 +121,8 @@ export default function NavBar() {
         <Menu allowHover open={isMenuOpen} handler={setIsMenuOpen}>
       <MenuHandler>
         <Typography variant="small" className="font-normal">
-          <MenuItem className="hidden items-center gap-2 font-medium text-blue-gray-900 lg:flex lg:rounded-full">
-            <Square3Stack3DIcon className="h-[18px] w-[18px] text-blue-gray-500" />
+          <MenuItem className="hidden items-center gap-2 font-medium text-black lg:flex lg:rounded-full">
+            <Square3Stack3DIcon className="h-[18px] w-[18px] " />
             Shop by Category
             <ChevronDownIcon
               strokeWidth={2}

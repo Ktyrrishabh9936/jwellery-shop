@@ -2,9 +2,8 @@
 import ring from "@/assets/ring.png";
 import Image from "next/image";
 import { FaFacebook, FaInstagram, FaWhatsapp, FaEnvelope, FaPhoneAlt } from "react-icons/fa";
-import { FaAngleRight } from "react-icons/fa6";
 import { FaLocationDot } from "react-icons/fa6";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -52,7 +51,7 @@ function Slideshow() {
       <div className="  static md:absolute left-1/3 md:left-6 top-0  md:top-1/2 transform -translate-y-1/2 flex flex-row md:flex-col gap-4 mt-20 md:mt-0">
         <SocialIcon href="https://m.facebook.com/jenii.jp.jewellery/" Icon={FaFacebook} />
         <SocialIcon href={`https://wa.me/919157071575?text=${Message}`}Icon={FaWhatsapp} />
-        <SocialIcon href="https://www.instagram.com/jenii.jp.jewellery?igsh=eXZ1ajkwMTZyeDlt" Icon={FaInstagram} />
+        <SocialIcon href="https://www.instagram.com/jenii.in" Icon={FaInstagram} />
       </div>
 
       {/* Ring Image */}
@@ -235,7 +234,7 @@ const Footer = () => {
         Broadway Empire, Nilamber Circle, Vasna Bhayli Main Rd, near Akshar Pavilion, Saiyed Vasna, Vadodara, Gujarat 391410
       </p>
     </Link>
-    <Link  href="https://www.google.co.in/maps/dir//Broadway+Empire,+Nilamber+Circle,+Vasna+Bhayli+Main+Rd,+near+Akshar+Pavilion,+Saiyed+Vasna,+Vadodara,+Gujarat+391410/@22.301387,73.0587415,12z/data=!3m1!4b1!4m8!4m7!1m0!1m5!1m1!1s0x395fc97a52df2dff:0x8a31a8ec9fed0ebb!2m2!1d73.1411431!2d22.3014078?entry=ttu&g_ep=EgoyMDI0MTAxNS4wIKXMDSoASAFQAw%3D%3D"  className="rounded-lg bg-[#C41E56] text-white justify-center flex p-4">
+    <Link  href="https://www.google.com/maps/place/Jenii.Jp.Sterling+Silver+jewellery/@22.3203617,73.2058709,19z/data=!3m1!4b1!4m6!3m5!1s0x395fcf00511dcf8f:0xafb0291ae7f21fe4!8m2!3d22.3203617!4d73.2058709!16s%2Fg%2F11y433jbtl?entry=ttu&g_ep=EgoyMDI1MDcyMy4wIKXMDSoASAFQAw%3D%3D"  className="rounded-lg bg-[#C41E56] text-white justify-center flex p-4">
       <p className=" my-auto">
       <FaLocationDot size={20} />
       </p>

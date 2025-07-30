@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Menu, X, ChevronDown, ChevronFirst, ChevronLast } from "lucide-react";
 import Link from "next/link";
 import { Button, IconButton } from "@/MaterialTailwindNext";
 import Image from "next/image";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
+import { IoIosArrowDown } from "react-icons/io";
 export default function MobMenu({ Menus }) {
   const [isOpen, setIsOpen] = useState(false);
   const [clicked, setClicked] = useState(null);
@@ -82,7 +82,7 @@ export default function MobMenu({ Menus }) {
                 >
                   {name}
                   {hasSubMenu && (
-                    <ChevronDown
+                    <IoIosArrowDown
                       className={`ml-auto ${isClicked && "rotate-180"} `}
                     />
                   )}

@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { ChevronDown } from "lucide-react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { IoIosArrowDown } from "react-icons/io";
 
 export default function DesktopMenu({ menu }) {
   const [isHover, toggleHover] = useState(false);
@@ -44,7 +44,7 @@ export default function DesktopMenu({ menu }) {
       <span className="flex-center gap-1 hover:bg-white/5 cursor-pointer px-3 py-1 rounded-xl">
         {menu.name}
         {hasSubMenu && (
-          <ChevronDown className="mt-[0.6px] group-hover/link:rotate-180 duration-200" />
+          <IoIosArrowDown className="mt-[0.6px] group-hover/link:rotate-180 duration-200" />
         )}
       </span>
       {hasSubMenu && (

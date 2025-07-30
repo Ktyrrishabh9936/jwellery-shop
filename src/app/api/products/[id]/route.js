@@ -14,7 +14,7 @@ export async function GET( req,{ params }) {
     const relatedProducts = await Product.find({
       category: product.category,
       _id: { $ne: id }, 
-    }).limit(4); 
+    }).select("_id name discountPrice discountPercent images  averageRating collectionName category price  createdAt").limit(4); 
 
     return NextResponse.json(
       {

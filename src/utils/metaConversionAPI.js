@@ -16,7 +16,7 @@ class MetaConversionAPI {
   // Hash user data for privacy
   hashUserData(data) {
     if (!data) return null
-    return crypto.createHash("sha256").update(data.toLowerCase().trim()).digest("hex")
+    return crypto.createHash("sha256").update(data).digest("hex")
   }
 
   // Get user data from request

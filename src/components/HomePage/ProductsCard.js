@@ -15,21 +15,29 @@ export default function ProductCard({ product }) {
   const [isHovered, setIsHovered] = useState(false);
   const dispatch = useDispatch();
   const router = useRouter();
-  const { trackAddToCart, trackProductView } = useMetaTracking()
+  const { trackAddToCart, trackProductView } = useMetaTracking();
+  const { loadingProductId, cartItems } = useSelector((state) => state.cart);
+
+  // Find current quantity in cart for this product
+  const cartItem = cartItems?.find(item => item.productId === product._id);
+  const cartQuantity = cartItem ? cartItem.quantity : 0;
+  const isOutOfStock = product.stock === 0;
+  const isMaxInCart = cartQuantity >= product.stock;
+
   const handleAddToCart = async (product) => {
-    const data = { productId: product._id, name: product.name, quantity: 1, img_src: product.images[0], price: product.price, discountedPrice: product.discountPrice, category: product.category.name, SKU: product.sku }
-
-    dispatch(addToCart(data))
-    await trackAddToCart(product._id, 1)
+    if (isOutOfStock || isMaxInCart) return;
+    const data = { productId: product._id, name: product.name, quantity: 1, img_src: product.images[0], price: product.price, discountedPrice: product.discountPrice, category: product.category.name, SKU: product.sku };
+    dispatch(addToCart(data));
+    await trackAddToCart(product._id, 1);
   };
-  const { loadingProductId } = useSelector((state) => state.cart)
 
-   const handleBuyNow = async (product) => {
-      const data = { productId: product._id, name: product.name, quantity: 1, img_src: product.images[0], price: product.price, discountedPrice: product.discountPrice, category: product.category.name, SKU: product.sku };
-      dispatch(addToCart(data));
-      router.push('/checkout');
-      await trackAddToCart(product._id, 1)
-    };
+  const handleBuyNow = async (product) => {
+    if (isOutOfStock || isMaxInCart) return;
+    const data = { productId: product._id, name: product.name, quantity: 1, img_src: product.images[0], price: product.price, discountedPrice: product.discountPrice, category: product.category.name, SKU: product.sku };
+    dispatch(addToCart(data));
+    router.push('/checkout');
+    await trackAddToCart(product._id, 1);
+  };
 
   return (
     <div
@@ -88,20 +96,27 @@ export default function ProductCard({ product }) {
         </div>
         <div className="text-gray-600 line-clamp-1">{product.name}</div>
       </Link>
-      <Button
-        className="mt-4 bg-[#edb3b2] hover:bg-[#fe6161] transition-colors py-2 duration-300 px-4 rounded-md w-full capitalize text-sm"
-        onClick={() => handleAddToCart(product)}
-        disabled={loadingProductId === product._id}
-      >
-        {loadingProductId === product._id ? "Adding..." : "Add to Cart"}
-      </Button>
-      <Button
-        className="mt-4 bg-[#edb3b2] hover:bg-[#fe6161] transition-colors py-2 duration-300 px-4 rounded-md w-full capitalize text-sm"
-        onClick={() => handleBuyNow(product)}
-
-      >
-        Buy Now
-      </Button>
+      <div className="mt-4">
+        {isOutOfStock ? (
+          <div className="text-red-500 font-semibold text-center mb-2">Out of Stock</div>
+        ) : isMaxInCart ? (
+          <div className="text-yellow-600 font-semibold text-center mb-2">Reached Stock Limit</div>
+        ) : null}
+        <Button
+          className="bg-[#edb3b2] hover:bg-[#fe6161] transition-colors py-2 duration-300 px-4 rounded-md w-full capitalize text-sm"
+          onClick={() => handleAddToCart(product)}
+          disabled={loadingProductId === product._id || isOutOfStock || isMaxInCart}
+        >
+          {loadingProductId === product._id ? "Adding..." : "Add to Cart"}
+        </Button>
+        <Button
+          className="mt-2 bg-[#edb3b2] hover:bg-[#fe6161] transition-colors py-2 duration-300 px-4 rounded-md w-full capitalize text-sm"
+          onClick={() => handleBuyNow(product)}
+          disabled={isOutOfStock || isMaxInCart}
+        >
+          Buy Now
+        </Button>
+      </div>
     </div>
   )
 }

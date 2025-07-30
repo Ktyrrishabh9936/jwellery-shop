@@ -23,7 +23,7 @@ export async function GET(req) {
   const category = searchParams.get("category");
   const gender = searchParams.get("shopFor");
   try {
-      let query = Product.find();
+      let query = Product.find().select("_id name discountPrice discountPercent images stock averageRating collectionName category price  createdAt");
       if(category){
         const categorySet =category.split(',');
         query.where('category.name').in(categorySet);

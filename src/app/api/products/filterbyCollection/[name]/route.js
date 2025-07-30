@@ -24,7 +24,7 @@ export async function GET(req,{ params }) {
   const category = searchParams.get("category");
   const gender = searchParams.get("shopFor");
   try {
-      let query = Product.find({ collectionName: { $in: [name] } });
+      let query = Product.find({ collectionName: { $in: [name] } }).select("_id name stock discountPrice discountPercent images  averageRating collectionName category price  createdAt");
       if(category){
         const categorySet =category.split(',');
         console.log(categorySet)

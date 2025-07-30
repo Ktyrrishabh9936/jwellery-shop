@@ -14,9 +14,9 @@ import {
     UserCircleIcon,
     CodeBracketSquareIcon,
     Square3Stack3DIcon,
-    ChevronDownIcon,
     RocketLaunchIcon,
 } from "@heroicons/react/24/solid";
+import { IoIosArrowDown } from "react-icons/io";
 
 const navListItems = [
   {
@@ -76,10 +76,10 @@ function NavListMenu() {
       <Menu allowHover open={isMenuOpen} handler={setIsMenuOpen}>
         <MenuHandler>
           <Typography as="a" href="#" variant="small" className="font-normal">
-            <MenuItem className="hidden items-center gap-2 font-medium text-blue-gray-900 lg:flex lg:rounded-full">
-              <Square3Stack3DIcon className="h-[18px] w-[18px] text-blue-gray-500" />{" "}
+            <MenuItem className="hidden items-center gap-2 font-medium text-black-900 lg:flex lg:rounded-full">
+              <Square3Stack3DIcon className="h-[18px] w-[18px] " />{" "}
               Shop by Category{" "}
-              <ChevronDownIcon
+              <IoIosArrowDown
                 strokeWidth={2}
                 className={`h-3 w-3 transition-transform ${
                   isMenuOpen ? "rotate-180" : ""
