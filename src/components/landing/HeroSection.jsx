@@ -10,6 +10,7 @@ import { NavArrowRight, NavArrowLeft } from "iconoir-react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import { useMediaQuery } from "react-responsive";
 
 export function CustomNavigation() {
   const swiper = useSwiper();
@@ -43,7 +44,7 @@ export default function HeroSlider() {
       subtitle: "Discover timeless beauty",
       image: "/Banner-1.png",
       cta: "Shop Now",
-      link: "/shop",
+      link: "/earnings",
     },
     {
       id: 2,
@@ -51,7 +52,7 @@ export default function HeroSlider() {
       subtitle: "Made with love and precision",
       image: "/Banner-2.png",
       cta: "Explore",
-      link: "/explore",
+      link: "/earnings",
     },
     {
       id: 3,
@@ -59,12 +60,14 @@ export default function HeroSlider() {
       subtitle: "Contemporary style meets tradition",
       image: "/Banner-3.png",
       cta: "Discover",
-      link: "/discover",
+      link: "/earnings",
     },
+
   ];
+  const isMobile = useMediaQuery({ maxWidth: 768 });
 
   return (
-    <div className="relative w-full py-10">
+    <div className="relative w-full my-8">
       <Swiper
         modules={[Navigation, Pagination, Autoplay]}
         autoplay={{ delay: 3000, disableOnInteraction: false }}
@@ -84,11 +87,13 @@ export default function HeroSlider() {
             className="select-none w-[80%]  relative rounded-xl overflow-hidden shadow-lg"
           >
             <Link href={slide.link}>
-              <div className="relative h-[300px] md:h-[500px]">
+              <div className="relative h-auto">
                 <Image
                   src={slide.image}
                   alt={slide.title}
-                  fill
+                  width={1200}
+                  height={500}
+                  
                   className="object-contain"
                   priority={index === 0}
                 />
@@ -106,7 +111,7 @@ export default function HeroSlider() {
           </SwiperSlide>
         ))}
 
-        <CustomNavigation />
+       { isMobile ? "" :<CustomNavigation />}
       </Swiper>
     </div>
   );

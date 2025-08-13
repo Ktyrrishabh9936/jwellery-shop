@@ -16,35 +16,35 @@ const categories = [
     id: 1,
     name: "Earrings",
     startingPrice: 899,
-    image: "https://i.pinimg.com/736x/ac/de/1a/acde1a41c0ea2a95556ef5d9152a1a12.jpg",
+    image: "https://ik.imagekit.io/4yi3vfblpy/Landing%20Page/lp-cat-1.png?updatedAt=1755074888670",
     slug: "earrings",
   },
   {
     id: 2,
     name: "Rings",
     startingPrice: 899,
-    image: "https://i.pinimg.com/736x/ac/de/1a/acde1a41c0ea2a95556ef5d9152a1a12.jpg",
+    image: "https://ik.imagekit.io/4yi3vfblpy/Landing%20Page/lp-cat-2.png?updatedAt=1755074888479",
     slug: "rings",
   },
   {
     id: 3,
     name: "Necklace",
     startingPrice: 999,
-    image: "https://i.pinimg.com/736x/ac/de/1a/acde1a41c0ea2a95556ef5d9152a1a12.jpg",
+    image: "https://ik.imagekit.io/4yi3vfblpy/Landing%20Page/lp-cat-6.png?updatedAt=1755074884434",
     slug: "necklace",
   },
   {
     id: 4,
     name: "Bracelets",
     startingPrice: 1099,
-    image: "https://i.pinimg.com/736x/ac/de/1a/acde1a41c0ea2a95556ef5d9152a1a12.jpg",
+    image: "https://ik.imagekit.io/4yi3vfblpy/Landing%20Page/lp-cat-5.png?updatedAt=1755074880387",
     slug: "bracelets",
   },
   {
     id: 5,
     name: "Anklets",
     startingPrice: 799,
-    image: "https://i.pinimg.com/736x/ac/de/1a/acde1a41c0ea2a95556ef5d9152a1a12.jpg",
+    image: "https://ik.imagekit.io/4yi3vfblpy/Landing%20Page/Jenii_Jewellery_categories_1_.png?updatedAt=1755085303723",
     slug: "anklets",
   },
 ]
@@ -57,13 +57,12 @@ export default function CategoriesSection() {
     <section className="py-20 bg-gradient-to-br from-gray-50 to-white">
       <div className="max-w-7xl mx-auto px-4 flex lg:flex-row flex-col justify-between items-center gap-x-4">
         {/* Header */}
-        <div className="text-center lg:text-left mb-16 w-full lg:w-[30%]">
+        <div className="text-center lg:text-left mb-16 w-full lg:w-[30%] ">
           <motion.h2
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-4xl md:text-2xl font-bold text-gray-900 mb-4"
-            style={{ fontFamily: "Cinzel, serif" }}
+            className="text-4xl md:text-2xl font-bold text-gray-900 mb-4 font-h1"
           >
             Discover Our Handpicked Collections
           </motion.h2>
@@ -71,8 +70,7 @@ export default function CategoriesSection() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-xl text-gray-600"
-            style={{ fontFamily: "Glacial Indifference, sans-serif" }}
+            className="text text-gray-600 font-h2"
           >
             Celebrate life's everyday moments with jewellery that reflects your personal story.
           </motion.p>
@@ -108,7 +106,7 @@ export default function CategoriesSection() {
             className="categories-swiper"
           >
             {categories.map((category, index) => (
-              <SwiperSlide key={category.id} className="!w-[300px] md:!w-[350px]">
+              <SwiperSlide key={category.id} className="!w-[300px] md:!w-[350px] my-6">
                 <motion.div
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{
@@ -116,23 +114,23 @@ export default function CategoriesSection() {
                     scale: activeIndex === index ? 1.05 : 0.95,
                   }}
                   transition={{ duration: 0.5 }}
-                  className="group cursor-pointer"
+                  className="group cursor-pointer "
                 >
                   <Link href={`/categories/${category.slug}`}>
                     <div className="relative overflow-hidden rounded-3xl shadow-2xl bg-white">
-                      <div className="aspect-[3/4] relative">
+                      <div className="aspect-[1] relative ">
                         <Image
                           src={category.image || "/placeholder.svg"}
                           alt={category.name}
                           fill
-                          className="object-cover group-hover:scale-110 transition-transform duration-700"
+                          className="object-contain group-hover:scale-110 transition-transform duration-700"
                         />
 
                         {/* Gradient Overlay */}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
 
                         {/* Content */}
-                        <div className="absolute bottom-6 left-6 right-6 text-white">
+                        <div className="absolute bottom-6 left-6 right-6 text-white font-parah">
                           <motion.h3
                             className="text-2xl md:text-3xl font-bold mb-2"
                             style={{ fontFamily: "Cinzel, serif" }}

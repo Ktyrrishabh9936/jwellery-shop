@@ -25,6 +25,24 @@ body {
   }
 } */
 
+:root {
+  --font-playfair: 'Playfair Display', serif;
+  --font-merriweather: 'Merriweather', serif;
+  --font-nunito-sans: 'Nunito Sans', sans-serif;
+}
+
+.font-h1 {
+  font-family: var(--font-playfair);
+}
+
+.font-h2 {
+  font-family: var(--font-merriweather);
+}
+
+.font-parah {
+  font-family: var(--font-nunito-sans);
+}
+
 /* styles.css or any global CSS file */
 .loader {
   width: 60px;

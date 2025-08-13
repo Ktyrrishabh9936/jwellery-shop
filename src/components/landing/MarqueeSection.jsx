@@ -28,7 +28,7 @@ export default function MarqueeSection() {
         {[...marqueeItems, ...marqueeItems].map((item, index) => (
           <span
             key={index}
-            className="mx-8 text-lg font-medium"
+            className="mx-8  font-parah"
             style={{ fontFamily: "Glacial Indifference, sans-serif" }}
           >
             {item}

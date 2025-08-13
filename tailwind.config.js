@@ -8,6 +8,11 @@ module.exports = withMT({
   ],
   theme: {
     extend: {
+       fontFamily: {
+        h1: ["var(--font-playfair)", "sans-serif"],
+        h2: ["var(--font-merriweather)", "serif"],
+        parah: ["var(--font-nunito)", "sans-serif"],
+      },
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",

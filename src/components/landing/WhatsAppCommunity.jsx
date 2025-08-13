@@ -9,7 +9,7 @@ export default function WhatsAppCommunity() {
   }
 
   return (
-    <section className="py-20 bg-gradient-to-br from-green-50 to-emerald-50">
+    <section className="py-20 bg-gradient-to-br from-pink-50 to-emerald-50 font-parah">
       <div className="max-w-6xl mx-auto px-4">
         <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
@@ -21,15 +21,14 @@ export default function WhatsAppCommunity() {
                 transition={{ duration: 0.6 }}
               >
                 <div className="flex items-center mb-6">
-                  <div className="w-12 h-12 bg-green-500 rounded-2xl flex items-center justify-center mr-4">
+                  <div className="w-12 h-12 bg-pink-500 rounded-2xl flex items-center justify-center mr-4">
                     <MessageCircle className="w-6 h-6 text-white" />
                   </div>
-                  <span className="text-green-600 font-semibold text-lg">Join Our Community</span>
+                  <span className="text-pink-600 font-semibold text-lg font-h1">Join Our Community</span>
                 </div>
 
                 <h2
-                  className="text-4xl md:text-5xl font-bold text-gray-900 mb-6"
-                  style={{ fontFamily: "Cinzel, serif" }}
+                  className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 font-h2"
                 >
                   Offers You'll Love, Updates You'll Want
                 </h2>
@@ -56,8 +55,8 @@ export default function WhatsAppCommunity() {
                       transition={{ duration: 0.5, delay: index * 0.1 }}
                       className="flex items-center"
                     >
-                      <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mr-4">
-                        <benefit.icon className="w-4 h-4 text-green-600" />
+                      <div className="w-8 h-8 bg-pink-100 rounded-lg flex items-center justify-center mr-4">
+                        <benefit.icon className="w-4 h-4 text-pink-600" />
                       </div>
                       <span className="text-gray-700" style={{ fontFamily: "Glacial Indifference, sans-serif" }}>
                         {benefit.text}
@@ -71,7 +70,7 @@ export default function WhatsAppCommunity() {
                   onClick={handleJoinWhatsApp}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-2xl font-semibold text-lg transition-all duration-300 flex items-center space-x-3 shadow-lg hover:shadow-xl"
+                  className="bg-pink-500 hover:bg-pink-600 text-white px-8 py-4 rounded-2xl font-semibold text-lg transition-all duration-300 flex items-center space-x-3 shadow-lg hover:shadow-xl"
                 >
                   <MessageCircle className="w-6 h-6" />
                   <span>Join WhatsApp Community</span>
@@ -84,7 +83,7 @@ export default function WhatsAppCommunity() {
             </div>
 
             {/* Visual Side */}
-            <div className="relative bg-gradient-to-br from-green-400 to-emerald-600 p-12 lg:p-16 flex items-center justify-center">
+            <div className="relative bg-gradient-to-br from-pink-400 to-emerald-600 p-12 lg:p-16 flex items-center justify-center">
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
                 whileInView={{ opacity: 1, scale: 1 }}
@@ -95,10 +94,10 @@ export default function WhatsAppCommunity() {
                 <div className="relative w-64 h-96 bg-white rounded-3xl shadow-2xl p-4">
                   <div className="w-full h-full bg-gray-100 rounded-2xl overflow-hidden">
                     {/* WhatsApp Interface Mockup */}
-                    <div className="bg-green-500 p-4 text-white">
+                    <div className="bg-pink-500 p-4 text-white">
                       <div className="flex items-center space-x-3">
                         <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
-                          <span className="text-green-500 font-bold text-lg">J</span>
+                          <span className="text-pink-500 font-bold text-lg">J</span>
                         </div>
                         <div>
                           <h4 className="font-semibold">Jenii Jewellery</h4>
@@ -109,10 +108,10 @@ export default function WhatsAppCommunity() {
 
                     <div className="p-4 space-y-3">
                       {/* Sample Messages */}
-                      <div className="bg-green-100 rounded-2xl p-3 ml-8">
+                      <div className="bg-pink-100 rounded-2xl p-3 ml-8">
                         <p className="text-sm">🎉 New Collection Alert! Check out our latest silver earrings</p>
                       </div>
-                      <div className="bg-green-100 rounded-2xl p-3 ml-8">
+                      <div className="bg-pink-100 rounded-2xl p-3 ml-8">
                         <p className="text-sm">💎 Exclusive 30% off for community members!</p>
                       </div>
                       <div className="bg-gray-200 rounded-2xl p-3 mr-8">
@@ -128,7 +127,7 @@ export default function WhatsAppCommunity() {
                   transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY }}
                   className="absolute -top-4 -right-4 w-16 h-16 bg-white rounded-full shadow-lg flex items-center justify-center"
                 >
-                  <Bell className="w-8 h-8 text-green-500" />
+                  <Bell className="w-8 h-8 text-pink-500" />
                 </motion.div>
 
                 <motion.div
@@ -136,7 +135,7 @@ export default function WhatsAppCommunity() {
                   transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY, delay: 1 }}
                   className="absolute -bottom-4 -left-4 w-16 h-16 bg-white rounded-full shadow-lg flex items-center justify-center"
                 >
-                  <Gift className="w-8 h-8 text-green-500" />
+                  <Gift className="w-8 h-8 text-pink-500" />
                 </motion.div>
               </motion.div>
             </div>

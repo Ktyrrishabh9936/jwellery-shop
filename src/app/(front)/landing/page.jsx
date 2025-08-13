@@ -18,6 +18,7 @@ import CategoriesSection from "@/components/landing/CategoriesSection"
 import ProductVideosTestimonials from "@/components/landing/ProductVideosTestimonials"
 import TrustMarkers from "@/components/landing/TrustMarkers"
 import WhatsAppCommunity from "@/components/landing/WhatsAppCommunity"
+import NavBar from "@/components/HomePage/Navbar"
 // Animation Variants
 const animationVariants = {
   hidden: { opacity: 0, y: 50 },
@@ -45,7 +46,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 overflow-x-hidden">
-
+      <NavBar />
       <main>
         {/* Hero Section with Autoplay Carousel */}
         <AnimatedSection>

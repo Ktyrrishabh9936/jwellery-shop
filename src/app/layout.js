@@ -1,4 +1,3 @@
-import localFont from "next/font/local";
 import "../styles/globals.css";
 import ClientLayout from "./ClientLayout";
 import AuthProvider from "@/context/auth-session-proivder";
@@ -6,18 +5,27 @@ import SessionManager from "@/context/session-manager";
 import StoreProvider from "./StoreProvider";
 import { Toaster } from "react-hot-toast";
 import Script from "next/script";
+import { Playfair_Display, Merriweather, Nunito_Sans } from "next/font/google";
 
-// Fonts
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
+// H1 font
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  weight: ["400", "700"], // choose weights you need
+  variable: "--font-playfair",
 });
 
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
+// H2 font
+const merriweather = Merriweather({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  variable: "--font-merriweather",
+});
+
+// Body text font
+const nunito = Nunito_Sans({
+  subsets: ["latin"],
+  weight: ["300", "400", "700"],
+  variable: "--font-nunito",
 });
 
 // Metadata
@@ -40,8 +48,8 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <StoreProvider>
-      <html lang="en">
+    
+      <html lang="en" className={`${playfair.variable} ${merriweather.variable} ${nunito.variable} `}>
         <head>
           {/* Google Analytics */}
           <Script
@@ -96,7 +104,7 @@ export default function RootLayout({ children }) {
           </Script>
         </head>
 
-        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <body >
           {/* GTM Noscript fallback */}
           <noscript>
             <iframe
@@ -117,7 +125,7 @@ export default function RootLayout({ children }) {
               alt=""
             />
           </noscript>
-
+<StoreProvider>
           <ClientLayout>
             <AuthProvider>
               <SessionManager />
@@ -125,8 +133,8 @@ export default function RootLayout({ children }) {
             </AuthProvider>
           </ClientLayout>
           <Toaster />
+    </StoreProvider>
         </body>
       </html>
-    </StoreProvider>
   );
 }

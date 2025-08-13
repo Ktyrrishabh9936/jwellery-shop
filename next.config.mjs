@@ -37,6 +37,10 @@ images: {
       protocol: 'https',
       hostname: 'i.pinimg.com',
     },
+    {
+      protocol: 'https',
+      hostname: 'ik.imagekit.io',
+    },
   ],
 },
         webpack(config) {
