@@ -44,45 +44,8 @@ const schema = yup.object().shape({
     .matches(/^\d{6}$/, "Pincode must be exactly 6 digits with no spaces")
     ,
 });
-export default function Product({ id }) {
-    const [product, setProduct] = useState(null);
-    const [relatedProducts, setRelatedProducts] = useState([]);
-    const [error, setError] = useState(null);
-//     const [open, setOpen] =useState(false);
-//   const [isFavorite, setIsFavorite] = useState(false);
-  const [loading, setloading] = useState(false);
-// const router = useRouter();
- 
-//   const handleOpen = () => setOpen((cur) => !cur);
-//   const handleIsFavorite = () => setIsFavorite((cur) => !cur);
-
+export default function Product({ product, relatedProducts, id }) {
   const isSmallScreen = useMediaQuery({ maxWidth: 768 });
-
-    useEffect(() => {
-        if (id) {
-            const fetchProduct = async () => {
-                try {
-                  setloading(true)
-                    const response = await axios.get(`/api/products/${id}`);
-                    setProduct(response.data.product);
-                   
-                    setRelatedProducts(response.data.relatedProducts);
-                    setloading(false)
-                } catch (error) {
-                  setError("Error fetching product or related products");
-                  console.log(error);
-                  setloading(false)
-                }
-            };
-
-            fetchProduct();
-        }
-    }, [id]);
-
-    if (loading) {
-      <ProductDetailsLoader/>
-    }
-
     return (
         <div className="flex flex-col lg:flex-row gap-2 ">
            <div className="w-full md:w-[90%] lg:w-[40%] mx-auto">

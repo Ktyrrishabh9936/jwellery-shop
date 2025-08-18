@@ -25,7 +25,7 @@ export async function GET(req, { params }) {
       }
     return NextResponse.json({companyLength:services.data.available_courier_companies.length}, { status: 200 });
   } catch (error) {
-    console.error("Error checking pincode serviceability:", error.message);
+    console.log("Error checking pincode serviceability:", error.message);
     return NextResponse.json({ message: error.message },
       { status: error.response?.status || 500 }
     );

@@ -25,7 +25,7 @@ export default function JewelleryFeatures() {
   ];
 
   return (
-    <section className="bg-[#0e2235] py-10">
+    <section className="bg-[#c41e55] py-10">
       <h1 className="text-3xl md:text-4xl font-bold text-center text-white mb-12 font-h1">Why You’ll Love Jenii</h1>
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 text-center text-white">
         {features.map((feature, index) => (

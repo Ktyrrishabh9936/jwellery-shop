@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import Product from '@/models/productModel';
 import { connect } from '@/dbConfig/dbConfig';
-
 export async function GET( req,{ params }) {
   await connect();
   const { id } =  await params;
@@ -11,12 +10,13 @@ export async function GET( req,{ params }) {
     if (!product) {
       return NextResponse.json({ message: 'Product not found' }, { status: 404 });
     }
-   
-
+ 
     return NextResponse.json(
       {
-        product,
-      },
+      name: product.name,
+      description: product.description,
+      image: product.images[0], // must be full URL for meta tags
+    },
       { status: 200 }
     );
   } catch (error) {

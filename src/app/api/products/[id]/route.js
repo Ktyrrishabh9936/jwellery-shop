@@ -1,15 +1,25 @@
 import { NextResponse } from 'next/server';
 import Product from '@/models/productModel';
 import { connect } from '@/dbConfig/dbConfig';
+  
 
+function isValidObjectId(id) {
+  return /^[a-fA-F0-9]{24}$/.test(id);
+}
 export async function GET( req,{ params }) {
   await connect();
   const { id } =  await params;
-
+  if (!id) {
+    return NextResponse.json({ message: 'Product ID is required' }, { status: 400 });
+  }
+  // validate mongoose ObjectId
+  if (!isValidObjectId(id)) { 
+    return NextResponse.json({ message: 'Invalid Product ID' }, { status: 400 });
+  }
   try {
     const product = await Product.findById(id);
     if (!product) {
-      return NextResponse.json({ message: 'Product not found' }, { status: 404 });
+      return NextResponse.json( { message: 'Product not found' }, { status: 404 });
     }
     const relatedProducts = await Product.find({
       category: product.category,
@@ -24,6 +34,7 @@ export async function GET( req,{ params }) {
       { status: 200 }
     );
   } catch (error) {
+    console.log('Error fetching product:', error);
     return NextResponse.json({ message: error.message }, { status: 500 });
   }
 }

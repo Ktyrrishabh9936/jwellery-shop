@@ -255,6 +255,26 @@ export const trackShipment = async (awb) => {
     throw new Error("Failed to track shipment")
   }
 }
+export const checkServisability = async (data) => {
+        const token = await getAuthToken();
+      
+        try {
+          const response = await axios.get(
+            `https://apiv2.shiprocket.in/v1/external/courier/serviceability`,
+            {
+              params: data,
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          return response.data;
+        } catch (error) {
+          console.error("Create Order Error:", error.response?.data);
+          throw new Error("Failed to check order servisability in Shiprocket");
+        }
+      };
+
 
 export default {
   getAuthToken,

@@ -12,7 +12,7 @@ const marqueeItems = [
 
 export default function MarqueeSection() {
   return (
-    <section className="bg-pink-500 text-white py-4 overflow-hidden">
+    <section className="bg-[#c41e55] text-white py-4 overflow-hidden">
       <motion.div
         animate={{ x: ["100%", "-100%"] }}
         transition={{

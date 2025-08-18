@@ -74,7 +74,11 @@ export async function GET(request, { params }) {
       return NextResponse.json({ message: 'Product not found' }, { status: 404 });
     }
     if (!findreviews) {
-      return NextResponse.json({ message: 'No reviews found' }, { status: 404 });
+      return NextResponse.json( { 
+        reviews:[], 
+        totalReviews:0, 
+      }, 
+      { status: 200 });
     }
 
     // Total reviews count for pagination

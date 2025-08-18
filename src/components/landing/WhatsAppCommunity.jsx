@@ -5,7 +5,7 @@ import { MessageCircle, Bell, Gift, Sparkles } from "lucide-react"
 export default function WhatsAppCommunity() {
   const handleJoinWhatsApp = () => {
     // Replace with actual WhatsApp group link
-    window.open("https://wa.me/919157071575?text=Hello!%20Jenii%20I%27m%20interested%20in%20exploring%20more%20jewelry.%20Could%20you%20show%20me%20options%20like%20rings%2C%20bracelets%2C%20or%20other%20pieces%3F", "_blank")
+    window.open("https://whatsapp.com/channel/0029VaZBieb9cDDfkAock63K", "_blank")
   }
 
   return (

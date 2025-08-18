@@ -42,7 +42,8 @@ export default function HeroSlider() {
       id: 1,
       title: "Elegant Silver Collection",
       subtitle: "Discover timeless beauty",
-      image: "/Banner-1.png",
+      image: "https://ik.imagekit.io/4yi3vfblpy/Landing%20Page/Banner-1.png?updatedAt=1755504727407",
+      imageSm: "https://ik.imagekit.io/4yi3vfblpy/Landing%20Page/banner-sm-1.png?updatedAt=1755504796967",
       cta: "Shop Now",
       link: "/earnings",
     },
@@ -50,7 +51,8 @@ export default function HeroSlider() {
       id: 2,
       title: "Handcrafted Excellence",
       subtitle: "Made with love and precision",
-      image: "/Banner-2.png",
+      image: "https://ik.imagekit.io/4yi3vfblpy/Landing%20Page/Banner-2.png?updatedAt=1755504726335",
+      imageSm: "https://ik.imagekit.io/4yi3vfblpy/Landing%20Page/banner-sm-2.png?updatedAt=1755504769187",
       cta: "Explore",
       link: "/earnings",
     },
@@ -58,11 +60,38 @@ export default function HeroSlider() {
       id: 3,
       title: "Modern Designs",
       subtitle: "Contemporary style meets tradition",
-      image: "/Banner-3.png",
+      image: "https://ik.imagekit.io/4yi3vfblpy/Landing%20Page/Banner-3.png?updatedAt=1755504726704",
+      imageSm: "https://ik.imagekit.io/4yi3vfblpy/Landing%20Page/banner-sm-3.png?updatedAt=1755509372290",
       cta: "Discover",
       link: "/earnings",
     },
-
+    {
+      id: 4,
+      title: "Elegant Silver Collection",
+      subtitle: "Discover timeless beauty",
+      image: "https://ik.imagekit.io/4yi3vfblpy/Landing%20Page/Banner-1.png?updatedAt=1755504727407",
+      imageSm: "https://ik.imagekit.io/4yi3vfblpy/Landing%20Page/banner-sm-1.png?updatedAt=1755504796967",
+      cta: "Shop Now",
+      link: "/earnings",
+    },
+    {
+      id: 5,
+      title: "Handcrafted Excellence",
+      subtitle: "Made with love and precision",
+      image: "https://ik.imagekit.io/4yi3vfblpy/Landing%20Page/Banner-2.png?updatedAt=1755504726335",
+      imageSm: "https://ik.imagekit.io/4yi3vfblpy/Landing%20Page/banner-sm-2.png?updatedAt=1755504769187",
+      cta: "Explore",
+      link: "/earnings",
+    },
+    {
+      id: 6,
+      title: "Modern Designs",
+      subtitle: "Contemporary style meets tradition",
+      image: "https://ik.imagekit.io/4yi3vfblpy/Landing%20Page/Banner-3.png?updatedAt=1755504726704",
+      imageSm: "https://ik.imagekit.io/4yi3vfblpy/Landing%20Page/banner-sm-3.png?updatedAt=1755509372290",
+      cta: "Discover",
+      link: "/earnings",
+    },
   ];
   const isMobile = useMediaQuery({ maxWidth: 768 });
 
@@ -89,10 +118,10 @@ export default function HeroSlider() {
             <Link href={slide.link}>
               <div className="relative h-auto">
                 <Image
-                  src={slide.image}
+                  src={isMobile?slide.imageSm:slide.image}
                   alt={slide.title}
                   width={1200}
-                  height={500}
+                  height={1000}
                   
                   className="object-contain"
                   priority={index === 0}

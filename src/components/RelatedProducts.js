@@ -25,12 +25,12 @@ const RelatedProducts = ({ relatedProducts }) => {
   };
 
     return (
-      relatedProducts.length && <div className="mt-10 max-w-[800px]">
+      relatedProducts?.length && <div className="mt-10 max-w-[800px]">
            <div className="my-3 font-semibold text-xl">
            You May Also Like it
            </div>
             <div className="grid grid-cols-2  gap-x-1 gap-y-2 md:gap-y-4">
-          {relatedProducts.map((product) => (
+          {relatedProducts?.map((product) => (
              <ProductCard product={product}key={product._id} />
           ))}
         </div>
