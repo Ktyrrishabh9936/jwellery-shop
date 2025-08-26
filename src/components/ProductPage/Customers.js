@@ -1,151 +1,42 @@
-"use client";
-import { useState, useEffect } from 'react';
-import { toast } from 'react-hot-toast';
-import Star from '@/assets/Star.svg';
-import { getServerCookie } from "@/utils/serverCookie";
-import { useSelector } from 'react-redux';
+"use client"
+import { useState } from "react"
+import ReviewsSection from "./ReviewsSection"
 
 export default function Customers({ productId }) {
-    const [reviews, setReviews] = useState([]);
-    const [rating, setRating] = useState(0);
-    const [comment, setComment] = useState('');
-    const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState("reviews")
 
-    // Fetch existing reviews
-    const handleShowMore = () => {
-        if (page < totalPages) {
-          setPage((prev) => prev + 1);
-        }
-      };
-    const fetchReviews = async (page) => {
-        setIsLoading(true);
-        try {
-          const response = await fetch(`/api/products/${productId}/reviews`);
-          const data = await response.json();
-          
-          if (response.ok) {
-            console.log(data)
-            setReviews((prev) => [...prev, ...data?.reviews]);
-            // setTotalPages(data.totalPages);
-          } else {
-            console.error(data.message);
-          }
-        } catch (error) {
-          console.error('Error fetching reviews:', error.message);
-        } finally {
-          setIsLoading(false);
-        }
-      };
-      const {user} = useSelector((store)=>store.user);
-    useEffect(() => {
-        fetchReviews(page);
-    }, [productId,page]);
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Tab Navigation */}
+      <div className="border-b border-gray-200 mb-8">
+        <nav className="-mb-px flex space-x-8">
+          <button
+            onClick={() => setActiveTab("reviews")}
+            className={`py-2 px-1 border-b-2 font-medium text-sm ${
+              activeTab === "reviews"
+                ? "border-pink-500 text-pink-600"
+                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+            }`}
+          >
+            Customer Reviews
+          </button>
+         
+        </nav>
+      </div>
 
-    // Submit a new review
-    const submitReview = async (e) => {
-        e.preventDefault();
-        if (!user) {
-            toast.error("Please log in to add review");
-            return;
-          }
-  
-
-        if (rating < 1 || rating > 5 || !comment.trim()) {
-            toast.error('Please provide a valid rating and comment.');
-            return;
-        }
-
-        try {
-            const res = await fetch(`/api/products/${productId}/reviews`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ rating, comment })
-            });
-            const data = await res.json();
-
-            if (res.ok) {
-                setReviews((prev) => [...prev,{...data?.review,user:{name:user.name}} ]);
-                console.log(data)
-                setRating(0);
-                setComment('');
-                toast.success('Review submitted successfully!');
-            } else {
-                toast.error(data.message);
-            }
-        } catch (error) {
-            toast.error('An error occurred. Please try again.');
-        }
-    };
-
-    return (
-        <div className="py-5 bg-white ">
-            <h2 className="my-3 font-semibold text-xl">Customer Reviews</h2>
-
-            {/* Review Form */}
-            <form onSubmit={submitReview} className="my-4">
-                <div className="flex gap-2 items-center">
-                    <label className="font-medium text-gray-700">Rating:</label>
-                    {[1, 2, 3, 4, 5].map((num) => (
-                        <button
-                            key={num}
-                            type="button"
-                            onClick={() => setRating(num)}
-                            className={`w-6 h-6 ${rating >= num ? 'text-red-500' : 'text-gray-300'}`}
-                        >
-                            <Star />
-                        </button>
-                    ))}
-                </div>
-
-                <textarea
-                    className="w-full p-2 mt-2 border border-gray-300 rounded bg-gray-50 focus:outline-none focus:border-pink-400"
-                    placeholder="Write your review here"
-                    value={comment}
-                    onChange={(e) => setComment(e.target.value)}
-                />
-
-                <button
-                    type="submit"
-                    className="mt-2 px-4 py-2 bg-pink-500 text-white rounded hover:bg-pink-600"
-                >
-                    Submit Review
-                </button>
-            </form>
-
-            {/* Display Reviews */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                { reviews.length > 0 && reviews.map((review, idx) => (
-                    <ReviewItem key={idx} review={review} />
-                ))}
-            </div>
-            {page < totalPages && (
-        <button onClick={handleShowMore} disabled={isLoading}>
-          {isLoading ? 'Loading...' : 'Show More'}
-        </button>
-      )}
-        </div>
-    );
-}
-
-function ReviewItem({ review }) {
-    return (
-        <blockquote className="flex h-full flex-col justify-between bg-gray-50 p-6 shadow-md rounded-lg">
-            <div className="flex gap-0.5 text-red-500">
-                {Array.from({ length: review?.rating }).map((_, i) => (
-                    <span key={i} className="w-6"><Star /></span>
-                ))}
-            </div>
-            <div className="mt-4">
-                <p className="text-xl font-bold text-gray-800">{review?.user ? review?.user?.name: 'Anonymous'}</p>
-                <p className="mt-4 leading-relaxed text-gray-700">{review?.comment}</p>
-            </div>
-            <footer className="mt-4 text-sm font-medium text-gray-500">
-                &mdash; {review?.user ? review?.user?.name: 'Anonymous'}
-            </footer>
-        </blockquote>
-    );
+      {/* Tab Content */}
+      <div>
+        {activeTab === "reviews" && <ReviewsSection productId={productId} />}
+        {activeTab === "qa" && (
+          <div className="text-center py-12">
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Questions & Answers</h3>
+            <p className="text-gray-600">No questions yet. Be the first to ask!</p>
+            <button className="mt-4 bg-pink-500 text-white px-6 py-2 rounded-lg hover:bg-pink-600 transition-colors">
+              Ask a Question
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  )
 }

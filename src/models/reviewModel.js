@@ -1,31 +1,56 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose"
 
-
-const reviewSchema = new mongoose.Schema({
-  productId :{
+const reviewSchema = new mongoose.Schema(
+  {
+    productId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Product',
+      ref: "Product",
       required: true,
+      index: true,
+    },
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+    reviewerName: {
+      type: String,
+      required: true,
+    },
+    rating: {
+      type: Number,
+      required: true,
+      min: 1,
+      max: 5,
+    },
+    title: {
+      type: String,
+      required: true,
+    },
+    comment: {
+      type: String,
+      required: true,
+    },
+    
+    isVerifiedPurchase: {
+      type: Boolean,
+      default: false,
+    },
+   
+    reviewDate: {
+      type: Date,
+      default: Date.now,
+    },
+
   },
-  reviews:[{
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
+  {
+    timestamps: true,
   },
-  rating: {
-    type: Number,
-    required: true,
-    min: 1,
-    max: 5,
-  },
-  comment: {
-    type: String,
-    required: true,
-  },
-}]
-}, {
-  timestamps: true,
-});
-const Review = mongoose.models.Review || mongoose.model('Review', reviewSchema);
-export default Review;
+)
+
+// Index for efficient queries
+reviewSchema.index({ productId: 1, createdAt: -1 })
+reviewSchema.index({ productId: 1, rating: -1 })
+reviewSchema.index({ productId: 1, helpfulVotes: -1 })
+
+const Review = mongoose.models.Review || mongoose.model("Review", reviewSchema)
+export default Review

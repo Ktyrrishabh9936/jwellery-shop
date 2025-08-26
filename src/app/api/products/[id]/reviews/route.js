@@ -1,99 +1,145 @@
-import { NextResponse } from 'next/server';
-import Product from '@/models/productModel';
-import { connect } from '@/dbConfig/dbConfig';
-import { UserAuth } from '@/utils/userAuth';
-import "@/models/userModel";
-import Review from '@/models/reviewModel';
-
+import { NextResponse } from "next/server"
+import Product from "@/models/productModel"
+import { connect } from "@/dbConfig/dbConfig"
+import { UserAuth } from "@/utils/userAuth"
+import "@/models/userModel"
+import Review from "@/models/reviewModel"
+import { generateFakeReviews, updateProductRatingStats } from "@/utils/fakeReviewGenerator"
 
 // Create a review for a specific product
 export async function POST(request, { params }) {
-  await connect();
-  const {id} =  await params;
-  const { rating, comment } = await request.json();
+  await connect()
+  const { id } = await params
+  const { rating, comment, title, reviewerName } = await request.json()
 
-  if (!rating || !comment || rating < 1 || rating > 5) {
-    return NextResponse.json({ message: 'Invalid rating or comment' }, { status: 400 });
+  if (!rating || !comment || !title || rating < 1 || rating > 5) {
+    return NextResponse.json({ message: "Invalid rating, title, or comment" }, { status: 400 })
   }
 
   try {
-   
-    const userId = await UserAuth();
+    let userId = null
+    let finalReviewerName = reviewerName
 
-    if (!userId) {
-      return NextResponse.json({ message: 'Invalid token' }, { status: 401 });
+    // Try to get user if logged in
+    try {
+      userId = await UserAuth()
+    } catch (error) {
+      // User not logged in, that's okay for anonymous reviews
     }
-    const product = await Product.findById(id);
+
+    // If no reviewer name provided and user is logged in, get from user
+    if (!finalReviewerName && userId) {
+      const User = require("@/models/userModel").default
+      const user = await User.findById(userId)
+      finalReviewerName = user?.name || "Anonymous"
+    }
+
+    // Default to Anonymous if still no name
+    if (!finalReviewerName) {
+      finalReviewerName = "Anonymous"
+    }
+
+    const product = await Product.findById(id)
     if (!product) {
-      return NextResponse.json({ message: 'Product not found' }, { status: 404 });
+      return NextResponse.json({ message: "Product not found" }, { status: 404 })
     }
 
-    let Reviews = await Review.findOne({ productId:id });
-    if (!Reviews) {
-      Reviews = new Review({ productId:id, reviews: []});
-      product.reviews = Reviews._id;
-    }
-
-    // Create the review object
-    const review = {
-      user: userId,
+    // Create the review document
+    const review = new Review({
+      productId: id,
+      userId: userId ? userId : undefined,
+      reviewerName: finalReviewerName,
       rating: Number(rating),
+      title,
       comment,
-    };
+      isVerifiedPurchase: userId ? true : false, // Only verified if user is logged in
+      reviewDate: new Date(),
+    })
 
+    await review.save()
 
-    // Add review to the product's reviews array
-    Reviews.reviews.push(review)
+    // Update product rating statistics
+    await updateProductRatingStats(id)
 
-    // Calculate the new average rating
-    product.numReviews =Reviews.reviews.length;
-    console.log(Reviews.reviews.length)
-    product.averageRating = Reviews.reviews.reduce((acc, item) => acc + item.rating, 0) / Reviews.reviews.length;
-
-
-    await product.save();
-    await Reviews.save();
-
-    return NextResponse.json({ message: 'Review added successfully', review }, { status: 201 });
+    return NextResponse.json({ message: "Review added successfully", review }, { status: 201 })
   } catch (error) {
-    console.error('Server error:', error.message);
-    return NextResponse.json({ message: 'Server error', error: error.message }, { status: 500 });
+    console.error("Server error:", error.message)
+    return NextResponse.json({ message: "Server error", error: error.message }, { status: 500 })
   }
 }
 
 export async function GET(request, { params }) {
-  await connect();
-  const { id } = await params;
-  const url = new URL(request.url);
-  
+  await connect()
+  const { id } = await params
+  const url = new URL(request.url)
+  const page = Number.parseInt(url.searchParams.get("page")) || 1
+  const limit = Number.parseInt(url.searchParams.get("limit")) || 10
+  const sortBy = url.searchParams.get("sortBy") || "newest" // newest, oldest, highest, lowest, helpful
+
   try {
-    // Find the product and apply pagination to reviews
-    const findreviews = await Review.findOne({productId:id}).populate({path:"reviews.user",select:"name"});
-    const product = await Product.findById(id);
+    const product = await Product.findById(id)
     if (!product) {
-      return NextResponse.json({ message: 'Product not found' }, { status: 404 });
-    }
-    if (!findreviews) {
-      return NextResponse.json( { 
-        reviews:[], 
-        totalReviews:0, 
-      }, 
-      { status: 200 });
+      return NextResponse.json({ message: "Product not found" }, { status: 404 })
     }
 
-    // Total reviews count for pagination
-    const totalReviews = findreviews.reviews.length;
+    // Check if reviews exist for this product
+    const reviewCount = await Review.countDocuments({ productId: id })
+
+    // If no reviews exist, generate fake reviews for demo
+    if (reviewCount === 0) {
+      const fakeReviews = generateFakeReviews(id, 15)
+
+      // Insert fake reviews
+      await Review.insertMany(fakeReviews)
+
+      // Update product statistics
+      await updateProductRatingStats(id)
+    }
+
+    // Build sort criteria
+    let sortCriteria = {}
+    switch (sortBy) {
+      case "oldest":
+        sortCriteria = { reviewDate: 1 }
+        break
+      case "highest":
+        sortCriteria = { rating: -1, reviewDate: -1 }
+        break
+      case "lowest":
+        sortCriteria = { rating: 1, reviewDate: -1 }
+        break
+      
+      default: // newest
+        sortCriteria = { reviewDate: -1 }
+    }
+
+    // Get paginated reviews
+    const reviews = await Review.find({ productId: id })
+      .sort(sortCriteria)
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .lean()
+
+    const totalReviews = await Review.countDocuments({ productId: id })
+    const totalPages = Math.ceil(totalReviews / limit)
+
+    // Get updated product stats
+    const updatedProduct = await Product.findById(id).select("averageRating totalReviews ratingDistribution")
 
     return NextResponse.json(
-      { 
-        reviews: findreviews.reviews, 
-        totalReviews, 
-      }, 
-      { status: 200 }
-    );
+      {
+        reviews,
+        totalReviews: updatedProduct.totalReviews,
+        averageRating: updatedProduct.averageRating,
+        ratingDistribution: updatedProduct.ratingDistribution,
+        currentPage: page,
+        totalPages,
+        hasMore: page < totalPages,
+      },
+      { status: 200 },
+    )
   } catch (error) {
-    console.error('Server error:', error.message);
-    return NextResponse.json({ message: 'Server error', error: error.message }, { status: 500 });
+    console.error("Server error:", error.message)
+    return NextResponse.json({ message: "Server error", error: error.message }, { status: 500 })
   }
 }
-
